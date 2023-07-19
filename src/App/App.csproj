@@ -13,6 +13,8 @@
     <AssemblyName>MuzakBot.App</AssemblyName>
     <PackageId>MuzakBot.App</PackageId>
 
+    <VersionPrefix>0.0.1</VersionPrefix>
+
     <Description>
       A Discord bot for sharing music from multiple streaming services.
     </Description>
