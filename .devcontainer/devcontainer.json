@@ -1,0 +1,24 @@
+{
+    "name": "C# Dev Container",
+    "image": "ghcr.io/smalls1652/dev-container-dotnet-7:sha-0894b45",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-dotnettools.csharp",
+                "ms-vscode.powershell",
+                "ms-vscode.vscode-node-azure-pack",
+                "github.vscode-github-actions",
+                "github.copilot",
+                "github.copilot-chat"
+            ]
+        }
+    },
+    "features": {
+        "ghcr.io/devcontainers/features/git:1": {
+            "version": "latest"
+        },
+        "ghcr.io/devcontainers/features/github-cli:1": {
+            "version": "latest"
+        }
+    }
+}
