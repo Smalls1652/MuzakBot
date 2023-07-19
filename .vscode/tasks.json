@@ -1,0 +1,184 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "App Debug Build",
+            "detail": "Builds the app for debugging.",
+            "type": "process",
+            "command": "dotnet",
+            "args": [
+                "build",
+                "${workspaceFolder}/src/App/App.csproj",
+                "--configuration",
+                "Debug",
+                "/property:GenerateFullPaths=true"
+            ],
+            "problemMatcher": "$msCompile",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": true,
+                "close": true
+            },
+            "hide": true
+        },
+        {
+            "label": "Project: Build",
+            "detail": "Select a project and build it.",
+            "icon": {
+                "id": "file-code"
+            },
+            "group": "build",
+            "type": "process",
+            "command": "dotnet",
+            "args": [
+                "build",
+                "${workspaceFolder}/${input:dotnetProject}",
+                "--configuration",
+                "${input:dotnetConfig}",
+                "/property:GenerateFullPaths=true"
+            ],
+            "problemMatcher": "$msCompile",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": true
+            }
+        },
+        {
+            "label": "Project: Publish",
+            "detail": "Select a project and publish it.",
+            "icon": {
+                "id": "layers-dot"
+            },
+            "type": "process",
+            "command": "dotnet",
+            "args": [
+                "publish",
+                "${workspaceFolder}/${input:dotnetProject}",
+                "--configuration",
+                "${input:dotnetConfig}",
+                "/property:GenerateFullPaths=true"
+            ],
+            "problemMatcher": "$msCompile",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": true
+            }
+        },
+        {
+            "label": "Project: Restore",
+            "detail": "Select a project and restore it's dependencies.",
+            "icon": {
+                "id": "refresh"
+            },
+            "type": "process",
+            "command": "dotnet",
+            "args": [
+                "restore",
+                "${workspaceFolder}/${input:dotnetProject}"
+            ],
+            "problemMatcher": "$msCompile",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": true
+            }
+        },
+        {
+            "label": "Project: Clean",
+            "detail": "Select a project and clean previous builds.",
+            "icon": {
+                "id": "trash"
+            },
+            "type": "process",
+            "command": "dotnet",
+            "args": [
+                "clean",
+                "${workspaceFolder}/${input:dotnetProject}"
+            ],
+            "problemMatcher": "$msCompile",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": true
+            }
+        },
+        {
+            "label": "Watch: App",
+            "detail": "Run the App in a watch configuration.",
+            "icon": {
+                "id": "eye-watch"
+            },
+            "type": "process",
+            "command": "dotnet",
+            "args": [
+                "watch",
+                "--project",
+                "${workspaceFolder}/src/App/App.csproj",
+                "--",
+                "run",
+                "--configuration",
+                "${input:dotnetConfig}"
+            ],
+            "problemMatcher": "$msCompile",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "dedicated",
+                "showReuseMessage": true,
+                "clear": true
+            },
+            "options": {
+                "env": {
+                    "DOTNET_ENVIRONMENT": "Development"
+                }
+            }
+        }
+    ],
+    "inputs": [
+        {
+            "id": "dotnetConfig",
+            "description": "The config type to use when building.",
+            "type": "pickString",
+            "options": [
+                "Debug",
+                "Release"
+            ],
+            "default": "Debug"
+        },
+        {
+            "id": "dotnetProject",
+            "description": "The project to build.",
+            "type": "pickString",
+            "options": [
+                {
+                    "label": "Solution (All)",
+                    "value": "MuzakBot.sln"
+                },
+                {
+                    "label": "App",
+                    "value": "src/App/App.csproj"
+                }
+            ],
+            "default": "Solution (All)"
+        }
+    ]
+}
