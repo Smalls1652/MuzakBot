@@ -1,6 +1,6 @@
 # MuzakBot
 
-![MuzakBot logo](./.github/images/logo.png)
+![MuzakBot logo](./.github/images/logo_wide_social.png)
 
 A Discord bot to easily share music from one music streaming service to other streaming services.
 
