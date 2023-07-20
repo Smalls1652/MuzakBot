@@ -38,7 +38,7 @@ public partial class ShareMusicCommandModule
             _logger.LogError(e, "No share links found for '{url}'.", url);
             await FollowupAsync(
                 text: "No share links were found for that URL. 😥",
-                ephemeral: true
+                components: GenerateRemoveComponent().Build()
             );
 
             return;
@@ -62,7 +62,7 @@ public partial class ShareMusicCommandModule
                 _logger.LogError("Could get all of the necessary data for '{url}'.", url);
                 await FollowupAsync(
                     text: "I was unable to get the necessary information from Odesli. 😥",
-                    ephemeral: true
+                    components: GenerateRemoveComponent().Build()
                 );
 
                 return;
