@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{CF730E7E-D83C-4BA2-894D-0B7845F63421}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App", "src\App\App.csproj", "{145219A6-70BF-4519-9049-63AC02DD4461}"
 EndProject
 Global
@@ -22,6 +20,5 @@ Global
 		{145219A6-70BF-4519-9049-63AC02DD4461}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{145219A6-70BF-4519-9049-63AC02DD4461} = {CF730E7E-D83C-4BA2-894D-0B7845F63421}
 	EndGlobalSection
 EndGlobal
