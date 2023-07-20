@@ -21,6 +21,17 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          global-json-file: global.json
+
+      - name: Install .NET tools
+        run: dotnet tool restore
+
+      - name: Update project files with gitversion
+        run: dotnet tool run dotnet-gitversion /updateprojectfiles
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
