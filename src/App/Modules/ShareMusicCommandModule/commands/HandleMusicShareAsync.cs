@@ -23,11 +23,19 @@ public partial class ShareMusicCommandModule
     {
         await DeferAsync();
 
-        MusicEntityItem? musicEntityItem = await _odesliService.GetShareLinksAsync(url);
-
-        if (musicEntityItem is null)
+        MusicEntityItem? musicEntityItem = null;
+        try
         {
-            _logger.LogWarning("No share links found for '{url}'.", url);
+            musicEntityItem = await _odesliService.GetShareLinksAsync(url);
+
+            if (musicEntityItem is null)
+            {
+                throw new Exception("No share links found.");
+            }
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "No share links found for '{url}'.", url);
             await FollowupAsync(
                 text: "No share links were found for that URL. 😥",
                 ephemeral: true
@@ -36,40 +44,49 @@ public partial class ShareMusicCommandModule
             return;
         }
 
-        PlatformEntityLink? itunesLink;
+        PlatformEntityLink? platformEntityLink;
         try
         {
-            itunesLink = musicEntityItem.LinksByPlatform!["itunes"];
+            platformEntityLink = musicEntityItem.LinksByPlatform!["itunes"];
         }
         catch
         {
-            _logger.LogError("No iTunes link found for '{url}'.", url);
-            await FollowupAsync(
-                text: "I was unable to get the necessary information from Odesli. 😥",
-                ephemeral: true
-            );
+            var streamingEntityWithThumbnailUrl = musicEntityItem.EntitiesByUniqueId!.FirstOrDefault(entity => entity.Value.ThumbnailUrl is not null).Value.ApiProvider;
 
-            return;
+            if (!string.IsNullOrEmpty(streamingEntityWithThumbnailUrl))
+            {
+                platformEntityLink = musicEntityItem.LinksByPlatform![streamingEntityWithThumbnailUrl];
+            }
+            else
+            {
+                _logger.LogError("Could get all of the necessary data for '{url}'.", url);
+                await FollowupAsync(
+                    text: "I was unable to get the necessary information from Odesli. 😥",
+                    ephemeral: true
+                );
+
+                return;
+            }
         }
 
-        StreamingEntityItem itunesEntityItem = musicEntityItem.EntitiesByUniqueId![itunesLink.EntityUniqueId!];
-        using var albumArtStream = await GetMusicEntityItemAlbumArtAsync(itunesEntityItem);
+        StreamingEntityItem streamingEntityItem = musicEntityItem.EntitiesByUniqueId![platformEntityLink.EntityUniqueId!];
+        using var albumArtStream = await GetMusicEntityItemAlbumArtAsync(streamingEntityItem);
 
         var linksComponentBuilder = GenerateMusicShareComponent(musicEntityItem);
 
         var messageEmbed = new EmbedBuilder()
-            .WithTitle(itunesEntityItem.Title)
-            .WithDescription($"by {itunesEntityItem.ArtistName}")
+            .WithTitle(streamingEntityItem.Title)
+            .WithDescription($"by {streamingEntityItem.ArtistName}")
             .WithColor(Color.DarkBlue)
             .WithFooter("(Powered by Songlink/Odesli)");
 
         await FollowupWithFileAsync(
-            //text: $"Streaming music links for **{itunesEntityItem.Title} by {itunesEntityItem.ArtistName}**",
-            embed: messageEmbed.Build(), 
+            embed: messageEmbed.Build(),
             fileStream: albumArtStream,
-            fileName: $"{itunesEntityItem.Title}.jpg",
+            fileName: $"{streamingEntityItem.Title}.jpg",
             components: linksComponentBuilder.Build()
         );
+
 
     }
 }
