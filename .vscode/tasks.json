@@ -130,12 +130,40 @@
             "command": "dotnet",
             "args": [
                 "watch",
+                "run"
+            ],
+            "problemMatcher": "$msCompile",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "dedicated",
+                "showReuseMessage": true,
+                "clear": true
+            },
+            "options": {
+                "env": {
+                    "DOTNET_ENVIRONMENT": "Development"
+                },
+                "cwd": "${workspaceFolder}/src/App/"
+            }
+        },
+        {
+            "label": "Watch: App (Debug)",
+            "detail": "Run the App in a watch configuration (Debug).",
+            "icon": {
+                "id": "eye-watch"
+            },
+            "hide": true,
+            "type": "process",
+            "command": "dotnet",
+            "args": [
+                "watch",
                 "--project",
                 "${workspaceFolder}/src/App/App.csproj",
-                "--",
                 "run",
                 "--configuration",
-                "${input:dotnetConfig}"
+                "Debug"
             ],
             "problemMatcher": "$msCompile",
             "presentation": {
