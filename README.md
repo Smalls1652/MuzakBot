@@ -6,7 +6,7 @@ A Discord bot to easily share music from one music streaming service to other st
 
 ## Usage
 
-[Add to your Discord server!](https://discord.com/api/oauth2/authorize?client_id=1131341120924831866&permissions=274877958144&scope=bot+applications.commands)
+[![Add to your Discord server!](https://badgen.net/static/Discord%20Bot/Add%20to%20your%20server/purple?icon=discord&scale=2)](https://discord.com/api/oauth2/authorize?client_id=1131341120924831866&permissions=274877958144&scope=bot+applications.commands)
 
 ### Slash commands
 
