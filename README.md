@@ -1,4 +1,4 @@
-# MuzakBot
+# MuzakBot [![Build status](https://github.com/Smalls1652/MuzakBot/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/Smalls1652/MuzakBot/actions/workflows/build.yml) [![MIT license](https://badgen.net/static/License/MIT/blue)](./LICENSE)
 
 ![MuzakBot logo](./.github/images/logo_wide_social.png)
 
