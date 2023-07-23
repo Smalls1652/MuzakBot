@@ -3,6 +3,7 @@ description: For reporting bugs that you have encountered.
 title: "[Bug report]: "
 labels:
   - "bug"
+
 body:
   - type: markdown
     attributes:
