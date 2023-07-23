@@ -15,7 +15,7 @@ public partial class ShareMusicCommandModule
     )]
     private async Task HandleGetLinksFromPostAsync(IMessage message)
     {
-        Regex linkRegex = new(@"(?'musicLink'(?>https|http):\/\/.+?\/\S+)");
+        Regex linkRegex = new(@"(?'musicLink'(?>https|http):\/\/(?>[A-Za-z0-9\.]+)(?>\/\S*[^\.\s]|))(?> |)", RegexOptions.Multiline);
 
         await DeferAsync(
             ephemeral: true
