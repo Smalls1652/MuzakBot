@@ -8,19 +8,7 @@ A Discord bot to easily share music from one music streaming service to other st
 
 ## Usage
 
-### Slash commands
-
-#### `/sharemusic`
-
-Generate share links for a song or album.
-
-##### Example
-
-`/sharemusic url:https://www.youtube.com/watch?v=QdUE9_G94pg`
-
-It will generate the following:
-
-![Example screenshot of running "/sharemusic url:https://www.youtube.com/watch?v=QdUE9_G94pg"](./.github/images/sharemusic-example-01.png)
+You can see all of the commands you can run with MuzakBot [in this document](https://github.com/Smalls1652/MuzakBot/wiki/Bot-usage).
 
 ## 🗂️ Dependencies used
 
