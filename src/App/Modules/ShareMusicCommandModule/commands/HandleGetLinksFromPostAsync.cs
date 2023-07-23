@@ -27,7 +27,7 @@ public partial class ShareMusicCommandModule
         if (!linkMatch.Success)
         {
             await FollowupAsync(
-                text: "Could not find a link that post.",
+                text: "Could not find a link in that post.",
                 ephemeral: true
             );
 
