@@ -1,0 +1,51 @@
+name: Bug report
+description: For reporting bugs that you have encountered.
+title: "[Bug report]: "
+labels:
+  - "bug"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for submitting a bug report! Please keep in mind that this project is currently maintained by one person, so responses and fixes may be delayed.
+  - id: BugType
+    type: dropdown
+    attributes:
+      label: What kind of bug is this?
+      description: The type of bug you experienced.
+      multiple: false
+      options:
+        - "Crash"
+        - "Unexpected behavior"
+        - "Wrong output"
+        - "Never responded"
+        - "Other (Provide below)"
+    validations:
+      required: true
+  - id: BugTypeOther
+    type: input
+    attributes:
+      label: If you selected "Other" in the previous section, what kind of bug is it?
+      description: This is only needed if you selected "Other".
+      placeholder: Excessive wolololos
+      value: N/A
+    validations:
+      required: false
+  - id: BugDescription
+    type: textarea
+    attributes:
+      label: Describe the bug.
+      description: A description of the bug you encountered. Please be as detailed as possible.
+      placeholder: |
+        HonkBot yeeted himself out of the Discord server.
+    validations:
+      required: true
+  - id: BugLogs
+    type: textarea
+    attributes:
+      label: Logs (Optional)
+      description: Optionally add logs you have collected.
+      placeholder: Add logs here...
+      render: plain text
+    validations:
+      required: false
