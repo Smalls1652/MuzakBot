@@ -135,7 +135,7 @@ public partial class ShareMusicCommandModule
             soundcloudButton = new(
                 label: "SoundCloud",
                 style: ButtonStyle.Link,
-                url: spotifyLink.Url!.ToString()
+                url: soundcloudLink.Url!.ToString()
             );
         }
         else
