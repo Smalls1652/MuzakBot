@@ -46,6 +46,18 @@ public partial class ShareMusicCommandModule
             spotifyLink = null;
         }
 
+        // Attempt to get the Spotify link for the music item.
+        PlatformEntityLink? soundcloudLink;
+        try
+        {
+            soundcloudLink = entityItem.LinksByPlatform!["soundcloud"];
+        }
+        catch
+        {
+            _logger.LogWarning("No SoundCloud link found for {url}", entityItem.PageUrl);
+            soundcloudLink = null;
+        }
+
         // Create the YouTube button component.
         ButtonBuilder youtubeButton;
         if (youtubeLink is not null)
@@ -115,6 +127,29 @@ public partial class ShareMusicCommandModule
             );
         }
 
+        // Create the SoundCloud button component.
+        ButtonBuilder soundcloudButton;
+        if (soundcloudLink is not null)
+        {
+            // If the SoundCloud link is not null, create a button component with the link.
+            soundcloudButton = new(
+                label: "SoundCloud",
+                style: ButtonStyle.Link,
+                url: spotifyLink.Url!.ToString()
+            );
+        }
+        else
+        {
+            // If the SoundCloud link is null, create a button component with a disabled label.
+            soundcloudButton = new(
+                label: "SoundCloud",
+                style: ButtonStyle.Secondary,
+                isDisabled: true,
+                emote: new Emoji("🚫"),
+                customId: $"{entityItem.EntityUniqueId}-soundcloud-disabled"
+            );
+        }
+
         // Create the "More links" button component.
         ButtonBuilder moreLinksButton = new(
             label: "More links",
@@ -132,11 +167,12 @@ public partial class ShareMusicCommandModule
 
         // Create the component builder from the button components.
         ComponentBuilder linksComponentBuilder = new ComponentBuilder()
-            .WithButton(youtubeButton)
-            .WithButton(appleMusicButton)
-            .WithButton(spotifyButton)
-            .WithButton(moreLinksButton)
-            .WithButton(refreshButton);
+            .WithButton(youtubeButton, 0)
+            .WithButton(appleMusicButton, 0)
+            .WithButton(spotifyButton, 0)
+            .WithButton(soundcloudButton, 0)
+            .WithButton(moreLinksButton, 1)
+            .WithButton(refreshButton, 1);
 
         return linksComponentBuilder;
     }
