@@ -10,7 +10,7 @@ namespace MuzakBot.App.Modules;
 public partial class ShareMusicCommandModule
 {
     [MessageCommand(
-        name: "Get share links from post"
+        name: "Get music share links"
     )]
     private async Task HandleGetLinksFromPostAsync(IMessage message)
     {
