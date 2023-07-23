@@ -1,9 +1,9 @@
 ﻿name: Feature request/update
 description: Adding new features or changing existing features
+title: "[Feature]: "
 labels:
   - "enhancement"
   - "feature request"
-title: "[Feature]: "
 body:
   - id: ChangeType
     type: dropdown
