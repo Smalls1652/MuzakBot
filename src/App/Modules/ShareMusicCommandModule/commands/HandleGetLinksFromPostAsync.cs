@@ -21,9 +21,9 @@ public partial class ShareMusicCommandModule
             ephemeral: true
         );
 
-        _logger.LogInformation("Message content: {messageContent}", message.Content);
+        _logger.LogInformation("Message content: {messageContent}", message.CleanContent);
 
-        if (!linkRegex.IsMatch(message.Content))
+        if (!linkRegex.IsMatch(message.CleanContent))
         {
             await FollowupAsync(
                 text: "Could not find a link in that post.",
@@ -33,7 +33,7 @@ public partial class ShareMusicCommandModule
             return;
         }
 
-        MatchCollection linkMatches = linkRegex.Matches(message.Content);
+        MatchCollection linkMatches = linkRegex.Matches(message.CleanContent);
 
         StringBuilder stringBuilder = new("Results:\n");
         for (var i = 0; i < linkMatches.Count; i++)
