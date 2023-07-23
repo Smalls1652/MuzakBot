@@ -37,7 +37,7 @@ body:
       label: Describe the bug.
       description: A description of the bug you encountered. Please be as detailed as possible.
       placeholder: |
-        HonkBot yeeted himself out of the Discord server.
+        The /sharemusic command never posted anything.
     validations:
       required: true
   - id: BugLogs
