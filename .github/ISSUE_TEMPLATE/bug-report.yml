@@ -3,12 +3,10 @@ description: For reporting bugs that you have encountered.
 title: "[Bug report]: "
 labels:
   - "bug"
-
 body:
   - type: markdown
     attributes:
-      value: |
-        Thanks for submitting a bug report! Please keep in mind that this project is currently maintained by one person, so responses and fixes may be delayed.
+      value: Thanks for submitting a bug report! Please keep in mind that this project is currently maintained by one person, so responses and fixes may be delayed.
   - id: BugType
     type: dropdown
     attributes:
@@ -37,8 +35,7 @@ body:
     attributes:
       label: Describe the bug.
       description: A description of the bug you encountered. Please be as detailed as possible. Include screenshots, if possible.
-      placeholder: |
-        The output of the /sharemusic command threw an error, but the link is valid.
+      placeholder: The output of the /sharemusic command threw an error, but the link is valid.
     validations:
       required: true
   - id: BugLogs
