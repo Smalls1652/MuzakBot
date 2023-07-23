@@ -2,7 +2,7 @@
 description: Adding new features or changing existing features
 labels:
   - "enhancement"
-  - "feature update"
+  - "feature request"
 title: "[Feature]: "
 body:
   - id: ChangeType
