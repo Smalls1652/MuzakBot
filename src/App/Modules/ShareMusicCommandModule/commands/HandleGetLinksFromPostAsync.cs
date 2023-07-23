@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Text;
+using System.Text.RegularExpressions;
 using Discord;
 using Discord.Interactions;
 using MuzakBot.App.Models.Odesli;
@@ -22,9 +23,7 @@ public partial class ShareMusicCommandModule
 
         _logger.LogInformation("Message content: {messageContent}", message.Content);
 
-        Match linkMatch = linkRegex.Match(message.Content);
-
-        if (!linkMatch.Success)
+        if (!linkRegex.IsMatch(message.Content))
         {
             await FollowupAsync(
                 text: "Could not find a link in that post.",
@@ -34,77 +33,77 @@ public partial class ShareMusicCommandModule
             return;
         }
 
-        string url = linkMatch.Groups["musicLink"].Value;
+        MatchCollection linkMatches = linkRegex.Matches(message.Content);
 
-        MusicEntityItem? musicEntityItem = null;
-        try
+        StringBuilder stringBuilder = new("Results:\n");
+        for (var i = 0; i < linkMatches.Count; i++)
         {
-            musicEntityItem = await _odesliService.GetShareLinksAsync(url);
+            string url = linkMatches[i].Groups["musicLink"].Value;
 
-            if (musicEntityItem is null)
+            MusicEntityItem? musicEntityItem = null;
+            try
             {
-                throw new Exception("No share links found.");
+                musicEntityItem = await _odesliService.GetShareLinksAsync(url);
+
+                if (musicEntityItem is null)
+                {
+                    throw new Exception("No share links found.");
+                }
             }
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(e, "No share links found for '{url}'.", url);
-            await FollowupAsync(
-                text: "No share links were found for that URL. 😥",
-                components: GenerateRemoveComponent().Build()
+            catch (Exception e)
+            {
+                _logger.LogError(e, "No share links found for '{url}'.", url);
+                stringBuilder.AppendLine($"{i + 1}. No share links were found for `{url}`.");
+                continue;
+            }
+
+            PlatformEntityLink? platformEntityLink;
+            try
+            {
+                platformEntityLink = musicEntityItem.LinksByPlatform!["itunes"];
+            }
+            catch
+            {
+                var streamingEntityWithThumbnailUrl = musicEntityItem.EntitiesByUniqueId!.FirstOrDefault(entity => entity.Value.ThumbnailUrl is not null).Value.ApiProvider;
+
+                if (!string.IsNullOrEmpty(streamingEntityWithThumbnailUrl))
+                {
+                    platformEntityLink = musicEntityItem.LinksByPlatform![streamingEntityWithThumbnailUrl];
+                }
+                else
+                {
+                    _logger.LogError("Couldn't get all of the necessary data for '{url}'.", url);
+                    stringBuilder.AppendLine($"{i + 1}. Couldn't get all of the necessary data from Odesli for `{url}`.");
+                    continue;
+                }
+            }
+
+            StreamingEntityItem streamingEntityItem = musicEntityItem.EntitiesByUniqueId![platformEntityLink.EntityUniqueId!];
+            using var albumArtStream = await GetMusicEntityItemAlbumArtAsync(streamingEntityItem);
+
+            var linksComponentBuilder = GenerateMusicShareComponent(musicEntityItem);
+
+            var messageEmbed = new EmbedBuilder()
+                .WithTitle(streamingEntityItem.Title)
+                .WithDescription($"by {streamingEntityItem.ArtistName}")
+                .WithColor(Color.DarkBlue)
+                .WithFooter("(Powered by Songlink/Odesli)");
+
+            await Context.Channel.SendFileAsync(
+                embed: messageEmbed.Build(),
+                stream: albumArtStream,
+                filename: $"{streamingEntityItem.Title}.jpg",
+                components: linksComponentBuilder.Build(),
+                messageReference: new(message.Id),
+                allowedMentions: AllowedMentions.None
             );
 
-            return;
+            stringBuilder.AppendLine($"{i + 1}. Successfully got links for `{url}`.");
         }
-
-        PlatformEntityLink? platformEntityLink;
-        try
-        {
-            platformEntityLink = musicEntityItem.LinksByPlatform!["itunes"];
-        }
-        catch
-        {
-            var streamingEntityWithThumbnailUrl = musicEntityItem.EntitiesByUniqueId!.FirstOrDefault(entity => entity.Value.ThumbnailUrl is not null).Value.ApiProvider;
-
-            if (!string.IsNullOrEmpty(streamingEntityWithThumbnailUrl))
-            {
-                platformEntityLink = musicEntityItem.LinksByPlatform![streamingEntityWithThumbnailUrl];
-            }
-            else
-            {
-                _logger.LogError("Could get all of the necessary data for '{url}'.", url);
-                await FollowupAsync(
-                    text: "I was unable to get the necessary information from Odesli. 😥",
-                    components: GenerateRemoveComponent().Build()
-                );
-
-                return;
-            }
-        }
-
-        StreamingEntityItem streamingEntityItem = musicEntityItem.EntitiesByUniqueId![platformEntityLink.EntityUniqueId!];
-        using var albumArtStream = await GetMusicEntityItemAlbumArtAsync(streamingEntityItem);
-
-        var linksComponentBuilder = GenerateMusicShareComponent(musicEntityItem);
-
-        var messageEmbed = new EmbedBuilder()
-            .WithTitle(streamingEntityItem.Title)
-            .WithDescription($"by {streamingEntityItem.ArtistName}")
-            .WithColor(Color.DarkBlue)
-            .WithFooter("(Powered by Songlink/Odesli)");
 
         await FollowupAsync(
-            text: $"Found a link for `{url}`.",
+            text: stringBuilder.ToString(),
             ephemeral: true
-        );
-
-        await Context.Channel.SendFileAsync(
-            embed: messageEmbed.Build(),
-            stream: albumArtStream,
-            filename: $"{streamingEntityItem.Title}.jpg",
-            components: linksComponentBuilder.Build(),
-            messageReference: new(message.Id),
-            allowedMentions: AllowedMentions.None
         );
     }
 }
