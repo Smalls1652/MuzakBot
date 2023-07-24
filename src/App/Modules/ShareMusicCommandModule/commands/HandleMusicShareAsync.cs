@@ -70,7 +70,7 @@ public partial class ShareMusicCommandModule
         }
 
         StreamingEntityItem streamingEntityItem = musicEntityItem.EntitiesByUniqueId![platformEntityLink.EntityUniqueId!];
-        using var albumArtStream = await GetMusicEntityItemAlbumArtAsync(streamingEntityItem);
+        using var albumArtStream = await GetAlbumArtStreamAsync(streamingEntityItem);
 
         var linksComponentBuilder = GenerateMusicShareComponent(musicEntityItem);
 
