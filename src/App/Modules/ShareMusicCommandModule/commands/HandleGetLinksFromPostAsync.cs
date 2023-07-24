@@ -87,6 +87,7 @@ public partial class ShareMusicCommandModule
                 .WithTitle(streamingEntityItem.Title)
                 .WithDescription($"by {streamingEntityItem.ArtistName}")
                 .WithColor(Color.DarkBlue)
+                .WithImageUrl($"attachment://{streamingEntityItem.Title}.jpg")
                 .WithFooter("(Powered by Songlink/Odesli)");
 
             await Context.Channel.SendFileAsync(
