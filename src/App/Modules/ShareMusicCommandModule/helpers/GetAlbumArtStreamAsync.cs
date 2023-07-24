@@ -4,7 +4,7 @@ namespace MuzakBot.App.Modules;
 
 public partial class ShareMusicCommandModule
 {
-    private async Task<Stream> GetMusicEntityItemAlbumArtAsync(StreamingEntityItem entityItem)
+    private async Task<Stream> GetAlbumArtStreamAsync(StreamingEntityItem entityItem)
     {
         var httpClient = _httpClientFactory.CreateClient("GenericClient");
 
