@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -9,6 +10,8 @@ using System.Reflection;
 using MuzakBot.App.Services;
 
 var hostBuilder = Host.CreateApplicationBuilder(args);
+
+hostBuilder.Services.AddMemoryCache();
 
 GatewayIntents gatewayIntents = GatewayIntents.AllUnprivileged - GatewayIntents.GuildInvites - GatewayIntents.GuildScheduledEvents;
 
@@ -59,12 +62,22 @@ hostBuilder.Services.AddHttpClient(
     }
 );
 
+hostBuilder.Services.AddHttpClient(
+    name: "ItunesApiClient",
+    configureClient: (serviceProvider, httpClient) =>
+    {
+        httpClient.DefaultRequestHeaders.UserAgent.Add(new("MuzakBot", Assembly.GetExecutingAssembly().GetName().Version!.ToString()));
+        httpClient.BaseAddress = new("https://itunes.apple.com/");
+    }
+);
+
 hostBuilder.Services.AddSingleton<DiscordSocketClient>(
     implementationInstance: new(discordSocketConfig)
 );
 
 hostBuilder.Services.AddSingleton<IDiscordService, DiscordService>();
 hostBuilder.Services.AddSingleton<IOdesliService, OdesliService>();
+hostBuilder.Services.AddSingleton<IItunesApiService, ItunesApiService>();
 
 hostBuilder.Logging.AddConsole();
 
