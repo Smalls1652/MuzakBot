@@ -83,12 +83,7 @@ public partial class ShareMusicCommandModule
 
             var linksComponentBuilder = GenerateMusicShareComponent(musicEntityItem);
 
-            var messageEmbed = new EmbedBuilder()
-                .WithTitle(streamingEntityItem.Title)
-                .WithDescription($"by {streamingEntityItem.ArtistName}")
-                .WithColor(Color.DarkBlue)
-                .WithImageUrl($"attachment://{streamingEntityItem.Title}.jpg")
-                .WithFooter("(Powered by Songlink/Odesli)");
+            var messageEmbed = GenerateEmbedBuilder(streamingEntityItem);
 
             await Context.Channel.SendFileAsync(
                 embed: messageEmbed.Build(),

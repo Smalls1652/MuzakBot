@@ -70,21 +70,16 @@ public partial class ShareMusicCommandModule
         }
 
         StreamingEntityItem streamingEntityItem = musicEntityItem.EntitiesByUniqueId![platformEntityLink.EntityUniqueId!];
-        using var albumArtStream = await GetAlbumArtStreamAsync(streamingEntityItem);
+        await using var albumArtStream = await GetAlbumArtStreamAsync(streamingEntityItem);
 
         var linksComponentBuilder = GenerateMusicShareComponent(musicEntityItem);
 
-        var messageEmbed = new EmbedBuilder()
-            .WithTitle(streamingEntityItem.Title)
-            .WithDescription($"by {streamingEntityItem.ArtistName}")
-            .WithColor(Color.DarkBlue)
-            .WithImageUrl($"attachment://{streamingEntityItem.Title}.jpg")
-            .WithFooter("(Powered by Songlink/Odesli)");
+        var messageEmbed = GenerateEmbedBuilder(streamingEntityItem);
 
         await FollowupWithFileAsync(
             embed: messageEmbed.Build(),
             fileStream: albumArtStream,
-            fileName: $"{streamingEntityItem.Title}.jpg",
+            fileName: $"{streamingEntityItem.Id}.jpg",
             components: linksComponentBuilder.Build()
         );
 
