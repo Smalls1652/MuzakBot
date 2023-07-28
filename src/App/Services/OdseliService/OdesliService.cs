@@ -11,7 +11,7 @@ namespace MuzakBot.App.Services;
 /// <summary>
 /// Service for interacting with the Odesli API.
 /// </summary>
-public class OdesliService : IOdesliService
+public partial class OdesliService : IOdesliService
 {
     private readonly ILogger<OdesliService> _logger;
     private readonly IHttpClientFactory _httpClientFactory;
