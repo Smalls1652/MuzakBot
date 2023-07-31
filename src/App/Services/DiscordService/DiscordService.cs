@@ -1,5 +1,7 @@
 using Discord;
+using Discord.Commands;
 using Discord.Interactions;
+using Discord.Net;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -56,7 +58,6 @@ public class DiscordService : IDiscordService
 
         // Add logging to the DiscordSocketClient and InteractionService
         _discordSocketClient.Log += HandleLog;
-        _interactionService.Log += HandleLog;
 
         // Add slash command handler
         _discordSocketClient.InteractionCreated += HandleSlashCommand;
@@ -116,9 +117,33 @@ public class DiscordService : IDiscordService
     /// <returns></returns>
     private Task HandleLog(LogMessage logMessage)
     {
-        _logger.LogInformation("[{Severity}] {LogMessage}", logMessage.Severity, logMessage.ToString());
+        LogLevel logLevel = logMessage.Severity switch
+        {
+            LogSeverity.Critical => LogLevel.Critical,
+            LogSeverity.Error => LogLevel.Error,
+            LogSeverity.Warning => LogLevel.Warning,
+            LogSeverity.Info => LogLevel.Information,
+            LogSeverity.Verbose => LogLevel.Trace,
+            LogSeverity.Debug => LogLevel.Debug,
+            _ => throw new ArgumentOutOfRangeException(nameof(logMessage.Severity), logMessage.Severity, "Unknown log severity.")
+        };
+
+        string logMessageString;
+        if (logMessage.Exception is CommandException cmdException)
+        {
+            logMessageString = $"{cmdException.Command.Aliases.First()} failed to execute in {cmdException.Context.Channel}.";
+        }
+        else
+        {
+            logMessageString = $"{logMessage}";
+        }
+
+        _logger.Log(
+            logLevel: logLevel,
+            message: logMessageString,
+            exception: logMessage.Exception
+        );
 
         return Task.CompletedTask;
     }
-
 }
