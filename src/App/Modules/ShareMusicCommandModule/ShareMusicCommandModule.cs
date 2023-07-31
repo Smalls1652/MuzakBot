@@ -6,6 +6,9 @@ using Microsoft.Extensions.Logging;
 
 namespace MuzakBot.App.Modules;
 
+/// <summary>
+/// Command module for housing the music sharing commands.
+/// </summary>
 public partial class ShareMusicCommandModule : InteractionModuleBase
 {
     private readonly IDiscordService _discordService;

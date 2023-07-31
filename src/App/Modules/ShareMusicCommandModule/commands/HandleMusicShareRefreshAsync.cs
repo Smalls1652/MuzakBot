@@ -8,7 +8,15 @@ namespace MuzakBot.App.Modules;
 
 public partial class ShareMusicCommandModule
 {
-
+    /// <summary>
+    /// Refreshes the share links on a message.
+    /// </summary>
+    /// <remarks>
+    /// This is a component interaction handler and can only be
+    /// invoked by a user clicking the "Refresh" button on an
+    /// existing message.
+    /// </remarks>
+    /// <param name="url">The Songlink/Odesli URL.</param>
     [ComponentInteraction(customId: "refresh-musiclinks-btn-*")]
     private async Task HandleMusicShareRefreshAsync(string url)
     {

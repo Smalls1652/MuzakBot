@@ -6,6 +6,11 @@ namespace MuzakBot.App.Modules;
 
 public partial class ShareMusicCommandModule
 {
+    /// <summary>
+    /// Generates a <see cref="ComponentBuilder"/> for the "Remove message"
+    /// button on a failed music share message.
+    /// </summary>
+    /// <returns></returns>
     private ComponentBuilder GenerateRemoveComponent()
     {
         Guid guid = Guid.NewGuid();

@@ -6,6 +6,11 @@ namespace MuzakBot.App.Modules;
 
 public partial class ShareMusicCommandModule
 {
+    /// <summary>
+    /// Genereates a <see cref="ComponentBuilder"/> for the music share links.
+    /// </summary>
+    /// <param name="entityItem">The data from the Odesli API for the song/album.</param>
+    /// <returns></returns>
     private ComponentBuilder GenerateMusicShareComponent(MusicEntityItem entityItem)
     {
         // Attempt to get the YouTube link for the music item.
