@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using MuzakBot.App.Models.Odesli;
 
 namespace MuzakBot.App.Modules;
@@ -15,7 +16,20 @@ public partial class ShareMusicCommandModule
 
         HttpResponseMessage responseMessage = await httpClient.GetAsync(entityItem.ThumbnailUrl);
 
-        responseMessage.EnsureSuccessStatusCode();
+        try
+        {
+            responseMessage.EnsureSuccessStatusCode();
+        }
+        catch (HttpRequestException ex)
+        {
+            _logger.LogError(ex, "Received an unsuccessful HTTP response for '{thumbnailUrl}'.", entityItem.ThumbnailUrl);
+            throw;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Ran into an unknown issue while retrieving album artwork from '{thumbnailUrl}'.", entityItem.ThumbnailUrl);
+            throw;
+        }
 
         return await responseMessage.Content.ReadAsStreamAsync();
     }
