@@ -10,6 +10,11 @@ namespace MuzakBot.App.Modules;
 
 public partial class ShareMusicCommandModule
 {
+    /// <summary>
+    /// Message command for parsing a message and getting the share links for any music links found in the message.
+    /// </summary>
+    /// <param name="message">The message selected by the client.</param>
+    /// <exception cref="Exception"></exception>
     [MessageCommand(
         name: "Get music share links"
     )]

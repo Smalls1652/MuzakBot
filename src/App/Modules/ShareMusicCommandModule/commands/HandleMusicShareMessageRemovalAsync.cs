@@ -8,6 +8,14 @@ namespace MuzakBot.App.Modules;
 
 public partial class ShareMusicCommandModule
 {
+    /// <summary>
+    /// Handler for removing a failed share message.
+    /// </summary>
+    /// <remarks>
+    /// This is a component interaction handler and can only be
+    /// invoked by a user clicking the "Remove message" button on
+    /// a failed share message.
+    /// </remarks>
     [ComponentInteraction(customId: "remove-sharemusic-post-btn-*")]
     private async Task HandleMusicShareMessageRemovalAsync()
     {

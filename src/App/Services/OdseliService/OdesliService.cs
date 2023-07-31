@@ -8,6 +8,9 @@ using MuzakBot.App.Models.Odesli;
 
 namespace MuzakBot.App.Services;
 
+/// <summary>
+/// Service for interacting with the Odesli API.
+/// </summary>
 public class OdesliService : IOdesliService
 {
     private readonly ILogger<OdesliService> _logger;
@@ -19,6 +22,11 @@ public class OdesliService : IOdesliService
         _httpClientFactory = httpClientFactory;
     }
 
+    /// <summary>
+    /// Gets share links from the Odesli API for the given URL.
+    /// </summary>
+    /// <param name="inputUrl">The URL to get share links for.</param>
+    /// <returns>Data from the Odesli API for the given URL.</returns>
     public async Task<MusicEntityItem?> GetShareLinksAsync(string inputUrl)
     {
         var httpClient = _httpClientFactory.CreateClient("OdesliApiClient");

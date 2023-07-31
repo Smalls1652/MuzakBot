@@ -8,6 +8,11 @@ namespace MuzakBot.App.Modules;
 
 public partial class ShareMusicCommandModule
 {
+    /// <summary>
+    /// Slash command for getting the share links for a song/album from a streaming service URL.
+    /// </summary>
+    /// <param name="url">The URL to a song/album on a streaming service.</param>
+    /// <exception cref="Exception"></exception>
     [EnabledInDm(true)]
     [SlashCommand(
         name: "sharemusic",
