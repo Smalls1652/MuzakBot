@@ -38,15 +38,15 @@ public partial class ShareMusicCommandModule
                 throw new Exception("No share links found.");
             }
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            _logger.LogError(e, "No share links found for '{url}'.", url);
+            _logger.LogError(ex, "No share links found for '{url}'.", url);
             await FollowupAsync(
                 text: "No share links were found for that URL. 😥",
                 components: GenerateRemoveComponent().Build()
             );
 
-            return;
+            throw;
         }
 
         PlatformEntityLink? platformEntityLink;
@@ -54,7 +54,7 @@ public partial class ShareMusicCommandModule
         {
             platformEntityLink = musicEntityItem.LinksByPlatform!["itunes"];
         }
-        catch
+        catch (Exception ex)
         {
             var streamingEntityWithThumbnailUrl = musicEntityItem.EntitiesByUniqueId!.FirstOrDefault(entity => entity.Value.ThumbnailUrl is not null).Value.ApiProvider;
 
@@ -64,18 +64,32 @@ public partial class ShareMusicCommandModule
             }
             else
             {
-                _logger.LogError("Could get all of the necessary data for '{url}'.", url);
+                _logger.LogError(ex, "Could get all of the necessary data for '{url}'.", url);
                 await FollowupAsync(
                     text: "I was unable to get the necessary information from Odesli. 😥",
                     components: GenerateRemoveComponent().Build()
                 );
 
-                return;
+                throw;
             }
         }
 
         StreamingEntityItem streamingEntityItem = musicEntityItem.EntitiesByUniqueId![platformEntityLink.EntityUniqueId!];
-        await using var albumArtStream = await GetAlbumArtStreamAsync(streamingEntityItem);
+
+        Stream albumArtStream;
+        try
+        {
+            albumArtStream = await GetAlbumArtStreamAsync(streamingEntityItem);
+        }
+        catch (Exception)
+        {
+            await FollowupAsync(
+                text: "I ran into an issue while retrieving the album artwork. 😥",
+                components: GenerateRemoveComponent().Build()
+            );
+
+            throw;
+        }
 
         var linksComponentBuilder = GenerateMusicShareComponent(musicEntityItem);
 
@@ -88,6 +102,6 @@ public partial class ShareMusicCommandModule
             components: linksComponentBuilder.Build()
         );
 
-
+        await albumArtStream.DisposeAsync();
     }
 }
