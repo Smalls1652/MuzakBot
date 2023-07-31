@@ -43,7 +43,7 @@ public class OdesliService : IOdesliService
 
         responseMessage.EnsureSuccessStatusCode();
 
-        using var contentStream = await responseMessage.Content.ReadAsStreamAsync();
+        await using var contentStream = await responseMessage.Content.ReadAsStreamAsync();
         MusicEntityItem? musicEntityItem = await JsonSerializer.DeserializeAsync(
             utf8Json: contentStream,
             jsonTypeInfo: OdesliJsonContext.Default.MusicEntityItem
