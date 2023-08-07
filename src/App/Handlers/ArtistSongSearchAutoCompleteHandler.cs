@@ -7,12 +7,12 @@ using MuzakBot.App.Services;
 
 namespace MuzakBot.App.Handlers;
 
-public class ItunesArtistSongAutoCompleteHandler : AutocompleteHandler
+public class ArtistSongSearchAutoCompleteHandler : AutocompleteHandler
 {
-    private readonly ILogger<ItunesArtistSongAutoCompleteHandler> _logger;
+    private readonly ILogger<ArtistSongSearchAutoCompleteHandler> _logger;
     private readonly IItunesApiService _itunesApiService;
 
-    public ItunesArtistSongAutoCompleteHandler(ILogger<ItunesArtistSongAutoCompleteHandler> logger, IItunesApiService itunesApiService)
+    public ArtistSongSearchAutoCompleteHandler(ILogger<ArtistSongSearchAutoCompleteHandler> logger, IItunesApiService itunesApiService)
     {
         _logger = logger;
         _itunesApiService = itunesApiService;
