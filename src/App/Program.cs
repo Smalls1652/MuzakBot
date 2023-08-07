@@ -63,6 +63,16 @@ hostBuilder.Services.AddHttpClient(
 );
 
 hostBuilder.Services.AddHttpClient(
+    name: "MusicBrainzApiClient",
+    configureClient: (serviceProvider, httpClient) =>
+    {
+        httpClient.DefaultRequestHeaders.Accept.Add(new("application/json"));
+        httpClient.DefaultRequestHeaders.UserAgent.Add(new("MuzakBot", Assembly.GetExecutingAssembly().GetName().Version!.ToString()));
+        httpClient.BaseAddress = new("https://musicbrainz.org/ws/2/");
+    }
+);
+
+hostBuilder.Services.AddHttpClient(
     name: "ItunesApiClient",
     configureClient: (serviceProvider, httpClient) =>
     {
