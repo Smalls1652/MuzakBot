@@ -17,11 +17,11 @@ public partial class ShareMusicCommandModule
     )]
     private async Task HandleFindSongAsync(
         [Summary("artistName", "The name of an artist"),
-         Autocomplete(typeof(ItunesArtistAutoCompleteHandler))
+         Autocomplete(typeof(ArtistSearchAutoCompleteHandler))
         ]
         string artistId,
         [Summary(name: "songName", description: "The name of a song"),
-         Autocomplete(typeof(ItunesArtistSongAutoCompleteHandler))
+         Autocomplete(typeof(ArtistSongSearchAutoCompleteHandler))
         ]
         string songId
     )
