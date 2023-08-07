@@ -7,5 +7,5 @@ public interface IMusicBrainzArtistItem
     string SortName { get; set; }
     string? Disambiguation { get; set; }
     string? Country { get; set; }
-    MusicBrainzArtistType Type { get; set; }
+    string? Type { get; set; }
 }

@@ -20,5 +20,5 @@ public class MusicBrainzArtistItem : IMusicBrainzArtistItem
     public string? Country { get; set; }
 
     [JsonPropertyName("type")]
-    public MusicBrainzArtistType Type { get; set; }
+    public string? Type { get; set; }
 }
