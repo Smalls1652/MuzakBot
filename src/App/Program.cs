@@ -88,6 +88,7 @@ hostBuilder.Services.AddSingleton<DiscordSocketClient>(
 hostBuilder.Services.AddSingleton<IDiscordService, DiscordService>();
 hostBuilder.Services.AddSingleton<IOdesliService, OdesliService>();
 hostBuilder.Services.AddSingleton<IItunesApiService, ItunesApiService>();
+hostBuilder.Services.AddSingleton<IMusicBrainzService, MusicBrainzService>();
 
 hostBuilder.Logging.AddConsole();
 
