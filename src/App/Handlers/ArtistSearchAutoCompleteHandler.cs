@@ -2,18 +2,24 @@ using System.Text.Json;
 using Discord;
 using Discord.Interactions;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using MuzakBot.App.Models.Itunes;
+using MuzakBot.App.Models.MusicBrainz;
 using MuzakBot.App.Services;
 
 namespace MuzakBot.App.Handlers;
 
-public class ItunesArtistAutoCompleteHandler : AutocompleteHandler
+public class ArtistSearchAutoCompleteHandler : AutocompleteHandler
 {
+    private readonly ILogger<ArtistSearchAutoCompleteHandler> _logger;
     private readonly IItunesApiService _itunesApiService;
+    private readonly IMusicBrainzService _musicBrainzService;
 
-    public ItunesArtistAutoCompleteHandler(IItunesApiService itunesApiService)
+    public ArtistSearchAutoCompleteHandler(ILogger<ArtistSearchAutoCompleteHandler> logger, IItunesApiService itunesApiService, IMusicBrainzService musicBrainzService)
     {
+        _logger = logger;
         _itunesApiService = itunesApiService;
+        _musicBrainzService = musicBrainzService;
     }
 
     public override async Task<AutocompletionResult> GenerateSuggestionsAsync(IInteractionContext context, IAutocompleteInteraction autocompleteInteraction, IParameterInfo parameter, IServiceProvider services)
@@ -32,9 +38,9 @@ public class ItunesArtistAutoCompleteHandler : AutocompleteHandler
             return AutocompletionResult.FromSuccess(results.AsEnumerable());
         }
 
-        ApiSearchResult<ArtistItem>? artistSearchResult = await _itunesApiService.GetArtistSearchResultAsync(autocompleteInteraction.Data?.Current?.Value?.ToString()!);
+        MusicBrainzArtistSearchResult? artistSearchResult = await _musicBrainzService.SearchArtistAsync(autocompleteInteraction.Data?.Current?.Value?.ToString()!);
 
-        if (artistSearchResult is null || artistSearchResult.Results is null || artistSearchResult.Results.Length == 0)
+        if (artistSearchResult is null || artistSearchResult.Artists is null || artistSearchResult.Artists.Length == 0)
         {
             results.Add(
                 item: new(
@@ -47,12 +53,12 @@ public class ItunesArtistAutoCompleteHandler : AutocompleteHandler
         }
         else
         {
-            foreach (ArtistItem artistItem in artistSearchResult.Results)
+            foreach (MusicBrainzArtistItem artistItem in artistSearchResult.Artists)
             {
                 results.Add(
                     item: new(
-                        name: artistItem.ArtistName,
-                        value: artistItem.ArtistId.ToString()
+                        name: artistItem.Name,
+                        value: artistItem.Name
                     )
                 );
             }
