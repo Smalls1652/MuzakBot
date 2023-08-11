@@ -58,6 +58,27 @@ public partial class MusicBrainzService : IMusicBrainzService
         );
     }
 
+    public async Task<MusicBrainzReleaseSearchResult?> SearchArtistReleasesAsync(string artistId, string albumName)
+    {
+        var httpClient = _httpClientFactory.CreateClient("MusicBrainzApiClient");
+
+        HttpRequestMessage requestMessage = new(
+            method: HttpMethod.Get,
+            requestUri: $"release/?query=arid:{artistId} AND {WebUtility.UrlEncode(albumName)}&limit=5"
+        );
+
+        var responseMessage = await httpClient.SendAsync(requestMessage);
+
+        responseMessage.EnsureSuccessStatusCode();
+
+        await using var contentStream = await responseMessage.Content.ReadAsStreamAsync();
+
+        return await JsonSerializer.DeserializeAsync(
+            utf8Json: contentStream,
+            jsonTypeInfo: MusicBrainzJsonContext.Default.MusicBrainzReleaseSearchResult
+        );
+    }
+
     public async Task<MusicBrainzArtistItem?> LookupArtistAsync(string artistId)
     {
         var httpClient = _httpClientFactory.CreateClient("MusicBrainzApiClient");
