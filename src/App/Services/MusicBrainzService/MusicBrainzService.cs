@@ -22,7 +22,7 @@ public partial class MusicBrainzService : IMusicBrainzService
 
         HttpRequestMessage requestMessage = new(
             method: HttpMethod.Get,
-            requestUri: $"artist/?query={artistName}"
+            requestUri: $"artist/?query={artistName}&limit=5"
         );
 
         var responseMessage = await httpClient.SendAsync(requestMessage);
@@ -37,21 +37,13 @@ public partial class MusicBrainzService : IMusicBrainzService
         );
     }
 
-    public async Task<MusicBrainzRecordingSearchResult?> SearchArtistRecordingsAsync(string artistName, string songName)
+    public async Task<MusicBrainzRecordingSearchResult?> SearchArtistRecordingsAsync(string artistId, string songName)
     {
         var httpClient = _httpClientFactory.CreateClient("MusicBrainzApiClient");
 
-        MusicBrainzArtistItem? artistItem = await LookupArtistAsync(artistName);
-        if (artistItem is null)
-        {
-            return null;
-        }
-
-        string encodedQuery = WebUtility.UrlEncode($"artist:{artistItem.Name} AND {songName}");
-
         HttpRequestMessage requestMessage = new(
             method: HttpMethod.Get,
-            requestUri: $"recording/?query={encodedQuery}&inc=releases"
+            requestUri: $"recording/?query=arid:{artistId} AND {WebUtility.UrlEncode(songName)}&inc=releases&limit=5"
         );
 
         var responseMessage = await httpClient.SendAsync(requestMessage);
