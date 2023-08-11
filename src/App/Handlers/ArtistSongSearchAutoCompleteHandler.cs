@@ -68,19 +68,7 @@ public class ArtistSongSearchAutoCompleteHandler : AutocompleteHandler
 
         foreach (MusicBrainzRecordingItem songItem in songSearchResult.Recordings)
         {
-            if (songItem.Releases is not null || songItem.Releases.Length > 0)
-            {
-                foreach (var releaseItem in songItem.Releases)
-                {
-                    results.Add(
-                        item: new(
-                            name: $"{songItem.Title} (Album: {releaseItem.Title})",
-                            value: songItem.Id
-                        )
-                    );
-                }
-            }
-            else
+            if (songItem.Releases is not null && songItem.Releases.Length > 0)
             {
                 results.Add(
                     item: new(
