@@ -14,6 +14,7 @@ namespace MuzakBot.App;
 [JsonSerializable(typeof(MusicBrainzRecordingItem))]
 [JsonSerializable(typeof(MusicBrainzRecordingSearchResult))]
 [JsonSerializable(typeof(MusicBrainzReleaseItem))]
+[JsonSerializable(typeof(MusicBrainzReleaseSearchResult))]
 internal partial class MusicBrainzJsonContext : JsonSerializerContext
 {
 }
