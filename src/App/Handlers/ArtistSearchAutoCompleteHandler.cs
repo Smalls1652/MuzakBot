@@ -12,13 +12,11 @@ namespace MuzakBot.App.Handlers;
 public class ArtistSearchAutoCompleteHandler : AutocompleteHandler
 {
     private readonly ILogger<ArtistSearchAutoCompleteHandler> _logger;
-    private readonly IItunesApiService _itunesApiService;
     private readonly IMusicBrainzService _musicBrainzService;
 
-    public ArtistSearchAutoCompleteHandler(ILogger<ArtistSearchAutoCompleteHandler> logger, IItunesApiService itunesApiService, IMusicBrainzService musicBrainzService)
+    public ArtistSearchAutoCompleteHandler(ILogger<ArtistSearchAutoCompleteHandler> logger, IMusicBrainzService musicBrainzService)
     {
         _logger = logger;
-        _itunesApiService = itunesApiService;
         _musicBrainzService = musicBrainzService;
     }
 
