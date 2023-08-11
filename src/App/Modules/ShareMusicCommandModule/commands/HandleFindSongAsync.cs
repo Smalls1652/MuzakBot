@@ -32,7 +32,10 @@ public partial class ShareMusicCommandModule
         );
 
         MusicBrainzArtistItem? artistItem = await _musicBrainzService.LookupArtistAsync(artistId);
+
         MusicBrainzRecordingItem? recordingItem = await _musicBrainzService.LookupRecordingAsync(songId);
+
+        MusicBrainzReleaseItem? releaseItem = null;
 
         ApiSearchResult<SongItem>? apiSearchResult = await _itunesApiService.GetSongsByArtistResultAsync(artistItem!.Name, recordingItem!.Title);
 
@@ -45,6 +48,7 @@ public partial class ShareMusicCommandModule
 
             return;
         }
+
 
         SongItem songItem = apiSearchResult.Results[0];
 
