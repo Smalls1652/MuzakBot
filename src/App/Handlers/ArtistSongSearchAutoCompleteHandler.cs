@@ -31,7 +31,7 @@ public class ArtistSongSearchAutoCompleteHandler : AutocompleteHandler
         {
             results.Add(
                 item: new(
-                    name: "⚠️ Enter an artist name first",
+                    name: "⚠️ Select an artist first",
                     value: ""
                 )
             );
