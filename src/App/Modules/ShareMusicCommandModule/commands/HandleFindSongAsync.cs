@@ -5,6 +5,7 @@ using Discord.Interactions;
 using Microsoft.Extensions.Logging;
 using MuzakBot.App.Handlers;
 using MuzakBot.App.Models.Itunes;
+using MuzakBot.App.Models.MusicBrainz;
 using MuzakBot.App.Models.Odesli;
 
 namespace MuzakBot.App.Modules;
@@ -30,7 +31,10 @@ public partial class ShareMusicCommandModule
             ephemeral: false
         );
 
-        ApiSearchResult<SongItem>? apiSearchResult = await _itunesApiService.GetSongIdLookupResultAsync(songId);
+        MusicBrainzArtistItem? artistItem = await _musicBrainzService.LookupArtistAsync(artistId);
+        MusicBrainzRecordingItem? recordingItem = await _musicBrainzService.LookupRecordingAsync(songId);
+
+        ApiSearchResult<SongItem>? apiSearchResult = await _itunesApiService.GetSongsByArtistResultAsync(artistItem!.Name, recordingItem!.Title);
 
         if (apiSearchResult is null || apiSearchResult.Results is null || apiSearchResult.Results.Length == 0)
         {
@@ -95,17 +99,19 @@ public partial class ShareMusicCommandModule
 
         var linksComponentBuilder = GenerateMusicShareComponent(musicEntityItem);
 
+        string uniqueFileName = Guid.NewGuid().ToString();
+
         var messageEmbed = new EmbedBuilder()
             .WithTitle(streamingEntityItem.Title)
             .WithDescription($"by {streamingEntityItem.ArtistName}")
             .WithColor(Color.DarkBlue)
-            .WithImageUrl($"attachment://{streamingEntityItem.Title}.jpg")
+            .WithImageUrl($"attachment://{uniqueFileName}.jpg")
             .WithFooter("(Powered by Songlink/Odesli)");
 
         await FollowupWithFileAsync(
             embed: messageEmbed.Build(),
             fileStream: albumArtStream,
-            fileName: $"{streamingEntityItem.Title}.jpg",
+            fileName: $"{uniqueFileName}.jpg",
             components: linksComponentBuilder.Build()
         );
     }
