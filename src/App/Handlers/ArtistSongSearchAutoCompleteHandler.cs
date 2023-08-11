@@ -3,6 +3,7 @@ using Discord.Interactions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MuzakBot.App.Models.Itunes;
+using MuzakBot.App.Models.MusicBrainz;
 using MuzakBot.App.Services;
 
 namespace MuzakBot.App.Handlers;
@@ -11,11 +12,13 @@ public class ArtistSongSearchAutoCompleteHandler : AutocompleteHandler
 {
     private readonly ILogger<ArtistSongSearchAutoCompleteHandler> _logger;
     private readonly IItunesApiService _itunesApiService;
+    private readonly IMusicBrainzService _musicBrainzService;
 
-    public ArtistSongSearchAutoCompleteHandler(ILogger<ArtistSongSearchAutoCompleteHandler> logger, IItunesApiService itunesApiService)
+    public ArtistSongSearchAutoCompleteHandler(ILogger<ArtistSongSearchAutoCompleteHandler> logger, IItunesApiService itunesApiService, IMusicBrainzService musicBrainzService)
     {
         _logger = logger;
         _itunesApiService = itunesApiService;
+        _musicBrainzService = musicBrainzService;
     }
 
     public override async Task<AutocompletionResult> GenerateSuggestionsAsync(IInteractionContext context, IAutocompleteInteraction autocompleteInteraction, IParameterInfo parameter, IServiceProvider services)
@@ -36,7 +39,7 @@ public class ArtistSongSearchAutoCompleteHandler : AutocompleteHandler
             return AutocompletionResult.FromSuccess(results.AsEnumerable());
         }
 
-        if ( autocompleteInteraction.Data is null || autocompleteInteraction.Data.Current is null || autocompleteInteraction.Data.Current.Value is null || string.IsNullOrWhiteSpace(autocompleteInteraction.Data.Current.Value.ToString()))
+        if (autocompleteInteraction.Data is null || autocompleteInteraction.Data.Current is null || autocompleteInteraction.Data.Current.Value is null || string.IsNullOrWhiteSpace(autocompleteInteraction.Data.Current.Value.ToString()))
         {
             results.Add(
                 item: new(
@@ -48,11 +51,9 @@ public class ArtistSongSearchAutoCompleteHandler : AutocompleteHandler
             return AutocompletionResult.FromSuccess(results.AsEnumerable());
         }
 
-        ApiSearchResult<ArtistItem>? artistSearchResult = await _itunesApiService.GetArtistIdLookupResultAsync(artistInput.Value.ToString()!);
+        MusicBrainzRecordingSearchResult? songSearchResult = await _musicBrainzService.SearchArtistRecordingsAsync(artistInput.Value.ToString()!, autocompleteInteraction.Data?.Current?.Value?.ToString()!);
 
-        ApiSearchResult<SongItem>? songSearchResult = await _itunesApiService.GetSongsByArtistResultAsync(artistSearchResult.Results[0], autocompleteInteraction.Data?.Current?.Value?.ToString()!);
-
-        if (songSearchResult is null || songSearchResult.Results is null || songSearchResult.Results.Length == 0)
+        if (songSearchResult is null || songSearchResult.Recordings is null || songSearchResult.Recordings.Length == 0)
         {
             results.Add(
                 item: new(
@@ -63,19 +64,33 @@ public class ArtistSongSearchAutoCompleteHandler : AutocompleteHandler
 
             return AutocompletionResult.FromSuccess(results.AsEnumerable());
         }
-        else
+
+
+        foreach (MusicBrainzRecordingItem songItem in songSearchResult.Recordings)
         {
-            foreach (SongItem songItem in songSearchResult.Results)
+            if (songItem.Releases is not null || songItem.Releases.Length > 0)
+            {
+                foreach (var releaseItem in songItem.Releases)
+                {
+                    results.Add(
+                        item: new(
+                            name: $"{songItem.Title} (Album: {releaseItem.Title})",
+                            value: songItem.Id
+                        )
+                    );
+                }
+            }
+            else
             {
                 results.Add(
                     item: new(
-                        name: songItem.TrackName,
-                        value: songItem.TrackId.ToString()
+                        name: songItem.Title,
+                        value: songItem.Id
                     )
                 );
             }
-
-            return AutocompletionResult.FromSuccess(results.AsEnumerable());
         }
+
+        return AutocompletionResult.FromSuccess(results.AsEnumerable());
     }
 }

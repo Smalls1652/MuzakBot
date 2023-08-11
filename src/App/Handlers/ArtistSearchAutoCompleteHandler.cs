@@ -26,7 +26,7 @@ public class ArtistSearchAutoCompleteHandler : AutocompleteHandler
     {
         List<AutocompleteResult> results = new();
 
-        if ( autocompleteInteraction.Data is null || autocompleteInteraction.Data.Current is null || autocompleteInteraction.Data.Current.Value is null || string.IsNullOrWhiteSpace(autocompleteInteraction.Data.Current.Value.ToString()))
+        if (autocompleteInteraction.Data is null || autocompleteInteraction.Data.Current is null || autocompleteInteraction.Data.Current.Value is null || string.IsNullOrWhiteSpace(autocompleteInteraction.Data.Current.Value.ToString()))
         {
             results.Add(
                 item: new(
@@ -51,19 +51,17 @@ public class ArtistSearchAutoCompleteHandler : AutocompleteHandler
 
             return AutocompletionResult.FromSuccess(results.AsEnumerable());
         }
-        else
-        {
-            foreach (MusicBrainzArtistItem artistItem in artistSearchResult.Artists)
-            {
-                results.Add(
-                    item: new(
-                        name: artistItem.Name,
-                        value: artistItem.Name
-                    )
-                );
-            }
 
-            return AutocompletionResult.FromSuccess(results.AsEnumerable());
+        foreach (MusicBrainzArtistItem artistItem in artistSearchResult.Artists)
+        {
+            results.Add(
+                item: new(
+                    name: artistItem.Name,
+                    value: artistItem.Id
+                )
+            );
         }
+
+        return AutocompletionResult.FromSuccess(results.AsEnumerable());
     }
 }
