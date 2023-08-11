@@ -81,11 +81,11 @@ public partial class ItunesApiService : IItunesApiService
         );
     }
 
-    public async Task<ApiSearchResult<SongItem>?> GetSongsByArtistResultAsync(ArtistItem artistItem, string songName)
+    public async Task<ApiSearchResult<SongItem>?> GetSongsByArtistResultAsync(string artistName, string songName)
     {
         var httpClient = _httpClientFactory.CreateClient("ItunesApiClient");
 
-        string encodedSearch = WebUtility.UrlEncode($"{artistItem.ArtistName} {songName}");
+        string encodedSearch = WebUtility.UrlEncode($"{artistName} {songName}");
 
         HttpRequestMessage requestMessage = new(
             method: HttpMethod.Get,
