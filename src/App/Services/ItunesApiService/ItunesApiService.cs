@@ -103,4 +103,27 @@ public partial class ItunesApiService : IItunesApiService
             jsonTypeInfo: ItunesJsonContext.Default.ApiSearchResultSongItem
         );
     }
+
+    public async Task<ApiSearchResult<AlbumItem>?> GetAlbumsByArtistResultAsync(string artistName, string albumName)
+    {
+        var httpClient = _httpClientFactory.CreateClient("ItunesApiClient");
+
+        string encodedSearch = WebUtility.UrlEncode($"{artistName} {albumName}");
+
+        HttpRequestMessage requestMessage = new(
+            method: HttpMethod.Get,
+            requestUri: $"search?country=US&media=music&entity=album&limit=5&term={encodedSearch}"
+        );
+
+        var responseMessage = await httpClient.SendAsync(requestMessage);
+
+        responseMessage.EnsureSuccessStatusCode();
+
+        using var contentStream = await responseMessage.Content.ReadAsStreamAsync();
+
+        return await JsonSerializer.DeserializeAsync(
+            utf8Json: contentStream,
+            jsonTypeInfo: ItunesJsonContext.Default.ApiSearchResultAlbumItem
+        );
+    }
 }
