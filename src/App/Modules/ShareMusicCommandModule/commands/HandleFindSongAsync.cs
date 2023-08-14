@@ -41,6 +41,7 @@ public partial class ShareMusicCommandModule
             _logger.LogError(ex, "Error looking up artist '{artistId}'.", artistId);
             await FollowupAsync(
                 text: "An error occurred while looking up the artist. 😥",
+                components: GenerateRemoveComponent().Build(),
                 ephemeral: false
             );
 
@@ -58,6 +59,7 @@ public partial class ShareMusicCommandModule
             _logger.LogError(ex, "Error looking up song '{songId}'.", songId);
             await FollowupAsync(
                 text: "An error occurred while looking up the song. 😥",
+                components: GenerateRemoveComponent().Build(),
                 ephemeral: false
             );
 
@@ -68,6 +70,7 @@ public partial class ShareMusicCommandModule
         {
             await FollowupAsync(
                 text: "No results found for that artist and song. 😥",
+                components: GenerateRemoveComponent().Build(),
                 ephemeral: false
             );
 
@@ -80,6 +83,7 @@ public partial class ShareMusicCommandModule
         {
             await FollowupAsync(
                 text: "No results found",
+                components: GenerateRemoveComponent().Build(),
                 ephemeral: false
             );
 
