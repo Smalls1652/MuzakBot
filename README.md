@@ -15,6 +15,7 @@ You can see all of the commands you can run with MuzakBot [in this document](htt
 * [Discord.NET](https://github.com/discord-net/Discord.Net)
 * [Songlink/Odesli API](https://odesli.co)
     * [API documentation](https://linktree.notion.site/API-d0ebe08a5e304a55928405eb682f6741)
+* [MusicBrainz API](https://musicbrainz.org/doc/MusicBrainz_API/)
 
 ## 🤝 License
 
