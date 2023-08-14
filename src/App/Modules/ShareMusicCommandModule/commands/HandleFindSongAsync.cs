@@ -31,11 +31,48 @@ public partial class ShareMusicCommandModule
             ephemeral: false
         );
 
-        MusicBrainzArtistItem? artistItem = await _musicBrainzService.LookupArtistAsync(artistId);
+        MusicBrainzArtistItem? artistItem = null;
+        try
+        {
+            artistItem = await _musicBrainzService.LookupArtistAsync(artistId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error looking up artist '{artistId}'.", artistId);
+            await FollowupAsync(
+                text: "An error occurred while looking up the artist. 😥",
+                ephemeral: false
+            );
 
-        MusicBrainzRecordingItem? recordingItem = await _musicBrainzService.LookupRecordingAsync(songId);
+            return;
+        }
 
-        MusicBrainzReleaseItem? releaseItem = null;
+        MusicBrainzRecordingItem? recordingItem = null;
+
+        try
+        {
+            recordingItem = await _musicBrainzService.LookupRecordingAsync(songId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error looking up song '{songId}'.", songId);
+            await FollowupAsync(
+                text: "An error occurred while looking up the song. 😥",
+                ephemeral: false
+            );
+
+            return;
+        }
+
+        if (artistItem is null || recordingItem is null)
+        {
+            await FollowupAsync(
+                text: "No results found for that artist and song. 😥",
+                ephemeral: false
+            );
+
+            return;
+        }
 
         ApiSearchResult<SongItem>? apiSearchResult = await _itunesApiService.GetSongsByArtistResultAsync(artistItem!.Name, recordingItem!.Title);
 
