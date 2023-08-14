@@ -63,8 +63,21 @@ public class ArtistAlbumSearchAutoCompleteHandler : AutocompleteHandler
             return AutocompletionResult.FromSuccess(results.AsEnumerable());
         }
 
+        MusicBrainzReleaseItem[]? distinctAlbumItems = albumSearchResult.GetDistinct();
 
-        foreach (MusicBrainzReleaseItem releaseItem in albumSearchResult.Releases)
+        if (distinctAlbumItems is null || distinctAlbumItems.Length == 0)
+        {
+            results.Add(
+                item: new(
+                    name: "No results found",
+                    value: ""
+                )
+            );
+
+            return AutocompletionResult.FromSuccess(results.AsEnumerable());
+        }
+
+        foreach (MusicBrainzReleaseItem releaseItem in distinctAlbumItems)
         {
             results.Add(
                 item: new(
