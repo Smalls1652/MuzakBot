@@ -15,4 +15,9 @@ public class MusicBrainzRecordingSearchResult
 
     [JsonPropertyName("recordings")]
     public MusicBrainzRecordingItem[]? Recordings { get; set; }
+
+    public MusicBrainzRecordingItem[]? GetDistinct()
+    {
+        return Recordings?.DistinctBy(item => item.Title).ToArray();
+    }
 }
