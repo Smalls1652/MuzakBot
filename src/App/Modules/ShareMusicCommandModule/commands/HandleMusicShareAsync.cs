@@ -42,7 +42,7 @@ public partial class ShareMusicCommandModule
         {
             _logger.LogError(ex, "No share links found for '{url}'.", url);
             await FollowupAsync(
-                text: "No share links were found for that URL. 😥",
+                embed: GenerateErrorEmbed("No share links were found. 😥").Build(),
                 components: GenerateRemoveComponent().Build()
             );
 
@@ -66,7 +66,7 @@ public partial class ShareMusicCommandModule
             {
                 _logger.LogError(ex, "Could get all of the necessary data for '{url}'.", url);
                 await FollowupAsync(
-                    text: "I was unable to get the necessary information from Odesli. 😥",
+                    embed: GenerateErrorEmbed("I was unable to get the necessary information from Odesli. 😥").Build(),
                     components: GenerateRemoveComponent().Build()
                 );
 
@@ -84,7 +84,7 @@ public partial class ShareMusicCommandModule
         catch (Exception)
         {
             await FollowupAsync(
-                text: "I ran into an issue while retrieving the album artwork. 😥",
+                embed: GenerateErrorEmbed("I ran into an issue while retrieving the album artwork. 😥").Build(),
                 components: GenerateRemoveComponent().Build()
             );
 
