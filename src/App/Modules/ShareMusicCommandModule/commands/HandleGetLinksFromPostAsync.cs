@@ -31,7 +31,7 @@ public partial class ShareMusicCommandModule
         if (!linkRegex.IsMatch(message.CleanContent))
         {
             await FollowupAsync(
-                text: "Could not find a link in that post.",
+                embed: GenerateErrorEmbed("Could not find any links in that post. 🤔").Build(),
                 ephemeral: true
             );
 

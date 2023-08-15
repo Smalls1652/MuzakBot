@@ -40,7 +40,7 @@ public partial class ShareMusicCommandModule
         {
             _logger.LogError(ex, "Error looking up artist '{artistId}'.", artistId);
             await FollowupAsync(
-                text: "An error occurred while looking up the artist. 😥",
+                embed: GenerateErrorEmbed("An error occurred while looking up the artist. 😥").Build(),
                 components: GenerateRemoveComponent().Build(),
                 ephemeral: false
             );
@@ -58,7 +58,7 @@ public partial class ShareMusicCommandModule
         {
             _logger.LogError(ex, "Error looking up song '{songId}'.", songId);
             await FollowupAsync(
-                text: "An error occurred while looking up the song. 😥",
+                embed: GenerateErrorEmbed("An error occurred while looking up the song. 😥").Build(),
                 components: GenerateRemoveComponent().Build(),
                 ephemeral: false
             );
@@ -69,7 +69,7 @@ public partial class ShareMusicCommandModule
         if (artistItem is null || recordingItem is null)
         {
             await FollowupAsync(
-                text: "No results found for that artist and song. 😥",
+                embed: GenerateErrorEmbed("No results found for that artist and song. 😥").Build(),
                 components: GenerateRemoveComponent().Build(),
                 ephemeral: false
             );
@@ -82,7 +82,7 @@ public partial class ShareMusicCommandModule
         if (apiSearchResult is null || apiSearchResult.Results is null || apiSearchResult.Results.Length == 0)
         {
             await FollowupAsync(
-                text: "No results found",
+                embed: GenerateErrorEmbed("No results were found.").Build(),
                 components: GenerateRemoveComponent().Build(),
                 ephemeral: false
             );
@@ -107,7 +107,7 @@ public partial class ShareMusicCommandModule
         {
             _logger.LogError(e, "No share links found for '{url}'.", songItem.TrackViewUrl);
             await FollowupAsync(
-                text: "No share links were found for that URL. 😥",
+                embed: GenerateErrorEmbed("No share links were found. 😥").Build(),
                 components: GenerateRemoveComponent().Build()
             );
 
@@ -131,7 +131,7 @@ public partial class ShareMusicCommandModule
             {
                 _logger.LogError("Could get all of the necessary data for '{url}'.", songItem.TrackViewUrl);
                 await FollowupAsync(
-                    text: "I was unable to get the necessary information from Odesli. 😥",
+                    embed: GenerateErrorEmbed("I was unable to get the necessary information from Odesli. 😥").Build(),
                     components: GenerateRemoveComponent().Build()
                 );
 
