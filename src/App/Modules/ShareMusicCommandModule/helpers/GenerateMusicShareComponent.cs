@@ -81,7 +81,7 @@ public partial class ShareMusicCommandModule
                 label: "YouTube",
                 style: ButtonStyle.Secondary,
                 isDisabled: true,
-                emote: new Emoji("🚫"),
+                //emote: new Emoji("🚫"),
                 customId: $"{entityItem.EntityUniqueId}-youtube-disabled"
             );
         }
@@ -104,7 +104,7 @@ public partial class ShareMusicCommandModule
                 label: "Apple Music",
                 style: ButtonStyle.Secondary,
                 isDisabled: true,
-                emote: new Emoji("🚫"),
+                //emote: new Emoji("🚫"),
                 customId: $"{entityItem.EntityUniqueId}-appleMusic-disabled"
             );
         }
@@ -127,7 +127,7 @@ public partial class ShareMusicCommandModule
                 label: "Spotify",
                 style: ButtonStyle.Secondary,
                 isDisabled: true,
-                emote: new Emoji("🚫"),
+                //emote: new Emoji("🚫"),
                 customId: $"{entityItem.EntityUniqueId}-spotify-disabled"
             );
         }
@@ -150,7 +150,7 @@ public partial class ShareMusicCommandModule
                 label: "SoundCloud",
                 style: ButtonStyle.Secondary,
                 isDisabled: true,
-                emote: new Emoji("🚫"),
+                //emote: new Emoji("🚫"),
                 customId: $"{entityItem.EntityUniqueId}-soundcloud-disabled"
             );
         }
@@ -166,7 +166,7 @@ public partial class ShareMusicCommandModule
         ButtonBuilder refreshButton = new(
             label: "Refresh",
             style: ButtonStyle.Secondary,
-            emote: new Emoji("🔄"),
+            //emote: new Emoji("🔄"),
             customId: $"refresh-musiclinks-btn-{entityItem.PageUrl}"
         );
 
