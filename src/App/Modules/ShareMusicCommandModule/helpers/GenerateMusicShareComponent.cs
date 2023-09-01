@@ -174,10 +174,10 @@ public partial class ShareMusicCommandModule
         ComponentBuilder linksComponentBuilder = new ComponentBuilder()
             .WithButton(youtubeButton, 0)
             .WithButton(appleMusicButton, 0)
-            .WithButton(spotifyButton, 0)
-            .WithButton(soundcloudButton, 0)
-            .WithButton(moreLinksButton, 1)
-            .WithButton(refreshButton, 1);
+            .WithButton(spotifyButton, 1)
+            .WithButton(soundcloudButton, 1)
+            .WithButton(moreLinksButton, 2)
+            .WithButton(refreshButton, 2);
 
         return linksComponentBuilder;
     }
