@@ -1,24 +1,20 @@
 {
     "version": "0.2.0",
     "configurations": [
-         {
-            "name": "Launch MuzakBot",
+        {
+            "name": "Debug: MuzakBot.App",
             "type": "coreclr",
             "request": "launch",
-            "preLaunchTask": "App Debug Build",
+            "preLaunchTask": "Build: MuzakBot.App",
             "program": "${workspaceFolder}/src/App/bin/Debug/net7.0/MuzakBot.App.dll",
             "args": [],
             "cwd": "${workspaceFolder}/src/App",
+            "stopAtEntry": false,
+            "justMyCode": true,
+            "console": "internalConsole",
             "env": {
                 "DOTNET_ENVIRONMENT": "Development"
-            },
-            "console": "internalConsole",
-            "stopAtEntry": false
-        },
-        {
-            "name": ".NET Attach",
-            "type": "coreclr",
-            "request": "attach"
+            }
         }
     ]
 }
