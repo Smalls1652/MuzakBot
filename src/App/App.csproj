@@ -26,12 +26,12 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <CorePackageVersion>8.0.*-*</CorePackageVersion>
+    <CorePackageVersion>8.0.*</CorePackageVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Discord.Net" Version="3.12.0" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.*-*" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="$(CorePackageVersion)" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="$(CorePackageVersion)" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="$(CorePackageVersion)" />
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="$(CorePackageVersion)" />
