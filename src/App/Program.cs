@@ -1,5 +1,7 @@
 ﻿using Discord;
 using Discord.WebSocket;
+using Azure.Monitor.OpenTelemetry.AspNetCore;
+using Azure.Monitor.OpenTelemetry.Exporter;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,6 +10,11 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Http;
 using System.Reflection;
 using MuzakBot.App.Services;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Logs;
+using OpenTelemetry.Metrics;
+using MuzakBot.App.Metrics;
+using OpenTelemetry.Trace;
 
 var hostBuilder = Host.CreateApplicationBuilder(args);
 
@@ -42,6 +49,74 @@ hostBuilder.Configuration
         optional: true,
         reloadOnChange: true
     );
+
+hostBuilder.Logging.ClearProviders();
+
+hostBuilder.Logging
+    .AddOpenTelemetry(logging =>
+    {
+        logging.IncludeScopes = true;
+        logging.IncludeFormattedMessage = true;
+
+        var resourceBuilder = ResourceBuilder
+            .CreateDefault()
+            .AddService("MuzakBot");
+
+        logging
+            .SetResourceBuilder(resourceBuilder)
+            .AddConsoleExporter()
+            .AddOtlpExporter();
+
+        if (hostBuilder.Configuration.GetValue<string>("APPLICATIONINSIGHTS_CONNECTION_STRING") is not null)
+        {
+            logging.AddAzureMonitorLogExporter(options =>
+            {
+                options.ConnectionString = hostBuilder.Configuration.GetValue<string>("APPLICATIONINSIGHTS_CONNECTION_STRING");
+            });
+        }
+    });
+
+hostBuilder.Services
+    .AddMetrics();
+
+hostBuilder.Services
+    .AddSingleton<CommandMetrics>();
+
+hostBuilder.Services
+    .AddOpenTelemetry()
+    .ConfigureResource(resourceBuilder => resourceBuilder.AddService("MuzakBot"))
+    .WithMetrics(metrics =>
+    {
+        metrics
+            .AddRuntimeInstrumentation()
+            .AddHttpClientInstrumentation()
+            .AddCommandMetricsInstrumentation();
+
+        metrics.AddOtlpExporter();
+
+        if (hostBuilder.Configuration.GetValue<string>("APPLICATIONINSIGHTS_CONNECTION_STRING") is not null)
+        {
+            metrics.AddAzureMonitorMetricExporter(options =>
+            {
+                options.ConnectionString = hostBuilder.Configuration.GetValue<string>("APPLICATIONINSIGHTS_CONNECTION_STRING");
+            });
+        }
+    })
+    .WithTracing(tracing =>
+    {
+        tracing
+            .AddHttpClientInstrumentation();
+
+        tracing.AddOtlpExporter();
+
+        if (hostBuilder.Configuration.GetValue<string>("APPLICATIONINSIGHTS_CONNECTION_STRING") is not null)
+        {
+            tracing.AddAzureMonitorTraceExporter(options =>
+            {
+                options.ConnectionString = hostBuilder.Configuration.GetValue<string>("APPLICATIONINSIGHTS_CONNECTION_STRING");
+            });
+        }
+    });
 
 Console.WriteLine($"Environment: {hostBuilder.Environment.EnvironmentName}");
 
