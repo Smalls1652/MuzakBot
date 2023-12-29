@@ -16,9 +16,9 @@ using OpenTelemetry.Metrics;
 using MuzakBot.App.Metrics;
 using OpenTelemetry.Trace;
 
-var hostBuilder = Host.CreateApplicationBuilder(args);
+var builder = Host.CreateApplicationBuilder(args);
 
-hostBuilder.Services.AddMemoryCache();
+builder.Services.AddMemoryCache();
 
 GatewayIntents gatewayIntents = GatewayIntents.AllUnprivileged - GatewayIntents.GuildInvites - GatewayIntents.GuildScheduledEvents;
 
@@ -35,8 +35,8 @@ DiscordSocketConfig discordSocketConfig = new()
 };
 #endif
 
-hostBuilder.Configuration.Sources.Clear();
-hostBuilder.Configuration
+builder.Configuration.Sources.Clear();
+builder.Configuration
     .AddEnvironmentVariables()
     .SetBasePath(Directory.GetCurrentDirectory())
     .AddJsonFile(
@@ -45,14 +45,14 @@ hostBuilder.Configuration
         reloadOnChange: true
     )
     .AddJsonFile(
-        path: $"appsettings.{hostBuilder.Environment.EnvironmentName}.json",
+        path: $"appsettings.{builder.Environment.EnvironmentName}.json",
         optional: true,
         reloadOnChange: true
     );
 
-hostBuilder.Logging.ClearProviders();
+builder.Logging.ClearProviders();
 
-hostBuilder.Logging
+builder.Logging
     .AddOpenTelemetry(logging =>
     {
         logging.IncludeScopes = true;
@@ -67,22 +67,22 @@ hostBuilder.Logging
             .AddConsoleExporter()
             .AddOtlpExporter();
 
-        if (hostBuilder.Configuration.GetValue<string>("APPLICATIONINSIGHTS_CONNECTION_STRING") is not null)
+        if (builder.Configuration.GetValue<string>("APPLICATIONINSIGHTS_CONNECTION_STRING") is not null)
         {
             logging.AddAzureMonitorLogExporter(options =>
             {
-                options.ConnectionString = hostBuilder.Configuration.GetValue<string>("APPLICATIONINSIGHTS_CONNECTION_STRING");
+                options.ConnectionString = builder.Configuration.GetValue<string>("APPLICATIONINSIGHTS_CONNECTION_STRING");
             });
         }
     });
 
-hostBuilder.Services
+builder.Services
     .AddMetrics();
 
-hostBuilder.Services
+builder.Services
     .AddSingleton<CommandMetrics>();
 
-hostBuilder.Services
+builder.Services
     .AddOpenTelemetry()
     .ConfigureResource(resourceBuilder => resourceBuilder.AddService("MuzakBot"))
     .WithMetrics(metrics =>
@@ -94,11 +94,11 @@ hostBuilder.Services
 
         metrics.AddOtlpExporter();
 
-        if (hostBuilder.Configuration.GetValue<string>("APPLICATIONINSIGHTS_CONNECTION_STRING") is not null)
+        if (builder.Configuration.GetValue<string>("APPLICATIONINSIGHTS_CONNECTION_STRING") is not null)
         {
             metrics.AddAzureMonitorMetricExporter(options =>
             {
-                options.ConnectionString = hostBuilder.Configuration.GetValue<string>("APPLICATIONINSIGHTS_CONNECTION_STRING");
+                options.ConnectionString = builder.Configuration.GetValue<string>("APPLICATIONINSIGHTS_CONNECTION_STRING");
             });
         }
     })
@@ -109,18 +109,18 @@ hostBuilder.Services
 
         tracing.AddOtlpExporter();
 
-        if (hostBuilder.Configuration.GetValue<string>("APPLICATIONINSIGHTS_CONNECTION_STRING") is not null)
+        if (builder.Configuration.GetValue<string>("APPLICATIONINSIGHTS_CONNECTION_STRING") is not null)
         {
             tracing.AddAzureMonitorTraceExporter(options =>
             {
-                options.ConnectionString = hostBuilder.Configuration.GetValue<string>("APPLICATIONINSIGHTS_CONNECTION_STRING");
+                options.ConnectionString = builder.Configuration.GetValue<string>("APPLICATIONINSIGHTS_CONNECTION_STRING");
             });
         }
     });
 
-Console.WriteLine($"Environment: {hostBuilder.Environment.EnvironmentName}");
+Console.WriteLine($"Environment: {builder.Environment.EnvironmentName}");
 
-hostBuilder.Services.AddHttpClient(
+builder.Services.AddHttpClient(
     name: "GenericClient",
     configureClient: (serviceProvider, httpClient) =>
     {
@@ -128,7 +128,7 @@ hostBuilder.Services.AddHttpClient(
     }
 );
 
-hostBuilder.Services.AddHttpClient(
+builder.Services.AddHttpClient(
     name: "OdesliApiClient",
     configureClient: (serviceProvider, httpClient) =>
     {
@@ -137,7 +137,7 @@ hostBuilder.Services.AddHttpClient(
     }
 );
 
-hostBuilder.Services.AddHttpClient(
+builder.Services.AddHttpClient(
     name: "MusicBrainzApiClient",
     configureClient: (serviceProvider, httpClient) =>
     {
@@ -147,7 +147,7 @@ hostBuilder.Services.AddHttpClient(
     }
 );
 
-hostBuilder.Services.AddHttpClient(
+builder.Services.AddHttpClient(
     name: "ItunesApiClient",
     configureClient: (serviceProvider, httpClient) =>
     {
@@ -156,18 +156,18 @@ hostBuilder.Services.AddHttpClient(
     }
 );
 
-hostBuilder.Services.AddSingleton<DiscordSocketClient>(
+builder.Services.AddSingleton<DiscordSocketClient>(
     implementationInstance: new(discordSocketConfig)
 );
 
-hostBuilder.Services.AddSingleton<IDiscordService, DiscordService>();
-hostBuilder.Services.AddSingleton<IOdesliService, OdesliService>();
-hostBuilder.Services.AddSingleton<IItunesApiService, ItunesApiService>();
-hostBuilder.Services.AddSingleton<IMusicBrainzService, MusicBrainzService>();
+builder.Services.AddSingleton<IDiscordService, DiscordService>();
+builder.Services.AddSingleton<IOdesliService, OdesliService>();
+builder.Services.AddSingleton<IItunesApiService, ItunesApiService>();
+builder.Services.AddSingleton<IMusicBrainzService, MusicBrainzService>();
 
-hostBuilder.Logging.AddConsole();
+builder.Logging.AddConsole();
 
-using var host = hostBuilder.Build();
+using var host = builder.Build();
 
 var discordService = host.Services.GetRequiredService<IDiscordService>();
 await discordService.ConnectAsync();
