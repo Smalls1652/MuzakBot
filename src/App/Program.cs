@@ -181,8 +181,6 @@ builder.Services.AddSingleton<IOdesliService, OdesliService>();
 builder.Services.AddSingleton<IItunesApiService, ItunesApiService>();
 builder.Services.AddSingleton<IMusicBrainzService, MusicBrainzService>();
 
-builder.Logging.AddConsole();
-
 using var host = builder.Build();
 
 var discordService = host.Services.GetRequiredService<IDiscordService>();
