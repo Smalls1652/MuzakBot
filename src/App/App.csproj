@@ -10,7 +10,7 @@
 
   <PropertyGroup>
     <RootNamespace>MuzakBot.App</RootNamespace>
-    <AssemblyName>MuzakBot.App</AssemblyName>
+    <AssemblyName>MuzakBot</AssemblyName>
     <PackageId>MuzakBot.App</PackageId>
 
     <Description>
