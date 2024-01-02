@@ -29,8 +29,6 @@ public partial class ShareMusicCommandModule
                 { "message_Id", message.Id },
                 { "command_Type", "MessageCommand"},
                 { "command_Name", "Get music share links" },
-                { "user_Id", Context.User.Id },
-                { "user_Username", Context.User.Username },
                 { "guild_Id", Context.Guild.Id },
                 { "guild_Name", Context.Guild.Name },
                 { "channel_Id", Context.Channel.Id },

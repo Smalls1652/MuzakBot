@@ -34,8 +34,6 @@ public partial class ShareMusicCommandModule
             {
                 { "url", url },
                 { "command_Name", "sharemusic" },
-                { "user_Id", Context.User.Id },
-                { "user_Username", Context.User.Username },
                 { "guild_Id", Context.Guild.Id },
                 { "guild_Name", Context.Guild.Name },
                 { "channel_Id", Context.Channel.Id },
