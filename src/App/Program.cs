@@ -6,7 +6,6 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Http;
 using System.Reflection;
 using MuzakBot.App.Services;
 using OpenTelemetry.Resources;
@@ -14,10 +13,7 @@ using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using MuzakBot.App.Metrics;
 using OpenTelemetry.Trace;
-using OpenTelemetry.ResourceDetectors.Azure;
 using OpenTelemetry.ResourceDetectors.Container;
-using MuzakBot.App.Modules;
-using OpenTelemetry.Exporter;
 
 var builder = Host.CreateApplicationBuilder(args);
 
