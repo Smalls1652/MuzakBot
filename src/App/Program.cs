@@ -1,6 +1,5 @@
 ﻿using Discord;
 using Discord.WebSocket;
-using Azure.Monitor.OpenTelemetry.AspNetCore;
 using Azure.Monitor.OpenTelemetry.Exporter;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Caching.Memory;
@@ -15,6 +14,10 @@ using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using MuzakBot.App.Metrics;
 using OpenTelemetry.Trace;
+using OpenTelemetry.ResourceDetectors.Azure;
+using OpenTelemetry.ResourceDetectors.Container;
+using MuzakBot.App.Modules;
+using OpenTelemetry.Exporter;
 
 var builder = Host.CreateApplicationBuilder(args);
 
@@ -87,7 +90,12 @@ builder.Services
     .ConfigureResource(resourceBuilder => resourceBuilder.AddService("MuzakBot"))
     .WithMetrics(metrics =>
     {
+        var resourceBuilder = ResourceBuilder
+            .CreateDefault()
+            .AddService("MuzakBot");
+
         metrics
+            .SetResourceBuilder(resourceBuilder)
             .AddRuntimeInstrumentation()
             .AddHttpClientInstrumentation()
             .AddCommandMetricsInstrumentation();
@@ -104,7 +112,15 @@ builder.Services
     })
     .WithTracing(tracing =>
     {
+        var resourceBuilder = ResourceBuilder
+            .CreateDefault()
+            .AddService("MuzakBot")
+            .AddDetector(new ContainerResourceDetector());
+    
         tracing
+            .AddSource("MuzakBot.App.Services.DiscordService")
+            .AddSource("MuzakBot.App.Modules.ShareMusicCommandModule")
+            .SetResourceBuilder(resourceBuilder)
             .AddHttpClientInstrumentation();
 
         tracing.AddOtlpExporter();
