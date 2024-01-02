@@ -22,7 +22,7 @@ public partial class ShareMusicCommandModule
     private async Task HandleGetLinksFromPostAsync(IMessage message)
     {
         using var activity = _activitySource.StartActivity(
-            name: "HandleFindAlbumAsync",
+            name: "HandleGetLinksFromPostAsync",
             kind: ActivityKind.Server,
             tags: new ActivityTagsCollection
             {
