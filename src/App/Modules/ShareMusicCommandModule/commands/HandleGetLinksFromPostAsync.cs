@@ -26,6 +26,7 @@ public partial class ShareMusicCommandModule
             kind: ActivityKind.Server,
             tags: new ActivityTagsCollection
             {
+                { "message_Id", message.Id },
                 { "command_Type", "MessageCommand"},
                 { "command_Name", "Get music share links" },
                 { "user_Id", Context.User.Id },
