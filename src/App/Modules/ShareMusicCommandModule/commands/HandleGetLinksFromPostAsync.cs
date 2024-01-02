@@ -5,6 +5,7 @@ using Discord.Interactions;
 using MuzakBot.App.Models.Odesli;
 using MuzakBot.App.Services;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 
 namespace MuzakBot.App.Modules;
 
@@ -20,91 +21,115 @@ public partial class ShareMusicCommandModule
     )]
     private async Task HandleGetLinksFromPostAsync(IMessage message)
     {
-        Regex linkRegex = new(@"(?'musicLink'(?>https|http):\/\/(?>[A-Za-z0-9\.]+)(?>\/\S*[^\.\s]|))(?> |)", RegexOptions.Multiline);
-
-        await DeferAsync(
-            ephemeral: true
+        using var activity = _activitySource.StartActivity(
+            name: "HandleGetLinksFromPostAsync",
+            kind: ActivityKind.Server,
+            tags: new ActivityTagsCollection
+            {
+                { "message_Id", message.Id },
+                { "command_Type", "MessageCommand"},
+                { "command_Name", "Get music share links" },
+                { "user_Id", Context.User.Id },
+                { "user_Username", Context.User.Username },
+                { "guild_Id", Context.Guild.Id },
+                { "guild_Name", Context.Guild.Name },
+                { "channel_Id", Context.Channel.Id },
+                { "channel_Name", Context.Channel.Name }
+            }
         );
-
-        _logger.LogInformation("Message content: {messageContent}", message.CleanContent);
-
-        if (!linkRegex.IsMatch(message.CleanContent))
+        
+        try
         {
-            await FollowupAsync(
-                embed: GenerateErrorEmbed("Could not find any links in that post. 🤔").Build(),
+            Regex linkRegex = new(@"(?'musicLink'(?>https|http):\/\/(?>[A-Za-z0-9\.]+)(?>\/\S*[^\.\s]|))(?> |)", RegexOptions.Multiline);
+
+            await DeferAsync(
                 ephemeral: true
             );
 
-            return;
-        }
+            _logger.LogInformation("Message content: {messageContent}", message.CleanContent);
 
-        MatchCollection linkMatches = linkRegex.Matches(message.CleanContent);
-
-        StringBuilder stringBuilder = new("Results:\n");
-        for (var i = 0; i < linkMatches.Count; i++)
-        {
-            string url = linkMatches[i].Groups["musicLink"].Value;
-
-            MusicEntityItem? musicEntityItem = null;
-            try
+            if (!linkRegex.IsMatch(message.CleanContent))
             {
-                musicEntityItem = await _odesliService.GetShareLinksAsync(url);
+                await FollowupAsync(
+                    embed: GenerateErrorEmbed("Could not find any links in that post. 🤔").Build(),
+                    ephemeral: true
+                );
 
-                if (musicEntityItem is null)
+                return;
+            }
+
+            MatchCollection linkMatches = linkRegex.Matches(message.CleanContent);
+
+            StringBuilder stringBuilder = new("Results:\n");
+            for (var i = 0; i < linkMatches.Count; i++)
+            {
+                string url = linkMatches[i].Groups["musicLink"].Value;
+
+                MusicEntityItem? musicEntityItem = null;
+                try
                 {
-                    throw new Exception("No share links found.");
+                    musicEntityItem = await _odesliService.GetShareLinksAsync(url);
+
+                    if (musicEntityItem is null)
+                    {
+                        throw new Exception("No share links found.");
+                    }
                 }
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "No share links found for '{url}'.", url);
-                stringBuilder.AppendLine($"{i + 1}. No share links were found for `{url}`.");
-                continue;
-            }
-
-            PlatformEntityLink? platformEntityLink;
-            try
-            {
-                platformEntityLink = musicEntityItem.LinksByPlatform!["itunes"];
-            }
-            catch
-            {
-                var streamingEntityWithThumbnailUrl = musicEntityItem.EntitiesByUniqueId!.FirstOrDefault(entity => entity.Value.ThumbnailUrl is not null).Value.ApiProvider;
-
-                if (!string.IsNullOrEmpty(streamingEntityWithThumbnailUrl))
+                catch (Exception e)
                 {
-                    platformEntityLink = musicEntityItem.LinksByPlatform![streamingEntityWithThumbnailUrl];
-                }
-                else
-                {
-                    _logger.LogError("Couldn't get all of the necessary data for '{url}'.", url);
-                    stringBuilder.AppendLine($"{i + 1}. Couldn't get all of the necessary data from Odesli for `{url}`.");
+                    _logger.LogError(e, "No share links found for '{url}'.", url);
+                    stringBuilder.AppendLine($"{i + 1}. No share links were found for `{url}`.");
                     continue;
                 }
+
+                PlatformEntityLink? platformEntityLink;
+                try
+                {
+                    platformEntityLink = musicEntityItem.LinksByPlatform!["itunes"];
+                }
+                catch
+                {
+                    var streamingEntityWithThumbnailUrl = musicEntityItem.EntitiesByUniqueId!.FirstOrDefault(entity => entity.Value.ThumbnailUrl is not null).Value.ApiProvider;
+
+                    if (!string.IsNullOrEmpty(streamingEntityWithThumbnailUrl))
+                    {
+                        platformEntityLink = musicEntityItem.LinksByPlatform![streamingEntityWithThumbnailUrl];
+                    }
+                    else
+                    {
+                        _logger.LogError("Couldn't get all of the necessary data for '{url}'.", url);
+                        stringBuilder.AppendLine($"{i + 1}. Couldn't get all of the necessary data from Odesli for `{url}`.");
+                        continue;
+                    }
+                }
+
+                StreamingEntityItem streamingEntityItem = musicEntityItem.EntitiesByUniqueId![platformEntityLink.EntityUniqueId!];
+                using var albumArtStream = await GetAlbumArtStreamAsync(streamingEntityItem);
+
+                var linksComponentBuilder = GenerateMusicShareComponent(musicEntityItem);
+
+                var messageEmbed = GenerateEmbedBuilder(streamingEntityItem);
+
+                await Context.Channel.SendFileAsync(
+                    embed: messageEmbed.Build(),
+                    stream: albumArtStream,
+                    filename: $"{streamingEntityItem.Title}.jpg",
+                    components: linksComponentBuilder.Build(),
+                    messageReference: new(message.Id),
+                    allowedMentions: AllowedMentions.None
+                );
+
+                stringBuilder.AppendLine($"{i + 1}. Successfully got links for `{url}`.");
             }
 
-            StreamingEntityItem streamingEntityItem = musicEntityItem.EntitiesByUniqueId![platformEntityLink.EntityUniqueId!];
-            using var albumArtStream = await GetAlbumArtStreamAsync(streamingEntityItem);
-
-            var linksComponentBuilder = GenerateMusicShareComponent(musicEntityItem);
-
-            var messageEmbed = GenerateEmbedBuilder(streamingEntityItem);
-
-            await Context.Channel.SendFileAsync(
-                embed: messageEmbed.Build(),
-                stream: albumArtStream,
-                filename: $"{streamingEntityItem.Title}.jpg",
-                components: linksComponentBuilder.Build(),
-                messageReference: new(message.Id),
-                allowedMentions: AllowedMentions.None
+            await FollowupAsync(
+                text: stringBuilder.ToString(),
+                ephemeral: true
             );
-
-            stringBuilder.AppendLine($"{i + 1}. Successfully got links for `{url}`.");
         }
-
-        await FollowupAsync(
-            text: stringBuilder.ToString(),
-            ephemeral: true
-        );
+        finally
+        {
+            _commandMetrics.IncrementGetLinksFromPostCounter();
+        }
     }
 }
