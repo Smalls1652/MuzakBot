@@ -3,6 +3,7 @@ using Discord.Interactions;
 using MuzakBot.App.Models.Odesli;
 using MuzakBot.App.Services;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 
 namespace MuzakBot.App.Modules;
 
@@ -26,82 +27,105 @@ public partial class ShareMusicCommandModule
         string url
     )
     {
-        await DeferAsync();
+        using var activity = _activitySource.StartActivity(
+            name: "HandleMusicShareAsync",
+            kind: ActivityKind.Server,
+            tags: new ActivityTagsCollection
+            {
+                { "url", url },
+                { "command_Name", "sharemusic" },
+                { "user_Id", Context.User.Id },
+                { "user_Username", Context.User.Username },
+                { "guild_Id", Context.Guild.Id },
+                { "guild_Name", Context.Guild.Name },
+                { "channel_Id", Context.Channel.Id },
+                { "channel_Name", Context.Channel.Name }
+            }
+        );
 
-        MusicEntityItem? musicEntityItem = null;
         try
         {
-            musicEntityItem = await _odesliService.GetShareLinksAsync(url);
+            await DeferAsync();
 
-            if (musicEntityItem is null)
+            MusicEntityItem? musicEntityItem = null;
+            try
             {
-                throw new Exception("No share links found.");
+                musicEntityItem = await _odesliService.GetShareLinksAsync(url);
+
+                if (musicEntityItem is null)
+                {
+                    throw new Exception("No share links found.");
+                }
             }
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "No share links found for '{url}'.", url);
-            await FollowupAsync(
-                embed: GenerateErrorEmbed("No share links were found. 😥").Build(),
-                components: GenerateRemoveComponent().Build()
-            );
-
-            throw;
-        }
-
-        PlatformEntityLink? platformEntityLink;
-        try
-        {
-            platformEntityLink = musicEntityItem.LinksByPlatform!["itunes"];
-        }
-        catch (Exception ex)
-        {
-            var streamingEntityWithThumbnailUrl = musicEntityItem.EntitiesByUniqueId!.FirstOrDefault(entity => entity.Value.ThumbnailUrl is not null).Value.ApiProvider;
-
-            if (!string.IsNullOrEmpty(streamingEntityWithThumbnailUrl))
+            catch (Exception ex)
             {
-                platformEntityLink = musicEntityItem.LinksByPlatform![streamingEntityWithThumbnailUrl];
-            }
-            else
-            {
-                _logger.LogError(ex, "Could get all of the necessary data for '{url}'.", url);
+                _logger.LogError(ex, "No share links found for '{url}'.", url);
                 await FollowupAsync(
-                    embed: GenerateErrorEmbed("I was unable to get the necessary information from Odesli. 😥").Build(),
+                    embed: GenerateErrorEmbed("No share links were found. 😥").Build(),
                     components: GenerateRemoveComponent().Build()
                 );
 
                 throw;
             }
-        }
 
-        StreamingEntityItem streamingEntityItem = musicEntityItem.EntitiesByUniqueId![platformEntityLink.EntityUniqueId!];
+            PlatformEntityLink? platformEntityLink;
+            try
+            {
+                platformEntityLink = musicEntityItem.LinksByPlatform!["itunes"];
+            }
+            catch (Exception ex)
+            {
+                var streamingEntityWithThumbnailUrl = musicEntityItem.EntitiesByUniqueId!.FirstOrDefault(entity => entity.Value.ThumbnailUrl is not null).Value.ApiProvider;
 
-        Stream albumArtStream;
-        try
-        {
-            albumArtStream = await GetAlbumArtStreamAsync(streamingEntityItem);
-        }
-        catch (Exception)
-        {
-            await FollowupAsync(
-                embed: GenerateErrorEmbed("I ran into an issue while retrieving the album artwork. 😥").Build(),
-                components: GenerateRemoveComponent().Build()
+                if (!string.IsNullOrEmpty(streamingEntityWithThumbnailUrl))
+                {
+                    platformEntityLink = musicEntityItem.LinksByPlatform![streamingEntityWithThumbnailUrl];
+                }
+                else
+                {
+                    _logger.LogError(ex, "Could get all of the necessary data for '{url}'.", url);
+                    await FollowupAsync(
+                        embed: GenerateErrorEmbed("I was unable to get the necessary information from Odesli. 😥").Build(),
+                        components: GenerateRemoveComponent().Build()
+                    );
+
+                    throw;
+                }
+            }
+
+            StreamingEntityItem streamingEntityItem = musicEntityItem.EntitiesByUniqueId![platformEntityLink.EntityUniqueId!];
+
+            Stream albumArtStream;
+            try
+            {
+                albumArtStream = await GetAlbumArtStreamAsync(streamingEntityItem);
+            }
+            catch (Exception)
+            {
+                await FollowupAsync(
+                    embed: GenerateErrorEmbed("I ran into an issue while retrieving the album artwork. 😥").Build(),
+                    components: GenerateRemoveComponent().Build()
+                );
+
+                throw;
+            }
+
+            var linksComponentBuilder = GenerateMusicShareComponent(musicEntityItem);
+
+            var messageEmbed = GenerateEmbedBuilder(streamingEntityItem);
+
+            await FollowupWithFileAsync(
+                embed: messageEmbed.Build(),
+                fileStream: albumArtStream,
+                fileName: $"{streamingEntityItem.Id}.jpg",
+                components: linksComponentBuilder.Build()
             );
 
-            throw;
+            await albumArtStream.DisposeAsync();
         }
-
-        var linksComponentBuilder = GenerateMusicShareComponent(musicEntityItem);
-
-        var messageEmbed = GenerateEmbedBuilder(streamingEntityItem);
-
-        await FollowupWithFileAsync(
-            embed: messageEmbed.Build(),
-            fileStream: albumArtStream,
-            fileName: $"{streamingEntityItem.Id}.jpg",
-            components: linksComponentBuilder.Build()
-        );
-
-        await albumArtStream.DisposeAsync();
+        finally
+        {
+            _commandMetrics.IncrementShareMusicCounter();
+        }
     }
 }
