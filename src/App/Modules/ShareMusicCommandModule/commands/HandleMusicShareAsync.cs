@@ -32,8 +32,9 @@ public partial class ShareMusicCommandModule
             kind: ActivityKind.Server,
             tags: new ActivityTagsCollection
             {
-                { "url", url },
+                { "command_Type", "SlashCommand"},
                 { "command_Name", "sharemusic" },
+                { "url", url },
                 { "guild_Id", Context.Guild.Id },
                 { "guild_Name", Context.Guild.Name },
                 { "channel_Id", Context.Channel.Id },
