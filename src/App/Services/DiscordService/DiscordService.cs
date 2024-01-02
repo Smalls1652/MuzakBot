@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Discord;
 using Discord.Commands;
 using Discord.Interactions;
@@ -12,8 +13,10 @@ namespace MuzakBot.App.Services;
 /// <summary>
 /// The service for interacting with Discord.
 /// </summary>
-public class DiscordService : IDiscordService
+public class DiscordService : IDiscordService, IAsyncDisposable
 {
+    private bool _isDisposed;
+    private readonly ActivitySource _activitySource = new("MuzakBot.App.Services.DiscordService");
     private readonly DiscordSocketClient _discordSocketClient;
     private readonly ILogger<DiscordService> _logger;
     private readonly IConfiguration _config;
@@ -32,6 +35,11 @@ public class DiscordService : IDiscordService
     /// <inheritdoc cref="IDiscordService.ConnectAsync"/>
     public async Task ConnectAsync()
     {
+        using var activity = _activitySource.StartActivity(
+            name: "ConnectAsync",
+            kind: ActivityKind.Internal
+        );
+
         // Log into Discord
         _logger.LogInformation("Connecting to Discord...");
 
@@ -145,5 +153,22 @@ public class DiscordService : IDiscordService
         );
 
         return Task.CompletedTask;
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        ObjectDisposedException.ThrowIf(_isDisposed, nameof(DiscordService));
+
+        _discordSocketClient.Log -= HandleLog;
+        _discordSocketClient.InteractionCreated -= HandleSlashCommand;
+        _discordSocketClient.Ready -= OnClientReadyAsync;
+
+        await _discordSocketClient.LogoutAsync();
+
+        _activitySource.Dispose();
+
+        _isDisposed = true;
+
+        GC.SuppressFinalize(this);
     }
 }
