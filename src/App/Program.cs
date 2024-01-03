@@ -1,19 +1,9 @@
-﻿using Discord;
-using Discord.WebSocket;
-using Azure.Monitor.OpenTelemetry.Exporter;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Caching.Memory;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
 using MuzakBot.App.Services;
-using OpenTelemetry.Resources;
-using OpenTelemetry.Logs;
-using OpenTelemetry.Metrics;
-using MuzakBot.App.Metrics;
-using OpenTelemetry.Trace;
-using OpenTelemetry.ResourceDetectors.Container;
 using MuzakBot.App.Extensions;
 
 var builder = Host.CreateApplicationBuilder(args);
