@@ -111,4 +111,23 @@ internal static class ShareMusicCommandModuleActivityExtensions
             }
         );
     }
+
+    public static Activity? StartHandleMusicShareRefreshAsyncActivity(this ActivitySource activitySource, string url, IInteractionContext context)
+    {
+        return activitySource.StartActivity(
+            name: "HandleMusicShareRefreshAsync",
+            kind: ActivityKind.Server,
+            tags: new ActivityTagsCollection
+            {
+                { "command_Type", "ComponentInteraction"},
+                { "command_Name", "Refresh music share links" },
+                { "url", url },
+                { "interaction_Id", context.Interaction.Id },
+                { "guild_Id", context.Guild.Id },
+                { "guild_Name", context.Guild.Name },
+                { "channel_Id", context.Channel.Id },
+                { "channel_Name", context.Channel.Name }
+            }
+        );
+    }
 }
