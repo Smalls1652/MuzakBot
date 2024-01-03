@@ -20,21 +20,6 @@ var builder = Host.CreateApplicationBuilder(args);
 
 builder.Services.AddMemoryCache();
 
-GatewayIntents gatewayIntents = GatewayIntents.AllUnprivileged - GatewayIntents.GuildInvites - GatewayIntents.GuildScheduledEvents;
-
-#if DEBUG
-DiscordSocketConfig discordSocketConfig = new()
-{
-    GatewayIntents = gatewayIntents,
-    UseInteractionSnowflakeDate = false
-};
-#else
-DiscordSocketConfig discordSocketConfig = new()
-{
-    GatewayIntents = gatewayIntents
-};
-#endif
-
 builder.Configuration.Sources.Clear();
 builder.Configuration
     .AddEnvironmentVariables()
@@ -168,11 +153,14 @@ builder.Services.AddHttpClient(
     }
 );
 
-builder.Services.AddSingleton<DiscordSocketClient>(
-    implementationInstance: new(discordSocketConfig)
-);
+builder.Services.AddDiscordService(options =>
+{
+    options.ClientToken = builder.Configuration.GetValue<string>("DISCORD_CLIENT_TOKEN");
 
-builder.Services.AddHostedService<DiscordService>();
+#if DEBUG
+    options.TestGuildId = builder.Configuration.GetValue<string>("DISCORD_TEST_GUILD");
+#endif
+});
 
 builder.Services.AddSingleton<IOdesliService, OdesliService>();
 builder.Services.AddSingleton<IItunesApiService, ItunesApiService>();
