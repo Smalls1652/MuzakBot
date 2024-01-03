@@ -86,7 +86,7 @@ public class DiscordService : IDiscordService, IHostedService
     private async Task OnClientReadyAsync()
     {
 #if DEBUG
-        ulong testGuildId = _config.GetValue<ulong>("DiscordTestGuildId");
+        ulong testGuildId = _config.GetValue<ulong>("DISCORD_TEST_GUILD");
         _logger.LogInformation("Running in debug mode. Registering slash commands to test guild '{GuildId}'.", testGuildId);
         await _interactionService!.RegisterCommandsToGuildAsync(
             guildId: testGuildId,
