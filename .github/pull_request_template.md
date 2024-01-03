@@ -1,13 +1,13 @@
-## Type of change
+## Description
+
+Add a description here
+
+### Type of change
 
 - [ ] 🌟 New feature
 - [ ] 💪 Enhancement
 - [ ] 🪳 Bug fix
 - [ ] 🧹 Maintenance
-
-## Description
-
-Add a description here
 
 ### Related issues
 
