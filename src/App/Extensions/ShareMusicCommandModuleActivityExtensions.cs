@@ -137,4 +137,28 @@ internal static class ShareMusicCommandModuleActivityExtensions
             }
         );
     }
+
+    /// <summary>
+    /// Starts an activity for handling the removal of a music share message asynchronously.
+    /// </summary>
+    /// <param name="activitySource">The activity source.</param>
+    /// <param name="context">The interaction context.</param>
+    /// <returns>The started activity.</returns>
+    public static Activity? StartHandleMusicShareMessageRemovalAsyncActivity(this ActivitySource activitySource, IInteractionContext context)
+    {
+        return activitySource.StartActivity(
+            name: "HandleMusicShareMessageRemovalAsync",
+            kind: ActivityKind.Server,
+            tags: new ActivityTagsCollection
+            {
+                { "command_Type", "ComponentInteraction"},
+                { "command_Name", "Remove music share message" },
+                { "interaction_Id", context.Interaction.Id },
+                { "guild_Id", context.Guild.Id },
+                { "guild_Name", context.Guild.Name },
+                { "channel_Id", context.Channel.Id },
+                { "channel_Name", context.Channel.Name }
+            }
+        );
+    }
 }
