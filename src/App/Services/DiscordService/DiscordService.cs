@@ -39,9 +39,9 @@ public class DiscordService : IDiscordService, IHostedService
         // Log into Discord
         _logger.LogInformation("Connecting to Discord...");
 
-        if (_config.GetValue<string>("DiscordClientToken") is null)
+        if (_config.GetValue<string>("DISCORD_CLIENT_TOKEN") is null)
         {
-            Exception errorException = new("DiscordClientToken is null. Please set the DiscordClientToken environment variable.");
+            Exception errorException = new("DISCORD_CLIENT_TOKEN is null. Please set the DISCORD_CLIENT_TOKEN environment variable.");
 
             _logger.LogError(errorException, "{ErrorMessage}", errorException.Message);
             throw errorException;
@@ -49,7 +49,7 @@ public class DiscordService : IDiscordService, IHostedService
 
         await _discordSocketClient.LoginAsync(
             tokenType: TokenType.Bot,
-            token: _config.GetValue<string>("DiscordClientToken")
+            token: _config.GetValue<string>("DISCORD_CLIENT_TOKEN")
         );
 
         await _discordSocketClient.StartAsync();
@@ -86,7 +86,7 @@ public class DiscordService : IDiscordService, IHostedService
     private async Task OnClientReadyAsync()
     {
 #if DEBUG
-        ulong testGuildId = _config.GetValue<ulong>("DiscordTestGuildId");
+        ulong testGuildId = _config.GetValue<ulong>("DISCORD_TEST_GUILD");
         _logger.LogInformation("Running in debug mode. Registering slash commands to test guild '{GuildId}'.", testGuildId);
         await _interactionService!.RegisterCommandsToGuildAsync(
             guildId: testGuildId,
