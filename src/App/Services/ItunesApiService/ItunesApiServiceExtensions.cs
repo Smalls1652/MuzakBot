@@ -3,8 +3,16 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace MuzakBot.App.Services;
 
-public static class IItunesApiServiceExtensions
+/// <summary>
+/// Extension methods for configuring the <see cref="ItunesApiService"/> in the dependency injection container.
+/// </summary>
+public static class ItunesApiServiceExtensions
 {
+    /// <summary>
+    /// Adds the <see cref="ItunesApiService"/> to the dependency injection container.
+    /// </summary>
+    /// <param name="services">The <see cref="IServiceCollection"/> to add the service to.</param>
+    /// <returns>The modified <see cref="IServiceCollection"/>.</returns>
     public static IServiceCollection AddItunesApiService(this IServiceCollection services)
     {
         services.AddHttpClient(
