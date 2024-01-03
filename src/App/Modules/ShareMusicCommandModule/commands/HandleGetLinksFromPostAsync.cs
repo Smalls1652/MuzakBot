@@ -111,7 +111,7 @@ public partial class ShareMusicCommandModule
                 await Context.Channel.SendFileAsync(
                     embed: messageEmbed.Build(),
                     stream: albumArtStream,
-                    filename: $"{streamingEntityItem.Title}.jpg",
+                    filename: $"{streamingEntityItem.Id}.jpg",
                     components: linksComponentBuilder.Build(),
                     messageReference: new(message.Id),
                     allowedMentions: AllowedMentions.None
