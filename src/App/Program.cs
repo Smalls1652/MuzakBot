@@ -172,14 +172,12 @@ builder.Services.AddSingleton<DiscordSocketClient>(
     implementationInstance: new(discordSocketConfig)
 );
 
-builder.Services.AddSingleton<IDiscordService, DiscordService>();
+builder.Services.AddHostedService<DiscordService>();
+
 builder.Services.AddSingleton<IOdesliService, OdesliService>();
 builder.Services.AddSingleton<IItunesApiService, ItunesApiService>();
 builder.Services.AddSingleton<IMusicBrainzService, MusicBrainzService>();
 
 using var host = builder.Build();
-
-var discordService = host.Services.GetRequiredService<IDiscordService>();
-await discordService.ConnectAsync();
 
 await host.RunAsync();
