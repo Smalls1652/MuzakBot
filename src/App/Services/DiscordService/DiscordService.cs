@@ -39,9 +39,9 @@ public class DiscordService : IDiscordService, IHostedService
         // Log into Discord
         _logger.LogInformation("Connecting to Discord...");
 
-        if (_config.GetValue<string>("DiscordClientToken") is null)
+        if (_config.GetValue<string>("DISCORD_CLIENT_TOKEN") is null)
         {
-            Exception errorException = new("DiscordClientToken is null. Please set the DiscordClientToken environment variable.");
+            Exception errorException = new("DISCORD_CLIENT_TOKEN is null. Please set the DISCORD_CLIENT_TOKEN environment variable.");
 
             _logger.LogError(errorException, "{ErrorMessage}", errorException.Message);
             throw errorException;
@@ -49,7 +49,7 @@ public class DiscordService : IDiscordService, IHostedService
 
         await _discordSocketClient.LoginAsync(
             tokenType: TokenType.Bot,
-            token: _config.GetValue<string>("DiscordClientToken")
+            token: _config.GetValue<string>("DISCORD_CLIENT_TOKEN")
         );
 
         await _discordSocketClient.StartAsync();
