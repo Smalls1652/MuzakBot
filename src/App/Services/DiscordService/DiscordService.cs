@@ -5,6 +5,7 @@ using Discord.Interactions;
 using Discord.Net;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MuzakBot.App.Modules;
 
@@ -13,7 +14,7 @@ namespace MuzakBot.App.Services;
 /// <summary>
 /// The service for interacting with Discord.
 /// </summary>
-public class DiscordService : IDiscordService, IAsyncDisposable
+public class DiscordService : IDiscordService, IHostedService
 {
     private bool _isDisposed;
     private readonly ActivitySource _activitySource = new("MuzakBot.App.Services.DiscordService");
@@ -35,7 +36,7 @@ public class DiscordService : IDiscordService, IAsyncDisposable
     /// <inheritdoc cref="IDiscordService.ConnectAsync"/>
     public async Task ConnectAsync()
     {
-        using var activity = _activitySource.StartActivity(
+        var activity = _activitySource.StartActivity(
             name: "ConnectAsync",
             kind: ActivityKind.Internal
         );
@@ -72,6 +73,8 @@ public class DiscordService : IDiscordService, IAsyncDisposable
 
         // Add ready handler
         _discordSocketClient.Ready += OnClientReadyAsync;
+
+        activity?.Dispose();
     }
 
     /// <summary>
@@ -155,6 +158,20 @@ public class DiscordService : IDiscordService, IAsyncDisposable
         return Task.CompletedTask;
     }
 
+    public async Task StartAsync(CancellationToken cancellationToken)
+    {
+        await ConnectAsync();
+    }
+
+    public async Task StopAsync(CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Disconnecting from Discord...");
+
+        await _discordSocketClient.LogoutAsync();
+
+        _logger.LogInformation("Disconnected.");
+    }
+
     public async ValueTask DisposeAsync()
     {
         ObjectDisposedException.ThrowIf(_isDisposed, nameof(DiscordService));
@@ -163,7 +180,12 @@ public class DiscordService : IDiscordService, IAsyncDisposable
         _discordSocketClient.InteractionCreated -= HandleSlashCommand;
         _discordSocketClient.Ready -= OnClientReadyAsync;
 
-        await _discordSocketClient.LogoutAsync();
+        if (_interactionService is not null)
+        {
+            _interactionService.Dispose();
+        }
+
+        await _discordSocketClient.DisposeAsync();
 
         _activitySource.Dispose();
 
