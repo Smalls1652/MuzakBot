@@ -43,7 +43,7 @@ public partial class ShareMusicCommandModule
                 { "channel_Name", Context.Channel.Name }
             }
         );
-        
+
         try
         {
             await DeferAsync(
@@ -115,6 +115,11 @@ public partial class ShareMusicCommandModule
             MusicEntityItem? musicEntityItem = null;
             try
             {
+                if (songItem.TrackViewUrl is null)
+                {
+                    throw new Exception("No song item or track view url found.");
+                }
+
                 musicEntityItem = await _odesliService.GetShareLinksAsync(songItem.TrackViewUrl);
 
                 if (musicEntityItem is null)
