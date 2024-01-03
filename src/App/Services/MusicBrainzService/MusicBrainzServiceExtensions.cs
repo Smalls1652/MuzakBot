@@ -3,8 +3,16 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace MuzakBot.App.Services;
 
+/// <summary>
+/// Extension methods for configuring the <see cref="MusicBrainzService"/> in the dependency injection container.
+/// </summary>
 public static class MusicBrainzServiceExtensions
 {
+    /// <summary>
+    /// Adds the <see cref="MusicBrainzService"/> to the dependency injection container.
+    /// </summary>
+    /// <param name="services">The <see cref="IServiceCollection"/> to add the service to.</param>
+    /// <returns>The modified <see cref="IServiceCollection"/>.</returns>
     public static IServiceCollection AddMusicBrainzService(this IServiceCollection services)
     {
         services.AddHttpClient(

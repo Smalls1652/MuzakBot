@@ -3,8 +3,16 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace MuzakBot.App.Services;
 
+/// <summary>
+/// Extension methods for adding <see cref="OdesliService"/> to the <see cref="IServiceCollection"/>.
+/// </summary>
 public static class OdesliServiceExtensions
 {
+    /// <summary>
+    /// Adds the <see cref="OdesliService"/> to the <see cref="IServiceCollection"/>.
+    /// </summary>
+    /// <param name="services">The <see cref="IServiceCollection"/> to add the <see cref="OdesliService"/> to.</param>
+    /// <returns>The modified <see cref="IServiceCollection"/>.</returns>
     public static IServiceCollection AddOdesliService(this IServiceCollection services)
     {
         services.AddHttpClient(
