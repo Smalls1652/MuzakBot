@@ -38,82 +38,14 @@ builder.Configuration
 builder.Logging.ClearProviders();
 
 builder.Logging
-    .AddOpenTelemetry(logging =>
-    {
-        logging.IncludeScopes = true;
-        logging.IncludeFormattedMessage = true;
-
-        var resourceBuilder = ResourceBuilder
-            .CreateDefault()
-            .AddService("MuzakBot");
-
-        logging
-            .SetResourceBuilder(resourceBuilder)
-            .AddConsoleExporter()
-            .AddOtlpExporter();
-
-        if (builder.Configuration.GetValue<string>("APPLICATIONINSIGHTS_CONNECTION_STRING") is not null)
-        {
-            logging.AddAzureMonitorLogExporter(options =>
-            {
-                options.ConnectionString = builder.Configuration.GetValue<string>("APPLICATIONINSIGHTS_CONNECTION_STRING");
-            });
-        }
-    });
+    .AddOpenTelemetryLogging(
+        azureAppInsightsConnectionString: builder.Configuration.GetValue<string>("APPLICATIONINSIGHTS_CONNECTION_STRING")
+    );
 
 builder.Services
-    .AddMetrics();
-
-builder.Services
-    .AddSingleton<CommandMetrics>();
-
-builder.Services
-    .AddOpenTelemetry()
-    .ConfigureResource(resourceBuilder => resourceBuilder.AddService("MuzakBot"))
-    .WithMetrics(metrics =>
-    {
-        var resourceBuilder = ResourceBuilder
-            .CreateDefault()
-            .AddService("MuzakBot");
-
-        metrics
-            .SetResourceBuilder(resourceBuilder)
-            .AddRuntimeInstrumentation()
-            .AddHttpClientInstrumentation()
-            .AddCommandMetricsInstrumentation();
-
-        metrics.AddOtlpExporter();
-
-        if (builder.Configuration.GetValue<string>("APPLICATIONINSIGHTS_CONNECTION_STRING") is not null)
-        {
-            metrics.AddAzureMonitorMetricExporter(options =>
-            {
-                options.ConnectionString = builder.Configuration.GetValue<string>("APPLICATIONINSIGHTS_CONNECTION_STRING");
-            });
-        }
-    })
-    .WithTracing(tracing =>
-    {
-        var resourceBuilder = ResourceBuilder
-            .CreateDefault()
-            .AddService("MuzakBot")
-            .AddDetector(new ContainerResourceDetector());
-    
-        tracing
-            .AddMuzakBotTracerSources()
-            .SetResourceBuilder(resourceBuilder)
-            .AddHttpClientInstrumentation();
-
-        tracing.AddOtlpExporter();
-
-        if (builder.Configuration.GetValue<string>("APPLICATIONINSIGHTS_CONNECTION_STRING") is not null)
-        {
-            tracing.AddAzureMonitorTraceExporter(options =>
-            {
-                options.ConnectionString = builder.Configuration.GetValue<string>("APPLICATIONINSIGHTS_CONNECTION_STRING");
-            });
-        }
-    });
+    .AddOpenTelemetryMetricsAndTracing(
+        azureAppInsightsConnectionString: builder.Configuration.GetValue<string>("APPLICATIONINSIGHTS_CONNECTION_STRING")
+    );
 
 Console.WriteLine($"Environment: {builder.Environment.EnvironmentName}");
 
@@ -125,33 +57,10 @@ builder.Services.AddHttpClient(
     }
 );
 
-builder.Services.AddHttpClient(
-    name: "OdesliApiClient",
-    configureClient: (serviceProvider, httpClient) =>
-    {
-        httpClient.DefaultRequestHeaders.UserAgent.Add(new("MuzakBot", Assembly.GetExecutingAssembly().GetName().Version!.ToString()));
-        httpClient.BaseAddress = new("https://api.song.link/v1-alpha.1/");
-    }
-);
-
-builder.Services.AddHttpClient(
-    name: "MusicBrainzApiClient",
-    configureClient: (serviceProvider, httpClient) =>
-    {
-        httpClient.DefaultRequestHeaders.Accept.Add(new("application/json"));
-        httpClient.DefaultRequestHeaders.UserAgent.Add(new("MuzakBot", Assembly.GetExecutingAssembly().GetName().Version!.ToString()));
-        httpClient.BaseAddress = new("https://musicbrainz.org/ws/2/");
-    }
-);
-
-builder.Services.AddHttpClient(
-    name: "ItunesApiClient",
-    configureClient: (serviceProvider, httpClient) =>
-    {
-        httpClient.DefaultRequestHeaders.UserAgent.Add(new("MuzakBot", Assembly.GetExecutingAssembly().GetName().Version!.ToString()));
-        httpClient.BaseAddress = new("https://itunes.apple.com/");
-    }
-);
+builder.Services
+    .AddOdesliService()
+    .AddItunesApiService()
+    .AddMusicBrainzService();
 
 builder.Services.AddDiscordService(options =>
 {
@@ -161,10 +70,6 @@ builder.Services.AddDiscordService(options =>
     options.TestGuildId = builder.Configuration.GetValue<string>("DISCORD_TEST_GUILD");
 #endif
 });
-
-builder.Services.AddSingleton<IOdesliService, OdesliService>();
-builder.Services.AddSingleton<IItunesApiService, ItunesApiService>();
-builder.Services.AddSingleton<IMusicBrainzService, MusicBrainzService>();
 
 using var host = builder.Build();
 
