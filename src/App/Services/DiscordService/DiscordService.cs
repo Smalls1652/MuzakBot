@@ -36,11 +36,6 @@ public class DiscordService : IDiscordService, IHostedService
     /// <inheritdoc cref="IDiscordService.ConnectAsync"/>
     public async Task ConnectAsync()
     {
-        var activity = _activitySource.StartActivity(
-            name: "ConnectAsync",
-            kind: ActivityKind.Internal
-        );
-
         // Log into Discord
         _logger.LogInformation("Connecting to Discord...");
 
@@ -73,8 +68,6 @@ public class DiscordService : IDiscordService, IHostedService
 
         // Add ready handler
         _discordSocketClient.Ready += OnClientReadyAsync;
-
-        activity?.Dispose();
     }
 
     /// <summary>
