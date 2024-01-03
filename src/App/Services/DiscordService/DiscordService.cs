@@ -7,6 +7,7 @@ using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using MuzakBot.App.Modules;
 
 namespace MuzakBot.App.Services;
@@ -20,14 +21,20 @@ public class DiscordService : IDiscordService, IHostedService
     private readonly ActivitySource _activitySource = new("MuzakBot.App.Services.DiscordService");
     private readonly DiscordSocketClient _discordSocketClient;
     private readonly ILogger<DiscordService> _logger;
-    private readonly IConfiguration _config;
+    private readonly string _clientToken;
+#if DEBUG
+    private readonly ulong _testGuildId;
+#endif
     private readonly IServiceProvider _serviceProvider;
 
-    public DiscordService(DiscordSocketClient discordSocketClient, ILogger<DiscordService> logger, IConfiguration config, IServiceProvider serviceProvider)
+    public DiscordService(DiscordSocketClient discordSocketClient, ILogger<DiscordService> logger, IOptions<DiscordServiceOptions> options, IServiceProvider serviceProvider)
     {
         _discordSocketClient = discordSocketClient;
         _logger = logger;
-        _config = config;
+        _clientToken = options.Value.ClientToken ?? throw new ArgumentNullException(nameof(options), "Client token is null.");
+#if DEBUG
+        _testGuildId = ulong.Parse(options.Value.TestGuildId ?? throw new ArgumentNullException(nameof(options), "Test guild ID is null."));
+#endif
         _serviceProvider = serviceProvider;
     }
 
@@ -39,7 +46,7 @@ public class DiscordService : IDiscordService, IHostedService
         // Log into Discord
         _logger.LogInformation("Connecting to Discord...");
 
-        if (_config.GetValue<string>("DISCORD_CLIENT_TOKEN") is null)
+        if (_clientToken is null)
         {
             Exception errorException = new("DISCORD_CLIENT_TOKEN is null. Please set the DISCORD_CLIENT_TOKEN environment variable.");
 
@@ -49,7 +56,7 @@ public class DiscordService : IDiscordService, IHostedService
 
         await _discordSocketClient.LoginAsync(
             tokenType: TokenType.Bot,
-            token: _config.GetValue<string>("DISCORD_CLIENT_TOKEN")
+            token: _clientToken
         );
 
         await _discordSocketClient.StartAsync();
@@ -86,10 +93,9 @@ public class DiscordService : IDiscordService, IHostedService
     private async Task OnClientReadyAsync()
     {
 #if DEBUG
-        ulong testGuildId = _config.GetValue<ulong>("DISCORD_TEST_GUILD");
-        _logger.LogInformation("Running in debug mode. Registering slash commands to test guild '{GuildId}'.", testGuildId);
+        _logger.LogInformation("Running in debug mode. Registering slash commands to test guild '{GuildId}'.", _testGuildId);
         await _interactionService!.RegisterCommandsToGuildAsync(
-            guildId: testGuildId,
+            guildId: _testGuildId,
             deleteMissing: true
         );
 #else
