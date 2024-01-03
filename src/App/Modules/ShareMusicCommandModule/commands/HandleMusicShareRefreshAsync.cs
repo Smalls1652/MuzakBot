@@ -1,5 +1,6 @@
 using Discord;
 using Discord.Interactions;
+using MuzakBot.App.Extensions;
 using MuzakBot.App.Models.Odesli;
 using MuzakBot.App.Services;
 using Microsoft.Extensions.Logging;
@@ -20,6 +21,8 @@ public partial class ShareMusicCommandModule
     [ComponentInteraction(customId: "refresh-musiclinks-btn-*")]
     private async Task HandleMusicShareRefreshAsync(string url)
     {
+        using var activity = _activitySource.StartHandleMusicShareRefreshAsyncActivity(url, Context);
+        
         await Context.Interaction.DeferAsync(
             ephemeral: false
         );
@@ -27,7 +30,7 @@ public partial class ShareMusicCommandModule
         _logger.LogInformation("Refreshing music share links for {url}", url);
 
         // Get the music entity item from Odesli.
-        MusicEntityItem? musicEntityItem = await _odesliService.GetShareLinksAsync(url);
+        MusicEntityItem? musicEntityItem = await _odesliService.GetShareLinksAsync(url, activity?.Id);
 
         // Generate the music share components.
         ComponentBuilder linksComponentBuilder = GenerateMusicShareComponent(musicEntityItem!);

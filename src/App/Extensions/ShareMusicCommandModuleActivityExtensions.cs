@@ -111,4 +111,30 @@ internal static class ShareMusicCommandModuleActivityExtensions
             }
         );
     }
+
+    /// <summary>
+    /// Starts an activity for handling the asynchronous music share refresh.
+    /// </summary>
+    /// <param name="activitySource">The activity source.</param>
+    /// <param name="url">The input URL.</param>
+    /// <param name="context">The interaction context.</param>
+    /// <returns>The started activity.</returns>
+    public static Activity? StartHandleMusicShareRefreshAsyncActivity(this ActivitySource activitySource, string url, IInteractionContext context)
+    {
+        return activitySource.StartActivity(
+            name: "HandleMusicShareRefreshAsync",
+            kind: ActivityKind.Server,
+            tags: new ActivityTagsCollection
+            {
+                { "command_Type", "ComponentInteraction"},
+                { "command_Name", "Refresh music share links" },
+                { "url", url },
+                { "interaction_Id", context.Interaction.Id },
+                { "guild_Id", context.Guild.Id },
+                { "guild_Name", context.Guild.Name },
+                { "channel_Id", context.Channel.Id },
+                { "channel_Name", context.Channel.Name }
+            }
+        );
+    }
 }
