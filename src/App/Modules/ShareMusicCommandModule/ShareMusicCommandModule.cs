@@ -15,7 +15,6 @@ public partial class ShareMusicCommandModule : InteractionModuleBase, IDisposabl
 {
     private bool _isDisposed;
     private readonly ActivitySource _activitySource = new("MuzakBot.App.Modules.ShareMusicCommandModule");
-    private readonly IDiscordService _discordService;
     private readonly IOdesliService _odesliService;
     private readonly IItunesApiService _itunesApiService;
     private readonly IMusicBrainzService _musicBrainzService;
@@ -23,9 +22,8 @@ public partial class ShareMusicCommandModule : InteractionModuleBase, IDisposabl
     private readonly ILogger<ShareMusicCommandModule> _logger;
     private readonly CommandMetrics _commandMetrics;
 
-    public ShareMusicCommandModule(IDiscordService discordService, IOdesliService odesliService, IItunesApiService itunesApiService, IMusicBrainzService musicBrainzService, IHttpClientFactory httpClientFactory, ILogger<ShareMusicCommandModule> logger, CommandMetrics commandMetrics)
+    public ShareMusicCommandModule(IOdesliService odesliService, IItunesApiService itunesApiService, IMusicBrainzService musicBrainzService, IHttpClientFactory httpClientFactory, ILogger<ShareMusicCommandModule> logger, CommandMetrics commandMetrics)
     {
-        _discordService = discordService;
         _odesliService = odesliService;
         _itunesApiService = itunesApiService;
         _musicBrainzService = musicBrainzService;
