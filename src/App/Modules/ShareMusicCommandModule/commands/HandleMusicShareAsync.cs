@@ -64,6 +64,8 @@ public partial class ShareMusicCommandModule
                     components: GenerateRemoveComponent().Build()
                 );
 
+                activity?.SetStatus(ActivityStatusCode.Error);
+
                 throw;
             }
 
@@ -88,6 +90,8 @@ public partial class ShareMusicCommandModule
                         components: GenerateRemoveComponent().Build()
                     );
 
+                    activity?.SetStatus(ActivityStatusCode.Error);
+
                     throw;
                 }
             }
@@ -105,6 +109,8 @@ public partial class ShareMusicCommandModule
                     embed: GenerateErrorEmbed("I ran into an issue while retrieving the album artwork. 😥").Build(),
                     components: GenerateRemoveComponent().Build()
                 );
+
+                activity?.SetStatus(ActivityStatusCode.Error);
 
                 throw;
             }
