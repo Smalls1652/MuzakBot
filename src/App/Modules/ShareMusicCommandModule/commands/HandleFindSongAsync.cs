@@ -64,6 +64,8 @@ public partial class ShareMusicCommandModule
                     ephemeral: false
                 );
 
+                activity?.SetStatus(ActivityStatusCode.Error);
+
                 return;
             }
 
@@ -82,6 +84,8 @@ public partial class ShareMusicCommandModule
                     ephemeral: false
                 );
 
+                activity?.SetStatus(ActivityStatusCode.Error);
+
                 return;
             }
 
@@ -92,6 +96,8 @@ public partial class ShareMusicCommandModule
                     components: GenerateRemoveComponent().Build(),
                     ephemeral: false
                 );
+
+                activity?.SetStatus(ActivityStatusCode.Error);
 
                 return;
             }
@@ -105,6 +111,8 @@ public partial class ShareMusicCommandModule
                     components: GenerateRemoveComponent().Build(),
                     ephemeral: false
                 );
+
+                activity?.SetStatus(ActivityStatusCode.Error);
 
                 return;
             }
@@ -135,6 +143,8 @@ public partial class ShareMusicCommandModule
                     components: GenerateRemoveComponent().Build()
                 );
 
+                activity?.SetStatus(ActivityStatusCode.Error);
+
                 return;
             }
 
@@ -158,6 +168,8 @@ public partial class ShareMusicCommandModule
                         embed: GenerateErrorEmbed("I was unable to get the necessary information from Odesli. 😥").Build(),
                         components: GenerateRemoveComponent().Build()
                     );
+
+                    activity?.SetStatus(ActivityStatusCode.Error);
 
                     return;
                 }

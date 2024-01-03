@@ -53,6 +53,8 @@ public partial class ShareMusicCommandModule
                     ephemeral: true
                 );
 
+                activity?.SetStatus(ActivityStatusCode.Error);
+
                 return;
             }
 
