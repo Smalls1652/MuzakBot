@@ -5,7 +5,6 @@ using MuzakBot.App.Models.Odesli;
 using MuzakBot.App.Services;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
-using MuzakBot.App.Helpers;
 
 namespace MuzakBot.App.Modules;
 
