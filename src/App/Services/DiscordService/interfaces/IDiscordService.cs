@@ -5,7 +5,7 @@ namespace MuzakBot.App.Services;
 /// <summary>
 /// Interface for the Discord service.
 /// </summary>
-public interface IDiscordService
+public interface IDiscordService : IAsyncDisposable
 {
     /// <summary>
     /// Connects the bot to Discord.
