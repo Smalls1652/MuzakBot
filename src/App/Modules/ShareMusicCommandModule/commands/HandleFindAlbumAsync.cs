@@ -4,6 +4,7 @@ using System.Text.Json;
 using Discord;
 using Discord.Interactions;
 using Microsoft.Extensions.Logging;
+using MuzakBot.App.Extensions;
 using MuzakBot.App.Handlers;
 using MuzakBot.App.Models.Itunes;
 using MuzakBot.App.Models.MusicBrainz;
@@ -28,21 +29,7 @@ public partial class ShareMusicCommandModule
         string albumId
     )
     {
-        using var activity = _activitySource.StartActivity(
-            name: "HandleFindAlbumAsync",
-            kind: ActivityKind.Server,
-            tags: new ActivityTagsCollection
-            {
-                { "command_Type", "SlashCommand"},
-                { "command_Name", "findalbum" },
-                { "artist_Id", artistId },
-                { "album_Id", albumId },
-                { "guild_Id", Context.Guild.Id },
-                { "guild_Name", Context.Guild.Name },
-                { "channel_Id", Context.Channel.Id },
-                { "channel_Name", Context.Channel.Name }
-            }
-        );
+        using var activity = _activitySource.StartHandleFindAlbumAsyncActivity(artistId, albumId, Context);
         
         try
         {
@@ -53,7 +40,7 @@ public partial class ShareMusicCommandModule
             MusicBrainzArtistItem? artistItem = null;
             try
             {
-                artistItem = await _musicBrainzService.LookupArtistAsync(artistId);
+                artistItem = await _musicBrainzService.LookupArtistAsync(artistId, activity?.Id);
             }
             catch (Exception ex)
             {
@@ -73,7 +60,7 @@ public partial class ShareMusicCommandModule
 
             try
             {
-                releaseItem = await _musicBrainzService.LookupReleaseAsync(albumId);
+                releaseItem = await _musicBrainzService.LookupReleaseAsync(albumId, activity?.Id);
             }
             catch (Exception ex)
             {
@@ -102,7 +89,7 @@ public partial class ShareMusicCommandModule
                 return;
             }
 
-            ApiSearchResult<AlbumItem>? apiSearchResult = await _itunesApiService.GetAlbumsByArtistResultAsync(artistItem!.Name, releaseItem!.Title);
+            ApiSearchResult<AlbumItem>? apiSearchResult = await _itunesApiService.GetAlbumsByArtistResultAsync(artistItem!.Name, releaseItem!.Title, activity?.Id);
 
             if (apiSearchResult is null || apiSearchResult.Results is null || apiSearchResult.Results.Length == 0)
             {

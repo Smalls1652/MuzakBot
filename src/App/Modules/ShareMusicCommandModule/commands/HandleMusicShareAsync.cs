@@ -1,9 +1,11 @@
 using Discord;
 using Discord.Interactions;
+using MuzakBot.App.Extensions;
 using MuzakBot.App.Models.Odesli;
 using MuzakBot.App.Services;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
+using MuzakBot.App.Helpers;
 
 namespace MuzakBot.App.Modules;
 
@@ -27,20 +29,7 @@ public partial class ShareMusicCommandModule
         string url
     )
     {
-        using var activity = _activitySource.StartActivity(
-            name: "HandleMusicShareAsync",
-            kind: ActivityKind.Server,
-            tags: new ActivityTagsCollection
-            {
-                { "command_Type", "SlashCommand"},
-                { "command_Name", "sharemusic" },
-                { "url", url },
-                { "guild_Id", Context.Guild.Id },
-                { "guild_Name", Context.Guild.Name },
-                { "channel_Id", Context.Channel.Id },
-                { "channel_Name", Context.Channel.Name }
-            }
-        );
+        using var activity = _activitySource.StartHandleMusicShareAsyncActivity(url, Context);
 
         try
         {
@@ -49,7 +38,7 @@ public partial class ShareMusicCommandModule
             MusicEntityItem? musicEntityItem = null;
             try
             {
-                musicEntityItem = await _odesliService.GetShareLinksAsync(url);
+                musicEntityItem = await _odesliService.GetShareLinksAsync(url, activity?.Id);
 
                 if (musicEntityItem is null)
                 {
@@ -59,6 +48,7 @@ public partial class ShareMusicCommandModule
             catch (Exception ex)
             {
                 _logger.LogError(ex, "No share links found for '{url}'.", url);
+
                 await FollowupAsync(
                     embed: GenerateErrorEmbed("No share links were found. 😥").Build(),
                     components: GenerateRemoveComponent().Build()
@@ -92,6 +82,7 @@ public partial class ShareMusicCommandModule
                 else
                 {
                     _logger.LogError(ex, "Could get all of the necessary data for '{url}'.", url);
+
                     await FollowupAsync(
                         embed: GenerateErrorEmbed("I was unable to get the necessary information from Odesli. 😥").Build(),
                         components: GenerateRemoveComponent().Build()

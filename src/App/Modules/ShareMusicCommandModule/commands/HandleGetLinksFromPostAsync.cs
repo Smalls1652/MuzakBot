@@ -2,6 +2,7 @@
 using System.Text.RegularExpressions;
 using Discord;
 using Discord.Interactions;
+using MuzakBot.App.Extensions;
 using MuzakBot.App.Models.Odesli;
 using MuzakBot.App.Services;
 using Microsoft.Extensions.Logging;
@@ -21,20 +22,7 @@ public partial class ShareMusicCommandModule
     )]
     private async Task HandleGetLinksFromPostAsync(IMessage message)
     {
-        using var activity = _activitySource.StartActivity(
-            name: "HandleGetLinksFromPostAsync",
-            kind: ActivityKind.Server,
-            tags: new ActivityTagsCollection
-            {
-                { "message_Id", message.Id },
-                { "command_Type", "MessageCommand"},
-                { "command_Name", "Get music share links" },
-                { "guild_Id", Context.Guild.Id },
-                { "guild_Name", Context.Guild.Name },
-                { "channel_Id", Context.Channel.Id },
-                { "channel_Name", Context.Channel.Name }
-            }
-        );
+        using var activity = _activitySource.StartHandleGetLinksFromPostAsyncActivity(message, Context);
 
         try
         {
@@ -68,7 +56,7 @@ public partial class ShareMusicCommandModule
                 MusicEntityItem? musicEntityItem = null;
                 try
                 {
-                    musicEntityItem = await _odesliService.GetShareLinksAsync(url);
+                    musicEntityItem = await _odesliService.GetShareLinksAsync(url, activity?.Id);
 
                     if (musicEntityItem is null)
                     {
