@@ -10,7 +10,7 @@ public partial class MusicBrainzService : IMusicBrainzService
     private readonly ILogger<IMusicBrainzService> _logger;
     private readonly IHttpClientFactory _httpClientFactory;
 
-    public MusicBrainzService(ILogger<IMusicBrainzService?> logger, IHttpClientFactory httpClientFactory)
+    public MusicBrainzService(ILogger<IMusicBrainzService> logger, IHttpClientFactory httpClientFactory)
     {
         _logger = logger;
         _httpClientFactory = httpClientFactory;
