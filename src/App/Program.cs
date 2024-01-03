@@ -14,6 +14,7 @@ using OpenTelemetry.Metrics;
 using MuzakBot.App.Metrics;
 using OpenTelemetry.Trace;
 using OpenTelemetry.ResourceDetectors.Container;
+using MuzakBot.App.Extensions;
 
 var builder = Host.CreateApplicationBuilder(args);
 
@@ -114,8 +115,7 @@ builder.Services
             .AddDetector(new ContainerResourceDetector());
     
         tracing
-            .AddSource("MuzakBot.App.Services.DiscordService")
-            .AddSource("MuzakBot.App.Modules.ShareMusicCommandModule")
+            .AddMuzakBotTracerSources()
             .SetResourceBuilder(resourceBuilder)
             .AddHttpClientInstrumentation();
 
