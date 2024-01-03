@@ -155,7 +155,14 @@ public partial class ShareMusicCommandModule
             }
             catch
             {
-                var streamingEntityWithThumbnailUrl = musicEntityItem.EntitiesByUniqueId!.FirstOrDefault(entity => entity.Value.ThumbnailUrl is not null).Value.ApiProvider;
+                /*
+                    Temporary fix:
+                    
+                    Amazon is being excluded from the fallback for the time being,
+                    because the "apiProvider" value doesn't cleanly match it's platform
+                    entity link key.
+                */
+                var streamingEntityWithThumbnailUrl = musicEntityItem.EntitiesByUniqueId!.FirstOrDefault(entity => entity.Value.ThumbnailUrl is not null && entity.Value.ApiProvider != "amazon").Value.ApiProvider;
 
                 if (!string.IsNullOrEmpty(streamingEntityWithThumbnailUrl))
                 {
