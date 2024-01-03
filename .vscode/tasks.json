@@ -121,7 +121,49 @@
 				"cwd": "${workspaceFolder}"
 			},
 			"problemMatcher": "$msCompile"
-		}
+		},
+		{
+			"label": "Watch: MuzakBot.App",
+			"detail": "Run the app for local debugging and watch for changes.",
+			"hide": true,
+			"type": "process",
+			"command": "dotnet",
+			"args": [
+				"watch",
+				"--",
+				"run",
+				"/property:GenerateFullPaths=true",
+				"/consoleloggerparameters:NoSummary"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/src/App",
+				"env": {
+					"DOTNET_ENVIRONMENT": "Development"
+				}
+			},
+			"runOptions": {
+				"instanceLimit": 2,
+			},
+			"presentation": {
+				"echo": false,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": true
+			},
+			"isBackground": true,
+			"problemMatcher": [
+				{
+					"base": "$msCompile",
+					"background": {
+						"activeOnStart": true,
+						"beginsPattern": "^info: Microsoft.\\Hosting\\.Lifetime",
+						"endsPattern": "^\\s*Application started\\..+?$"
+					}
+				}
+			]
+		},
     ],
     "inputs": [
 		{

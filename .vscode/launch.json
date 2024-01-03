@@ -2,6 +2,16 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Debug: MuzakBot.App (Watch)",
+            "type": "dotnetwatchattach",
+            "request": "launch",
+            "args": {
+                "DOTNET_ENVIRONMENT": "Development"
+            },
+            "task": "Watch: MuzakBot.App",
+            "program": "MuzakBot"
+        },
+        {
             "name": "Debug: MuzakBot.App",
             "type": "coreclr",
             "request": "launch",
