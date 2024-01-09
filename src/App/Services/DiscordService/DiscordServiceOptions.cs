@@ -14,4 +14,6 @@ public class DiscordServiceOptions
     /// Gets or sets the ID of the test guild to use for testing purposes.
     /// </summary>
     public string? TestGuildId { get; set; }
+
+    public bool EnableLyricsAnalyzer { get; set; }
 }
