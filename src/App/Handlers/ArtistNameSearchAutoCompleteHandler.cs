@@ -50,7 +50,9 @@ public class ArtistNameSearchAutoCompleteHandler : AutocompleteHandler
             return AutocompletionResult.FromSuccess(results.AsEnumerable());
         }
 
-        foreach (MusicBrainzArtistItem artistItem in artistSearchResult.Artists)
+        MusicBrainzArtistItem[] distinctArtists = artistSearchResult.Artists.DistinctBy(artist => artist.Name).ToArray();
+
+        foreach (MusicBrainzArtistItem artistItem in distinctArtists)
         {
             results.Add(
                 item: new(
