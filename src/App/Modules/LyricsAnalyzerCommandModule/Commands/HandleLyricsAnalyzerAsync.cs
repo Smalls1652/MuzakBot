@@ -46,6 +46,18 @@ public partial class LyricsAnalyzerCommandModule
         await DeferAsync(
             ephemeral: isPrivateResponse
         );
+
+        
+        if (_discordServiceConfig.LyricsAnalyzerEnabledServersArray is not null && !_discordServiceConfig.LyricsAnalyzerEnabledServersArray.Contains(Context.Guild.Id.ToString()))
+        {
+            await FollowupAsync(
+                embed: GenerateErrorEmbed("This command is not enabled on this server. 😥").Build(),
+                components: GenerateRemoveComponent().Build(),
+                ephemeral: isPrivateResponse
+            );
+
+            return;
+        }
         
         _logger.LogInformation("Searching for '{SongName}' by '{ArtistName}' on Genius.", songName, artistName);
         GeniusApiResponse<GeniusSearchResult>? geniusSearchResult = await _geniusApiService.SearchAsync(artistName, songName, activity?.Id);

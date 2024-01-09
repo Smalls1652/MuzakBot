@@ -20,6 +20,7 @@ public partial class LyricsAnalyzerCommandModule : InteractionModuleBase, IDispo
     private readonly IOpenAiService _openAiService;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<LyricsAnalyzerCommandModule> _logger;
+    private readonly DiscordServiceConfig _discordServiceConfig;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="LyricsAnalyzerCommandModule"/> class.
@@ -29,13 +30,14 @@ public partial class LyricsAnalyzerCommandModule : InteractionModuleBase, IDispo
     /// <param name="openAiService">The <see cref="IOpenAiService"/>.</param>
     /// <param name="httpClientFactory">The <see cref="IHttpClientFactory"/>.</param>
     /// <param name="logger">The logger.</param>
-    public LyricsAnalyzerCommandModule(IMusicBrainzService musicBrainzService, IGeniusApiService geniusApiService, IOpenAiService openAiService, IHttpClientFactory httpClientFactory, ILogger<LyricsAnalyzerCommandModule> logger)
+    public LyricsAnalyzerCommandModule(IMusicBrainzService musicBrainzService, IGeniusApiService geniusApiService, IOpenAiService openAiService, IHttpClientFactory httpClientFactory, ILogger<LyricsAnalyzerCommandModule> logger, DiscordServiceConfig discordServiceConfig)
     {
         _musicBrainzService = musicBrainzService;
         _geniusApiService = geniusApiService;
         _openAiService = openAiService;
         _httpClientFactory = httpClientFactory;
         _logger = logger;
+        _discordServiceConfig = discordServiceConfig;
     }
 
     /// <inheritdoc cref="IDisposable.Dispose"/>
