@@ -12,11 +12,11 @@ internal static class LyricsAnalyzerCommandModuleActivityExtensions
     /// Starts an activity for <see cref="LyricsAnalyzerCommandModule.HandleGetLyricsAsync(IInteractionContext, string, string)"/>.
     /// </summary>
     /// <param name="activitySource">The activity source.</param>
-    /// <param name="artistId">The ID of the artist.</param>
-    /// <param name="songId">The ID of the song.</param>
+    /// <param name="artistName">The name of the artist.</param>
+    /// <param name="songName">The name of the song.</param>
     /// <param name="context">The <see cref="IInteractionContext"/> for the request.</param>
     /// <returns>The started activity.</returns>
-    public static Activity? StartHandleGetLyricsAsyncActivity(this ActivitySource activitySource, string artistId, string songId, IInteractionContext context)
+    public static Activity? StartHandleGetLyricsAsyncActivity(this ActivitySource activitySource, string artistName, string songName, IInteractionContext context)
     {
         return activitySource.StartActivity(
             name: "HandleGetLyricsAsync",
@@ -25,8 +25,8 @@ internal static class LyricsAnalyzerCommandModuleActivityExtensions
             {
                 { "command_Type", "SlashCommand"},
                 { "command_Name", "getsonglyrics" },
-                { "artist_Id", artistId },
-                { "song_Id", songId },
+                { "artist_Name", artistName },
+                { "song_Name", songName },
                 { "guild_Id", context.Guild.Id },
                 { "guild_Name", context.Guild.Name },
                 { "channel_Id", context.Channel.Id },
