@@ -37,7 +37,7 @@ public partial class LyricsAnalyzerCommandModule
         string songName
     )
     {
-        using var activity = _activitySource.StartHandleGetLyricsAsyncActivity(artistName, songName, Context);
+        using var activity = _activitySource.StartHandleLyricsAnalyzerAsyncActivity(artistName, songName, Context);
 
         await DeferAsync(
                 ephemeral: false

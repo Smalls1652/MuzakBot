@@ -16,10 +16,10 @@ internal static class LyricsAnalyzerCommandModuleActivityExtensions
     /// <param name="songName">The name of the song.</param>
     /// <param name="context">The <see cref="IInteractionContext"/> for the request.</param>
     /// <returns>The started activity.</returns>
-    public static Activity? StartHandleGetLyricsAsyncActivity(this ActivitySource activitySource, string artistName, string songName, IInteractionContext context)
+    public static Activity? StartHandleLyricsAnalyzerAsyncActivity(this ActivitySource activitySource, string artistName, string songName, IInteractionContext context)
     {
         return activitySource.StartActivity(
-            name: "HandleGetLyricsAsync",
+            name: "HandleLyricsAnalyzerAsync",
             kind: ActivityKind.Server,
             tags: new ActivityTagsCollection
             {
