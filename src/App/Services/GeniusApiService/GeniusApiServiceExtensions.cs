@@ -47,6 +47,14 @@ public static class GeniusApiServiceExtensions
         );
 
         services.AddHttpClient(
+            name: "InternetArchiveClient",
+            configureClient: (serviceProvider, httpClient) =>
+            {
+                httpClient.BaseAddress = new("https://archive.org/");
+            }
+        );
+
+        services.AddHttpClient(
             name: "GeniusApiClient",
             configureClient: (serviceProvider, httpClient) =>
             {

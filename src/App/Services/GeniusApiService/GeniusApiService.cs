@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MuzakBot.App.Extensions;
 using MuzakBot.App.Models.Genius;
+using MuzakBot.App.Models.Wayback;
 
 namespace MuzakBot.App.Services;
 
@@ -109,11 +110,19 @@ public partial class GeniusApiService : IGeniusApiService
     {
         using var activity = _activitySource.StartGeniusGetLyricsAsyncActivity(url, parentActvitityId);
 
-        using var client = _httpClientFactory.CreateClient("GeniusClient");
+        string? latestWaybackUrl = await GetLatestWayback(url);
+
+        if (latestWaybackUrl is null)
+        {
+            activity?.SetStatus(ActivityStatusCode.Error);
+            throw new InvalidOperationException("Could not find a Wayback Machine snapshot of the URL.");
+        }
+
+        using var client = _httpClientFactory.CreateClient("InternetArchiveClient");
 
         using HttpRequestMessage requestMessage = new(
             method: HttpMethod.Get,
-            requestUri: url
+            requestUri: latestWaybackUrl
         );
 
         using HttpResponseMessage responseMessage = await client.SendAsync(requestMessage);
@@ -139,6 +148,119 @@ public partial class GeniusApiService : IGeniusApiService
         }
 
         return lyrics;
+    }
+
+    private async Task<string?> GetLatestWayback(string url) => await GetLatestWayback(url, false);
+
+    private async Task<string?> GetLatestWayback(string url, bool isSecondRun)
+    {
+        using var client = _httpClientFactory.CreateClient("InternetArchiveClient");
+
+        using HttpRequestMessage requestMessage = new(
+            method: HttpMethod.Get,
+            requestUri: $"wayback/available?url={url}&timestamp={DateTimeOffset.UtcNow:yyyyMMdd}"
+        );
+
+        requestMessage.Headers.Add("Accept", "application/json");
+
+        using HttpResponseMessage responseMessage = await client.SendAsync(requestMessage);
+
+        string responseContent = await responseMessage.Content.ReadAsStringAsync();
+
+        _logger.LogInformation("{ResponseContent}", responseContent);
+
+        ArchivedStatus? archivedStatus = JsonSerializer.Deserialize<ArchivedStatus>(responseContent);
+
+        if (archivedStatus is null || archivedStatus.ArchivedSnapshots is null || archivedStatus.ArchivedSnapshots.Closest is null || archivedStatus.ArchivedSnapshots.Closest.Available == false || archivedStatus.ArchivedSnapshots.Closest.Url is null)
+        {
+            _logger.LogWarning("Could not find a Wayback Machine snapshot of the URL.");
+            
+            if (!isSecondRun)
+            {
+                _logger.LogInformation("Attempting to archive the URL.");
+
+                bool archiveSuccess = await InvokeWaybackArchive(url);
+
+                if (!archiveSuccess)
+                {
+                    _logger.LogWarning("Could not archive the URL.");
+                    return null;
+                }
+
+                _logger.LogInformation("Successfully archived the URL.");
+
+                return await GetLatestWayback(url, true);
+            }
+        }
+
+        string latestWaybackUrl = archivedStatus!.ArchivedSnapshots!.Closest!.Url!;
+
+        return latestWaybackUrl;
+    }
+
+    private async Task<bool> InvokeWaybackArchive(string url)
+    {
+        using var client = _httpClientFactory.CreateClient("InternetArchiveClient");
+
+        using HttpRequestMessage requestMessage = new(
+            method: HttpMethod.Post,
+            requestUri: $"https://web.archive.org/save/{url}"            
+        );
+
+        MultipartFormDataContent formContent = new()
+        {
+            { new StringContent(url), "url" },
+            { new StringContent("on"), "capture_all" }
+        };
+
+        requestMessage.Content = formContent;
+        requestMessage.Content.Headers.ContentDisposition = new("form-data");
+
+        using HttpResponseMessage responseMessage = await client.SendAsync(requestMessage);
+
+        string responseContent = await responseMessage.Content.ReadAsStringAsync();
+
+        if (!WaybackArchiveJobIdRegex().IsMatch(responseContent))
+        {
+            return false;
+        }
+
+        Match jobIdMatch = WaybackArchiveJobIdRegex().Match(responseContent);
+
+        string jobId = jobIdMatch.Groups["jobId"].Value;
+
+        TimeSpan timeout = TimeSpan.FromMinutes(5);
+
+        Stopwatch stopwatch = Stopwatch.StartNew();
+
+        while (stopwatch.Elapsed < timeout)
+        {
+            await Task.Delay(15000);
+
+            using HttpRequestMessage jobRequestMessage = new(
+                method: HttpMethod.Get,
+                requestUri: $"https://web.archive.org/save/status/{jobId}"
+            );
+
+            using HttpResponseMessage jobResponseMessage = await client.SendAsync(jobRequestMessage);
+
+            string jobResponseJson = await jobResponseMessage.Content.ReadAsStringAsync();
+
+            SaveJobStatus? jobResponse = JsonSerializer.Deserialize<SaveJobStatus>(jobResponseJson);
+
+            if (jobResponse is null)
+            {
+                return false;
+            }
+
+            if (jobResponse.Status == "success")
+            {
+                await Task.Delay(30000);
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /// <summary>
@@ -185,6 +307,12 @@ public partial class GeniusApiService : IGeniusApiService
         pattern: @"(<(?:\/|).+?>)"
     )]
     private static partial Regex HtmlElementRegex();
+
+    [GeneratedRegex(
+        pattern: "spn\\.watchJob\\(\"(?'jobId'.+?)\", .+?,.+?\\);",
+        options: RegexOptions.Singleline
+    )]
+    private static partial Regex WaybackArchiveJobIdRegex();
 
     /// <inheritdoc cref="IDisposable.Dispose"/>
     public void Dispose()

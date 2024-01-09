@@ -94,7 +94,7 @@ public partial class LyricsAnalyzerCommandModule
         string lyrics = string.Empty;
         try
         {
-            lyrics = await _geniusApiService.GetLyricsAsync(songResultItem.Result!.Path!, activity?.Id);
+            lyrics = await _geniusApiService.GetLyricsAsync(songResultItem.Result!.Url!, activity?.Id);
         }
         catch (Exception ex)
         {
