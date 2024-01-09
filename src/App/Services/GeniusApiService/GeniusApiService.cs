@@ -9,6 +9,9 @@ using MuzakBot.App.Models.Genius;
 
 namespace MuzakBot.App.Services;
 
+/// <summary>
+/// Service for interacting with the Genius API and retrieving song lyrics.
+/// </summary>
 public partial class GeniusApiService : IGeniusApiService
 {
     private bool _isDisposed;
@@ -17,6 +20,12 @@ public partial class GeniusApiService : IGeniusApiService
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly string _accessToken;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="GeniusApiService"/> class.
+    /// </summary>
+    /// <param name="logger">The logger.</param>
+    /// <param name="httpClientFactory">The <see cref="IHttpClientFactory"/>.</param>
+    /// <param name="options">The <see cref="GeniusApiServiceOptions"/> for configuring the service.</param>
     public GeniusApiService(ILogger<GeniusApiService> logger, IHttpClientFactory httpClientFactory, IOptions<GeniusApiServiceOptions> options)
     {
         _logger = logger;
@@ -24,7 +33,22 @@ public partial class GeniusApiService : IGeniusApiService
         _accessToken = options.Value.AccessToken;
     }
 
+    /// <summary>
+    /// Searches for a song by artist name and song name using the Genius API.
+    /// </summary>
+    /// <param name="artistName">The name of the artist.</param>
+    /// <param name="songName">The name of the song.</param>
+    /// <returns>The search results from the API.</returns>
     public async Task<GeniusApiResponse<GeniusSearchResult>?> SearchAsync(string artistName, string songName) => await SearchAsync(artistName, songName, null);
+
+
+    /// <summary>
+    /// Searches for a song by artist name and song name using the Genius API.
+    /// </summary>
+    /// <param name="artistName">The name of the artist.</param>
+    /// <param name="songName">The name of the song.</param>
+    /// <param name="parentActvitityId">The ID of the parent activity (optional).</param>
+    /// <returns>The search results from the API.</returns>
     public async Task<GeniusApiResponse<GeniusSearchResult>?> SearchAsync(string artistName, string songName, string? parentActvitityId)
     {
         using var activity = _activitySource.StartGeniusSearchAsyncActivity(artistName, songName, parentActvitityId);
@@ -62,7 +86,25 @@ public partial class GeniusApiService : IGeniusApiService
         return searchResult;
     }
 
+    /// <summary>
+    /// Retrieves the lyrics of a song from a given URL.
+    /// </summary>
+    /// <remarks>
+    /// This scrapes the webpage to retrieve the lyrics.
+    /// </remarks>
+    /// <param name="url">The URL of the song lyrics.</param>
+    /// <returns>The lyrics of the song as a string.</returns>
     public async Task<string> GetLyricsAsync(string url) => await GetLyricsAsync(url, null);
+
+    /// <summary>
+    /// Retrieves the lyrics of a song from a given URL.
+    /// </summary>
+    /// <remarks>
+    /// This scrapes the webpage to retrieve the lyrics.
+    /// </remarks>
+    /// <param name="url">The URL of the song lyrics.</param>
+    /// <param name="parentActvitityId">The ID of the parent activity.</param>
+    /// <returns>The lyrics of the song as a string.</returns>
     public async Task<string> GetLyricsAsync(string url, string? parentActvitityId)
     {
         using var activity = _activitySource.StartGeniusGetLyricsAsyncActivity(url, parentActvitityId);
@@ -99,6 +141,11 @@ public partial class GeniusApiService : IGeniusApiService
         return lyrics;
     }
 
+    /// <summary>
+    /// Parses the HTML content and extracts the lyrics from it.
+    /// </summary>
+    /// <param name="html">The HTML content containing the lyrics.</param>
+    /// <returns>The extracted lyrics as a string, or null if the HTML does not contain any lyrics.</returns>
     private static string? ParseLyricsHtml(string html)
     {
         if (!LyricsContainerRegex().IsMatch(html))
