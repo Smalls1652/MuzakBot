@@ -36,14 +36,14 @@ public partial class LyricsAnalyzerCommandModule
          Autocomplete(typeof(ArtistSongNameSearchAutoCompleteHandler))
         ]
         string songName,
-        [Summary(name: "private", description: "Whether or not to send the response privately")]
-        bool isPrivateResponse = false,
         [Summary(name: "style", description: "The style of the response"),
         Choice("Normal", "normal"),
         Choice("Meme: Tame", "tame-meme"),
         Choice("Meme: Insane", "insane-meme"),
         Choice("Snobby Music Critic", "snobby")]
-        string promptMode = "normal"
+        string promptMode = "normal",
+        [Summary(name: "private", description: "Whether or not to send the response privately")]
+        bool isPrivateResponse = false
     )
     {
         using var activity = _activitySource.StartHandleLyricsAnalyzerAsyncActivity(artistName, songName, Context);
