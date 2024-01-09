@@ -39,7 +39,7 @@ public partial class OpenAiService : IOpenAiService
     /// <param name="lyrics">The lyrics of the song.</param>
     /// <returns>The lyric analysis from the API.</returns>
     /// <exception cref="NullReferenceException">The response from the OpenAI API was null.</exception>
-    public async Task<OpenAiChatCompletion?> GetLyricAnalysisAsync(string artistName, string songName, string lyrics) => await GetLyricAnalysisAsync(artistName, songName, lyrics, null);
+    public async Task<OpenAiChatCompletion?> GetLyricAnalysisAsync(string artistName, string songName, string lyrics, bool memeMode) => await GetLyricAnalysisAsync(artistName, songName, lyrics, memeMode, null);
 
     /// <summary>
     /// Gets the lyric analysis for a song using the OpenAI API.
@@ -50,7 +50,7 @@ public partial class OpenAiService : IOpenAiService
     /// <param name="parentActivityId">The ID of the parent activity (optional).</param>
     /// <returns>The lyric analysis from the API.</returns>
     /// <exception cref="NullReferenceException">The response from the OpenAI API was null.</exception>
-    public async Task<OpenAiChatCompletion?> GetLyricAnalysisAsync(string artistName, string songName, string lyrics, string? parentActivityId)
+    public async Task<OpenAiChatCompletion?> GetLyricAnalysisAsync(string artistName, string songName, string lyrics, bool memeMode, string? parentActivityId)
     {
         using var activity = _activitySource.StartGetLyricAnalysisAsyncActivity(artistName, songName, parentActivityId);
 
@@ -62,6 +62,10 @@ public partial class OpenAiService : IOpenAiService
         );
 
         requestMessage.Headers.Authorization = new("Bearer", _apiKey);
+
+        string systemPrompt = !memeMode
+            ? "Lyrics Analyzer is designed to interpret and analyze song lyrics from various genres and eras, including sensitive and explicit content. It communicates in a casual conversational tone, offering a brief overview of the lyrics. Its focus is on analyzing literary elements like metaphors, symbolism, and themes, providing factual, context-based explanations. For copyrighted lyrics, it offers general guidance without directly quoting or repeating the lyrics. Lyrics Analyzer is committed to delivering informative, engaging, and respectful interpretations of the artistic nature of song lyrics. Keep the total character count for the response under 1000 characters and format the reponse in Markdown syntax."
+            : "Lyrics Analyzer is designed to interpret and analyze song lyrics from various genres and eras, including sensitive and explicit content. It communicates in a meme heavy tone, offering a brief overview of the lyrics with references to a lot of memes and using GenZ slang. Its focus is on analyzing literary elements like metaphors, symbolism, and themes, providing somewhat factual, context-based explanations. For copyrighted lyrics, it offers general guidance without directly quoting or repeating the lyrics. Lyrics Analyzer is committed to delivering somewhat informative, engaging, and meme-styled interpretations of the artistic nature of song lyrics. Use a lot of memes and GenZ slang. Also make all text lower case. Keep the total character count for the response under 1000 characters and format the reponse in Markdown syntax.";
 
         OpenAiChatCompletionRequest request = new()
         {
@@ -76,7 +80,7 @@ public partial class OpenAiService : IOpenAiService
                 new()
                 {
                     Role = "system",
-                    Content = "Lyrics Analyzer is designed to interpret and analyze song lyrics from various genres and eras, including sensitive and explicit content. It communicates in a casual conversational tone, offering a brief overview of the lyrics. Its focus is on analyzing literary elements like metaphors, symbolism, and themes, providing factual, context-based explanations. For copyrighted lyrics, it offers general guidance without directly quoting or repeating the lyrics. Lyrics Analyzer is committed to delivering informative, engaging, and respectful interpretations of the artistic nature of song lyrics. Keep the total character count for the response under 1000 characters and format the reponse in Markdown syntax."
+                    Content = systemPrompt
                 },
                 new()
                 {
