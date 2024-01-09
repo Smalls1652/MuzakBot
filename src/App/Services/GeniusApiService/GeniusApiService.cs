@@ -171,7 +171,7 @@ public partial class GeniusApiService : IGeniusApiService
 
         ArchivedStatus? archivedStatus = JsonSerializer.Deserialize<ArchivedStatus>(responseContent);
 
-        if (archivedStatus is null || archivedStatus.ArchivedSnapshots is null || archivedStatus.ArchivedSnapshots.Closest is null || archivedStatus.ArchivedSnapshots.Closest.Available == false || DateTimeOffset.Parse(archivedStatus.ArchivedSnapshots.Closest.Timestamp) < DateTimeOffset.UtcNow.AddDays(-30))
+        if (archivedStatus is null || archivedStatus.ArchivedSnapshots is null || archivedStatus.ArchivedSnapshots.Closest is null || archivedStatus.ArchivedSnapshots.Closest.Available == false || ConvertWaybackTimeStampToDateTimeOffset(archivedStatus.ArchivedSnapshots.Closest.Timestamp) < DateTimeOffset.UtcNow.AddDays(-30))
         {
             _logger.LogWarning("Could not find a Wayback Machine snapshot of the URL.");
             
@@ -265,6 +265,25 @@ public partial class GeniusApiService : IGeniusApiService
         throw new TimeoutException("The Wayback Machine archive job timed out.");
     }
 
+    private DateTimeOffset? ConvertWaybackTimeStampToDateTimeOffset(string timestamp)
+    {
+        if (!WaybackTimestampRegex().IsMatch(timestamp))
+        {
+            return null;
+        }
+
+        Match timestampMatch = WaybackTimestampRegex().Match(timestamp);
+
+        int year = int.Parse(timestampMatch.Groups["year"].Value);
+        int month = int.Parse(timestampMatch.Groups["month"].Value);
+        int day = int.Parse(timestampMatch.Groups["day"].Value);
+        int hour = int.Parse(timestampMatch.Groups["hour"].Value);
+        int minute = int.Parse(timestampMatch.Groups["minute"].Value);
+        int second = int.Parse(timestampMatch.Groups["second"].Value);
+
+        return new DateTimeOffset(year, month, day, hour, minute, second, TimeSpan.Zero);
+    }
+
     /// <summary>
     /// Parses the HTML content and extracts the lyrics from it.
     /// </summary>
@@ -315,6 +334,11 @@ public partial class GeniusApiService : IGeniusApiService
         options: RegexOptions.Singleline
     )]
     private static partial Regex WaybackArchiveJobIdRegex();
+
+    [GeneratedRegex(
+        pattern: @"(?'year'\d{4})(?'month'\d{2})(?'day'\d{2})(?'hour'\d{2})(?'minute'\d{2})(?'second'\d{2})"
+    )]
+    private static partial Regex WaybackTimestampRegex();
 
     /// <inheritdoc cref="IDisposable.Dispose"/>
     public void Dispose()
