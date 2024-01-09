@@ -6,6 +6,7 @@ using Microsoft.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using MuzakBot.App.Extensions;
 using MuzakBot.App.Handlers;
+using MuzakBot.App.Models.Database.LyricsAnalyzer;
 using MuzakBot.App.Models.Genius;
 using MuzakBot.App.Models.MusicBrainz;
 using MuzakBot.App.Models.OpenAi;
@@ -63,49 +64,28 @@ public partial class LyricsAnalyzerCommandModule
 
             return;
         }
-        
-        _logger.LogInformation("Searching for '{SongName}' by '{ArtistName}' on Genius.", songName, artistName);
-        GeniusApiResponse<GeniusSearchResult>? geniusSearchResult = await _geniusApiService.SearchAsync(artistName, songName, activity?.Id);
 
-        if (geniusSearchResult is null || geniusSearchResult.Response is null || geniusSearchResult.Response.Hits is null || geniusSearchResult.Response.Hits.Length == 0)
-        {
-            await FollowupAsync(
-                embed: GenerateErrorEmbed("An error occurred while searching for the song. 😥").Build(),
-                components: GenerateRemoveComponent().Build(),
-                ephemeral: isPrivateResponse
-            );
-
-            activity?.SetStatus(ActivityStatusCode.Error);
-
-            return;
-        }
-
-        GeniusSearchResultHitItem? songResultItem = geniusSearchResult.Response.Hits.FirstOrDefault(item => item.Type == "song" && item.Result is not null && item.Result.LyricsState == "complete");
-
-        if (songResultItem is null)
-        {
-            await FollowupAsync(
-                embed: GenerateErrorEmbed("No results were found.").Build(),
-                components: GenerateRemoveComponent().Build(),
-                ephemeral: isPrivateResponse
-            );
-
-            activity?.SetStatus(ActivityStatusCode.Error);
-
-            return;
-        }
-
-        _logger.LogInformation("Getting lyrics for '{SongName}' by '{ArtistName}' from Genius.", songName, artistName);
         string lyrics = string.Empty;
+        bool isSongLyricsItemInDb = false;
         try
         {
-            lyrics = await _geniusApiService.GetLyricsAsync(songResultItem.Result!.Url!, activity?.Id);
+            _logger.LogInformation("Attempting to get song lyrics for '{SongName}' by '{ArtistName}' from the database.", songName, artistName);
+            SongLyricsItem dbResponse = await _cosmosDbService.GetSongLyricsItemAsync(artistName, songName, activity?.Id);
+
+            lyrics = dbResponse.Lyrics;
+
+            isSongLyricsItemInDb = true;
+        }
+        catch (NullReferenceException)
+        {
+            _logger.LogInformation("Song lyrics for '{SongName}' by '{ArtistName}' not found in database. Will attempt to get them from the internet.", songName, artistName);
+            isSongLyricsItemInDb = false;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error getting lyrics for song '{songId}'.", songName);
+            _logger.LogError(ex, "Error getting song lyrics item from Cosmos DB.");
             await FollowupAsync(
-                embed: GenerateErrorEmbed("An error occurred while getting the lyrics. 😥").Build(),
+                embed: GenerateErrorEmbed("An error occurred while getting the song lyrics. 😥").Build(),
                 components: GenerateRemoveComponent().Build(),
                 ephemeral: isPrivateResponse
             );
@@ -113,6 +93,62 @@ public partial class LyricsAnalyzerCommandModule
             activity?.SetStatus(ActivityStatusCode.Error);
 
             return;
+        }
+
+        if (!isSongLyricsItemInDb)
+        {
+            _logger.LogInformation("Searching for '{SongName}' by '{ArtistName}' on Genius.", songName, artistName);
+            GeniusApiResponse<GeniusSearchResult>? geniusSearchResult = await _geniusApiService.SearchAsync(artistName, songName, activity?.Id);
+
+            if (geniusSearchResult is null || geniusSearchResult.Response is null || geniusSearchResult.Response.Hits is null || geniusSearchResult.Response.Hits.Length == 0)
+            {
+                await FollowupAsync(
+                    embed: GenerateErrorEmbed("An error occurred while searching for the song. 😥").Build(),
+                    components: GenerateRemoveComponent().Build(),
+                    ephemeral: isPrivateResponse
+                );
+
+                activity?.SetStatus(ActivityStatusCode.Error);
+
+                return;
+            }
+
+            GeniusSearchResultHitItem? songResultItem = geniusSearchResult.Response.Hits.FirstOrDefault(item => item.Type == "song" && item.Result is not null && item.Result.LyricsState == "complete");
+
+            if (songResultItem is null)
+            {
+                await FollowupAsync(
+                    embed: GenerateErrorEmbed("No results were found.").Build(),
+                    components: GenerateRemoveComponent().Build(),
+                    ephemeral: isPrivateResponse
+                );
+
+                activity?.SetStatus(ActivityStatusCode.Error);
+
+                return;
+            }
+
+            _logger.LogInformation("Getting lyrics for '{SongName}' by '{ArtistName}' from Genius.", songName, artistName);
+            try
+            {
+                lyrics = await _geniusApiService.GetLyricsAsync(songResultItem.Result!.Url!, activity?.Id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting lyrics for song '{songId}'.", songName);
+                await FollowupAsync(
+                    embed: GenerateErrorEmbed("An error occurred while getting the lyrics. 😥").Build(),
+                    components: GenerateRemoveComponent().Build(),
+                    ephemeral: isPrivateResponse
+                );
+
+                activity?.SetStatus(ActivityStatusCode.Error);
+
+                return;
+            }
+
+            _logger.LogInformation("Adding lyrics for '{SongName}' by '{ArtistName}' to database.", songName, artistName);
+            await _cosmosDbService.AddOrUpdateSongLyricsItemAsync(new(artistName, songName, lyrics), activity?.Id);
         }
 
         _logger.LogInformation("Analyzing lyrics for '{SongName}' by '{ArtistName}' with OpenAI.", songName, artistName);
