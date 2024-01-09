@@ -171,7 +171,7 @@ public partial class GeniusApiService : IGeniusApiService
 
         ArchivedStatus? archivedStatus = JsonSerializer.Deserialize<ArchivedStatus>(responseContent);
 
-        if (archivedStatus is null || archivedStatus.ArchivedSnapshots is null || archivedStatus.ArchivedSnapshots.Closest is null || archivedStatus.ArchivedSnapshots.Closest.Available == false || archivedStatus.ArchivedSnapshots.Closest.Url is null)
+        if (archivedStatus is null || archivedStatus.ArchivedSnapshots is null || archivedStatus.ArchivedSnapshots.Closest is null || archivedStatus.ArchivedSnapshots.Closest.Available == false || DateTimeOffset.Parse(archivedStatus.ArchivedSnapshots.Closest.Timestamp) < DateTimeOffset.UtcNow.AddDays(-30))
         {
             _logger.LogWarning("Could not find a Wayback Machine snapshot of the URL.");
             
@@ -179,9 +179,12 @@ public partial class GeniusApiService : IGeniusApiService
             {
                 _logger.LogInformation("Attempting to archive the URL.");
 
-                bool archiveSuccess = await InvokeWaybackArchive(url);
-
-                if (!archiveSuccess)
+                string newArchiveUrl;
+                try
+                {
+                    newArchiveUrl = await InvokeWaybackArchive(url);
+                }
+                catch (Exception)
                 {
                     _logger.LogWarning("Could not archive the URL.");
                     return null;
@@ -189,7 +192,7 @@ public partial class GeniusApiService : IGeniusApiService
 
                 _logger.LogInformation("Successfully archived the URL.");
 
-                return await GetLatestWayback(url, true);
+                return newArchiveUrl;
             }
         }
 
@@ -198,7 +201,7 @@ public partial class GeniusApiService : IGeniusApiService
         return latestWaybackUrl;
     }
 
-    private async Task<bool> InvokeWaybackArchive(string url)
+    private async Task<string> InvokeWaybackArchive(string url)
     {
         using var client = _httpClientFactory.CreateClient("InternetArchiveClient");
 
@@ -222,7 +225,7 @@ public partial class GeniusApiService : IGeniusApiService
 
         if (!WaybackArchiveJobIdRegex().IsMatch(responseContent))
         {
-            return false;
+            throw new Exception("Could not find job ID in response.");
         }
 
         Match jobIdMatch = WaybackArchiveJobIdRegex().Match(responseContent);
@@ -250,17 +253,16 @@ public partial class GeniusApiService : IGeniusApiService
 
             if (jobResponse is null)
             {
-                return false;
+                throw new Exception("Could not deserialize job response.");
             }
 
-            if (jobResponse.Status == "success")
+            if (jobResponse.Status == "success" && jobResponse.Timestamp is not null)
             {
-                await Task.Delay(30000);
-                return true;
+                return $"https://web.archive.org/web/{jobResponse.Timestamp}/{url}";
             }
         }
 
-        return false;
+        throw new TimeoutException("The Wayback Machine archive job timed out.");
     }
 
     /// <summary>
