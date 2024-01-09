@@ -52,6 +52,13 @@ builder.Services
     .AddItunesApiService()
     .AddMusicBrainzService();
 
+builder.Services
+    .AddCosmosDbService(options =>
+    {
+        options.ConnectionString = builder.Configuration.GetValue<string>("COSMOSDB_CONNECTION_STRING") ?? throw new("COSMOSDB_CONNECTION_STRING is not set.");
+        options.DatabaseName = builder.Configuration.GetValue<string>("COSMOSDB_DATABASE_NAME") ?? throw new("COSMOSDB_DATABASE_NAME is not set.");
+    });
+
 if (builder.Configuration.GetValue<bool>("ENABLE_LYRICS_ANALYZER"))
 {
     builder.Services
