@@ -28,76 +28,23 @@ public partial class LyricsAnalyzerCommandModule
     )]
     private async Task HandleLyricsAnalyzerAsync(
         [Summary("artistName", "The name of an artist"),
-         Autocomplete(typeof(ArtistSearchAutoCompleteHandler))
+         Autocomplete(typeof(ArtistNameSearchAutoCompleteHandler))
         ]
-        string artistId,
+        string artistName,
         [Summary(name: "songName", description: "The name of a song"),
-         Autocomplete(typeof(ArtistSongSearchAutoCompleteHandler))
+         Autocomplete(typeof(ArtistSongNameSearchAutoCompleteHandler))
         ]
-        string songId
+        string songName
     )
     {
-        using var activity = _activitySource.StartHandleGetLyricsAsyncActivity(artistId, songId, Context);
+        using var activity = _activitySource.StartHandleGetLyricsAsyncActivity(artistName, songName, Context);
 
         await DeferAsync(
                 ephemeral: false
             );
-
-        _logger.LogInformation("Looking up artist '{artistId}' and song '{songId}'.", artistId, songId);
-        MusicBrainzArtistItem? artistItem = null;
-        try
-        {
-            artistItem = await _musicBrainzService.LookupArtistAsync(artistId, activity?.Id);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error looking up artist '{artistId}'.", artistId);
-            await FollowupAsync(
-                embed: GenerateErrorEmbed("An error occurred while looking up the artist. 😥").Build(),
-                components: GenerateRemoveComponent().Build(),
-                ephemeral: false
-            );
-
-            activity?.SetStatus(ActivityStatusCode.Error);
-
-            return;
-        }
-
-        MusicBrainzRecordingItem? recordingItem = null;
-
-        try
-        {
-            recordingItem = await _musicBrainzService.LookupRecordingAsync(songId, activity?.Id);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error looking up song '{songId}'.", songId);
-            await FollowupAsync(
-                embed: GenerateErrorEmbed("An error occurred while looking up the song. 😥").Build(),
-                components: GenerateRemoveComponent().Build(),
-                ephemeral: false
-            );
-
-            activity?.SetStatus(ActivityStatusCode.Error);
-
-            return;
-        }
-
-        if (artistItem is null || recordingItem is null)
-        {
-            await FollowupAsync(
-                embed: GenerateErrorEmbed("No results found for that artist and song. 😥").Build(),
-                components: GenerateRemoveComponent().Build(),
-                ephemeral: false
-            );
-
-            activity?.SetStatus(ActivityStatusCode.Error);
-
-            return;
-        }
         
-        _logger.LogInformation("Searching for '{SongName}' by '{ArtistName}' on Genius.", recordingItem.Title, artistItem.Name);
-        GeniusApiResponse<GeniusSearchResult>? geniusSearchResult = await _geniusApiService.SearchAsync(artistItem.Name, recordingItem.Title, activity?.Id);
+        _logger.LogInformation("Searching for '{SongName}' by '{ArtistName}' on Genius.", songName, artistName);
+        GeniusApiResponse<GeniusSearchResult>? geniusSearchResult = await _geniusApiService.SearchAsync(artistName, songName, activity?.Id);
 
         if (geniusSearchResult is null || geniusSearchResult.Response is null || geniusSearchResult.Response.Hits is null || geniusSearchResult.Response.Hits.Length == 0)
         {
@@ -127,7 +74,7 @@ public partial class LyricsAnalyzerCommandModule
             return;
         }
 
-        _logger.LogInformation("Getting lyrics for '{SongName}' by '{ArtistName}' from Genius.", recordingItem.Title, artistItem.Name);
+        _logger.LogInformation("Getting lyrics for '{SongName}' by '{ArtistName}' from Genius.", songName, artistName);
         string lyrics = string.Empty;
         try
         {
@@ -135,7 +82,7 @@ public partial class LyricsAnalyzerCommandModule
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error getting lyrics for song '{songId}'.", songId);
+            _logger.LogError(ex, "Error getting lyrics for song '{songId}'.", songName);
             await FollowupAsync(
                 embed: GenerateErrorEmbed("An error occurred while getting the lyrics. 😥").Build(),
                 components: GenerateRemoveComponent().Build(),
@@ -147,13 +94,13 @@ public partial class LyricsAnalyzerCommandModule
             return;
         }
 
-        _logger.LogInformation("Analyzing lyrics for '{SongName}' by '{ArtistName}' with OpenAI.", recordingItem.Title, artistItem.Name);
+        _logger.LogInformation("Analyzing lyrics for '{SongName}' by '{ArtistName}' with OpenAI.", songName, artistName);
         OpenAiChatCompletion? openAiChatCompletion;
         try
         {
             openAiChatCompletion = await _openAiService.GetLyricAnalysisAsync(
-                artistName: artistItem.Name,
-                songName: recordingItem.Title,
+                artistName: artistName,
+                songName: songName,
                 lyrics: lyrics,
                 parentActivityId: activity?.Id
             );
@@ -165,7 +112,7 @@ public partial class LyricsAnalyzerCommandModule
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error getting lyric analysis for song '{songId}'.", songId);
+            _logger.LogError(ex, "Error getting lyric analysis for song '{songId}'.", songName);
             await FollowupAsync(
                 embed: GenerateErrorEmbed("An error occurred while analyzing the lyrics. 😥").Build(),
                 components: GenerateRemoveComponent().Build(),
