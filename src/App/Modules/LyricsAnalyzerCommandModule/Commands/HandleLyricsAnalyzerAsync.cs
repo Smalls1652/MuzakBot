@@ -22,6 +22,7 @@ public partial class LyricsAnalyzerCommandModule
     /// <param name="songId">The ID of the song.</param>
     /// <returns></returns>
     /// <exception cref="NullReferenceException"></exception>
+    [EnabledInDm(true)]
     [SlashCommand(
         name: "lyricsanalyzer",
         description: "Get an analysis of the lyrics of a song"
