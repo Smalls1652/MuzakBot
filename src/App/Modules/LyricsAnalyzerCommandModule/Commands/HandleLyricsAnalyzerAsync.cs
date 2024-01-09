@@ -34,14 +34,16 @@ public partial class LyricsAnalyzerCommandModule
         [Summary(name: "songName", description: "The name of a song"),
          Autocomplete(typeof(ArtistSongNameSearchAutoCompleteHandler))
         ]
-        string songName
+        string songName,
+        [Summary(name: "private", description: "Whether or not to send the response privately")]
+        bool isPrivateResponse = true
     )
     {
         using var activity = _activitySource.StartHandleLyricsAnalyzerAsyncActivity(artistName, songName, Context);
 
         await DeferAsync(
-                ephemeral: false
-            );
+            ephemeral: isPrivateResponse
+        );
         
         _logger.LogInformation("Searching for '{SongName}' by '{ArtistName}' on Genius.", songName, artistName);
         GeniusApiResponse<GeniusSearchResult>? geniusSearchResult = await _geniusApiService.SearchAsync(artistName, songName, activity?.Id);
@@ -51,7 +53,7 @@ public partial class LyricsAnalyzerCommandModule
             await FollowupAsync(
                 embed: GenerateErrorEmbed("An error occurred while searching for the song. 😥").Build(),
                 components: GenerateRemoveComponent().Build(),
-                ephemeral: false
+                ephemeral: isPrivateResponse
             );
 
             activity?.SetStatus(ActivityStatusCode.Error);
@@ -66,7 +68,7 @@ public partial class LyricsAnalyzerCommandModule
             await FollowupAsync(
                 embed: GenerateErrorEmbed("No results were found.").Build(),
                 components: GenerateRemoveComponent().Build(),
-                ephemeral: false
+                ephemeral: isPrivateResponse
             );
 
             activity?.SetStatus(ActivityStatusCode.Error);
@@ -86,7 +88,7 @@ public partial class LyricsAnalyzerCommandModule
             await FollowupAsync(
                 embed: GenerateErrorEmbed("An error occurred while getting the lyrics. 😥").Build(),
                 components: GenerateRemoveComponent().Build(),
-                ephemeral: false
+                ephemeral: isPrivateResponse
             );
 
             activity?.SetStatus(ActivityStatusCode.Error);
@@ -116,7 +118,7 @@ public partial class LyricsAnalyzerCommandModule
             await FollowupAsync(
                 embed: GenerateErrorEmbed("An error occurred while analyzing the lyrics. 😥").Build(),
                 components: GenerateRemoveComponent().Build(),
-                ephemeral: false
+                ephemeral: isPrivateResponse
             );
 
             activity?.SetStatus(ActivityStatusCode.Error);
@@ -143,7 +145,7 @@ public partial class LyricsAnalyzerCommandModule
         {
             await FollowupAsync(
                 text: lyricsResponseBuilder.ToString(),
-                ephemeral: false
+                ephemeral: isPrivateResponse
             );
         }
         catch (Exception ex)
@@ -152,7 +154,7 @@ public partial class LyricsAnalyzerCommandModule
             await FollowupAsync(
                 embed: GenerateErrorEmbed("An error occurred while sending the response. 😥").Build(),
                 components: GenerateRemoveComponent().Build(),
-                ephemeral: false
+                ephemeral: isPrivateResponse
             );
 
             activity?.SetStatus(ActivityStatusCode.Error);
