@@ -36,7 +36,7 @@ public partial class LyricsAnalyzerCommandModule
         ]
         string songName,
         [Summary(name: "private", description: "Whether or not to send the response privately")]
-        bool isPrivateResponse = true,
+        bool isPrivateResponse = false,
         [Summary(name: "memez", description: "haha _insert totally original meme here_")]
         bool memeMode = false
     )
@@ -47,7 +47,7 @@ public partial class LyricsAnalyzerCommandModule
             ephemeral: isPrivateResponse
         );
 
-        
+
         if (_discordServiceConfig.LyricsAnalyzerEnabledServersArray is not null && !_discordServiceConfig.LyricsAnalyzerEnabledServersArray.Contains(Context.Guild.Id.ToString()))
         {
             await FollowupAsync(
