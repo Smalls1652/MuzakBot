@@ -151,6 +151,7 @@ internal static class OpenTelemetryExtensions
             .AddSource("MuzakBot.App.Services.MusicBrainzService")
             .AddSource("MuzakBot.App.Services.OdesliService")
             .AddSource("MuzakBot.App.Services.OpenAiService")
-            .AddSource("MuzakBot.App.Service.GeniusApiService");
+            .AddSource("MuzakBot.App.Service.GeniusApiService")
+            .AddSource("MuzakBot.App.Services.CosmosDbService");
     }
 }
