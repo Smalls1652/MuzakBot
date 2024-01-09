@@ -3,8 +3,17 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace MuzakBot.App.Services;
 
+/// <summary>
+/// Extension methods for adding the OpenAI service to the service collection.
+/// </summary>
 public static class OpenAiServiceExtensions
 {
+    /// <summary>
+    /// Adds the <see cref="OpenAiService"/> to the specified <see cref="IServiceCollection"/>.
+    /// </summary>
+    /// <param name="services">The <see cref="IServiceCollection"/> to add the service to.</param>
+    /// <param name="configure">An action to configure the <see cref="OpenAiService"/>.</param>
+    /// <returns>The modified <see cref="IServiceCollection"/>.</returns>
     public static IServiceCollection AddOpenAiService(this IServiceCollection services, Action<OpenAiServiceOptions> configure)
     {
         services.Configure(configure);

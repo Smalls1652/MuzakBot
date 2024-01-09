@@ -7,6 +7,9 @@ using MuzakBot.App.Models.OpenAi;
 
 namespace MuzakBot.App.Services;
 
+/// <summary>
+/// Service for interacting with the OpenAI API.
+/// </summary>
 public partial class OpenAiService : IOpenAiService
 {
     private bool _isDisposed;
@@ -16,6 +19,12 @@ public partial class OpenAiService : IOpenAiService
     private readonly string _apiKey;
     private readonly bool _apiKeyIsSet;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="OpenAiService"/> class.
+    /// </summary>
+    /// <param name="options">The <see cref="OpenAiServiceOptions"/> for configuring the service.</param>
+    /// <param name="httpClientFactory">The <see cref="IHttpClientFactory"/>.</param>
+    /// <param name="logger">The logger.</param>
     public OpenAiService(IOptions<OpenAiServiceOptions> options, IHttpClientFactory httpClientFactory, ILogger<OpenAiService> logger)
     {
         _logger = logger;
@@ -23,8 +32,25 @@ public partial class OpenAiService : IOpenAiService
         _apiKey = options.Value.ApiKey;
     }
 
+    /// <summary>
+    /// Gets the lyric analysis for a song using the OpenAI API.
+    /// </summary>
+    /// <param name="artistName">The name of the artist.</param>
+    /// <param name="songName">The name of the song.</param>
+    /// <param name="lyrics">The lyrics of the song.</param>
+    /// <returns>The lyric analysis from the API.</returns>
+    /// <exception cref="NullReferenceException">The response from the OpenAI API was null.</exception>
     public async Task<OpenAiChatCompletion?> GetLyricAnalysisAsync(string artistName, string songName, string lyrics) => await GetLyricAnalysisAsync(artistName, songName, lyrics, null);
 
+    /// <summary>
+    /// Gets the lyric analysis for a song using the OpenAI API.
+    /// </summary>
+    /// <param name="artistName">The name of the artist.</param>
+    /// <param name="songName">The name of the song.</param>
+    /// <param name="lyrics">The lyrics of the song.</param>
+    /// <param name="parentActivityId">The ID of the parent activity (optional).</param>
+    /// <returns>The lyric analysis from the API.</returns>
+    /// <exception cref="NullReferenceException">The response from the OpenAI API was null.</exception>
     public async Task<OpenAiChatCompletion?> GetLyricAnalysisAsync(string artistName, string songName, string lyrics, string? parentActivityId)
     {
         using var activity = _activitySource.StartGetLyricAnalysisAsyncActivity(artistName, songName, parentActivityId);
@@ -113,6 +139,7 @@ public partial class OpenAiService : IOpenAiService
         return response;
     }
 
+    /// <inheritdoc cref="IDisposable.Dispose"/>
     public void Dispose()
     {
         ObjectDisposedException.ThrowIf(_isDisposed, this);
