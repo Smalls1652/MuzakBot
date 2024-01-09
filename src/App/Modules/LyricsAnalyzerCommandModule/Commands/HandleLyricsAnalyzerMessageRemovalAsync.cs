@@ -11,12 +11,12 @@ namespace MuzakBot.App.Modules;
 public partial class LyricsAnalyzerCommandModule
 {
     /// <summary>
-    /// Handler for removing a failed share message.
+    /// Handler for removing a failed lyrics analyzer message.
     /// </summary>
     /// <remarks>
     /// This is a component interaction handler and can only be
     /// invoked by a user clicking the "Remove message" button on
-    /// a failed share message.
+    /// a failed lyrics analyzer message.
     /// </remarks>
     [ComponentInteraction(customId: "remove-lyricanalyzer-post-btn-*")]
     private async Task HandleLyricsAnalyzerMessageRemovalAsync()

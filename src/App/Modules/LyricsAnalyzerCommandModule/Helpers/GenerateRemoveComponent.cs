@@ -8,7 +8,7 @@ public partial class LyricsAnalyzerCommandModule
 {
     /// <summary>
     /// Generates a <see cref="ComponentBuilder"/> for the "Remove message"
-    /// button on a failed music share message.
+    /// button on a failed lyrics analyzer message.
     /// </summary>
     /// <returns></returns>
     private ComponentBuilder GenerateRemoveComponent()

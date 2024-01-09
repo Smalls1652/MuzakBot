@@ -15,6 +15,13 @@ namespace MuzakBot.App.Modules;
 
 public partial class LyricsAnalyzerCommandModule
 {
+    /// <summary>
+    /// Handles the 'lyricsanalyzer' slash command.
+    /// </summary>
+    /// <param name="artistId">The ID of the artist.</param>
+    /// <param name="songId">The ID of the song.</param>
+    /// <returns></returns>
+    /// <exception cref="NullReferenceException"></exception>
     [SlashCommand(
         name: "lyricsanalyzer",
         description: "Get an analysis of the lyrics of a song"

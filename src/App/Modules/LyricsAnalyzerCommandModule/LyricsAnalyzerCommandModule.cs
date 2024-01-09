@@ -8,6 +8,9 @@ using System.Diagnostics;
 
 namespace MuzakBot.App.Modules;
 
+/// <summary>
+/// Command module for hosting the lyrics analyzer commands.
+/// </summary>
 public partial class LyricsAnalyzerCommandModule : InteractionModuleBase, IDisposable
 {
     private bool _isDisposed;
@@ -18,6 +21,14 @@ public partial class LyricsAnalyzerCommandModule : InteractionModuleBase, IDispo
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<LyricsAnalyzerCommandModule> _logger;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="LyricsAnalyzerCommandModule"/> class.
+    /// </summary>
+    /// <param name="musicBrainzService">The <see cref="IMusicBrainzService"/>.</param>
+    /// <param name="geniusApiService">The <see cref="IGeniusApiService"/>.</param>
+    /// <param name="openAiService">The <see cref="IOpenAiService"/>.</param>
+    /// <param name="httpClientFactory">The <see cref="IHttpClientFactory"/>.</param>
+    /// <param name="logger">The logger.</param>
     public LyricsAnalyzerCommandModule(IMusicBrainzService musicBrainzService, IGeniusApiService geniusApiService, IOpenAiService openAiService, IHttpClientFactory httpClientFactory, ILogger<LyricsAnalyzerCommandModule> logger)
     {
         _musicBrainzService = musicBrainzService;
@@ -27,6 +38,7 @@ public partial class LyricsAnalyzerCommandModule : InteractionModuleBase, IDispo
         _logger = logger;
     }
 
+    /// <inheritdoc cref="IDisposable.Dispose"/>
     public void Dispose()
     {
         ObjectDisposedException.ThrowIf(_isDisposed, nameof(LyricsAnalyzerCommandModule));
