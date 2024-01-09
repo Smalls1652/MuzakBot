@@ -26,7 +26,7 @@ public partial class LyricsAnalyzerCommandModule
         name: "lyricsanalyzer",
         description: "Get an analysis of the lyrics of a song"
     )]
-    private async Task HandleGetLyricsAsync(
+    private async Task HandleLyricsAnalyzerAsync(
         [Summary("artistName", "The name of an artist"),
          Autocomplete(typeof(ArtistSearchAutoCompleteHandler))
         ]
