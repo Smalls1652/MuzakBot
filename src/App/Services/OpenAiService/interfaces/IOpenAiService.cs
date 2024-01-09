@@ -7,6 +7,6 @@ namespace MuzakBot.App.Services;
 /// </summary>
 public interface IOpenAiService : IDisposable
 {
-    Task<OpenAiChatCompletion?> GetLyricAnalysisAsync(string artistName, string songName, string lyrics, string memeMode);
-    Task<OpenAiChatCompletion?> GetLyricAnalysisAsync(string artistName, string songName, string lyrics, string memeMode, string? parentActivityId);
+    Task<OpenAiChatCompletion?> GetLyricAnalysisAsync(string artistName, string songName, string lyrics, string promptMode);
+    Task<OpenAiChatCompletion?> GetLyricAnalysisAsync(string artistName, string songName, string lyrics, string promptMode, string? parentActivityId);
 }

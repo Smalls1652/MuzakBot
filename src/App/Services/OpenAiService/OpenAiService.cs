@@ -39,7 +39,7 @@ public partial class OpenAiService : IOpenAiService
     /// <param name="lyrics">The lyrics of the song.</param>
     /// <returns>The lyric analysis from the API.</returns>
     /// <exception cref="NullReferenceException">The response from the OpenAI API was null.</exception>
-    public async Task<OpenAiChatCompletion?> GetLyricAnalysisAsync(string artistName, string songName, string lyrics, string memeMode) => await GetLyricAnalysisAsync(artistName, songName, lyrics, memeMode, null);
+    public async Task<OpenAiChatCompletion?> GetLyricAnalysisAsync(string artistName, string songName, string lyrics, string promptMode) => await GetLyricAnalysisAsync(artistName, songName, lyrics, promptMode, null);
 
     /// <summary>
     /// Gets the lyric analysis for a song using the OpenAI API.
@@ -50,7 +50,7 @@ public partial class OpenAiService : IOpenAiService
     /// <param name="parentActivityId">The ID of the parent activity (optional).</param>
     /// <returns>The lyric analysis from the API.</returns>
     /// <exception cref="NullReferenceException">The response from the OpenAI API was null.</exception>
-    public async Task<OpenAiChatCompletion?> GetLyricAnalysisAsync(string artistName, string songName, string lyrics, string memeMode, string? parentActivityId)
+    public async Task<OpenAiChatCompletion?> GetLyricAnalysisAsync(string artistName, string songName, string lyrics, string promptMode, string? parentActivityId)
     {
         using var activity = _activitySource.StartGetLyricAnalysisAsyncActivity(artistName, songName, parentActivityId);
 
@@ -63,18 +63,25 @@ public partial class OpenAiService : IOpenAiService
 
         requestMessage.Headers.Authorization = new("Bearer", _apiKey);
 
-        string systemPrompt = memeMode switch
+        string systemPrompt = promptMode switch
         {
-            "tame" => LyricsAnalysisPromptConstants.TameMemePrompt,
-            "insane" => LyricsAnalysisPromptConstants.InsaneMemePrompt,
+            "snobby" => LyricsAnalysisPromptConstants.SnobbyMusicCriticPrompt,
+            "tame-meme" => LyricsAnalysisPromptConstants.TameMemePrompt,
+            "insane-meme" => LyricsAnalysisPromptConstants.InsaneMemePrompt,
             _ => LyricsAnalysisPromptConstants.NormalPrompt
+        };
+
+        string userPrompt = promptMode switch
+        {
+            "snobby" => $"Briefly review and scathingly critique the lyrics for the song \"{songName}\" by {artistName}. Format the response in Markdown syntax.",
+            _ => $"Briefly explain the lyrics for the song \"{songName}\" by {artistName}. Format the response in Markdown syntax."
         };
 
         OpenAiChatCompletionRequest request = new()
         {
             Model = "gpt-4-1106-preview",
             Temperature = 1,
-            MaxTokens = 384,
+            MaxTokens = 512,
             TopP = 1,
             FrequencyPenalty = 0,
             PresencePenalty = 0,
@@ -93,7 +100,7 @@ public partial class OpenAiService : IOpenAiService
                 new()
                 {
                     Role = "user",
-                    Content = $"Briefly explain the lyrics for the song \"{songName}\" by {artistName}. Format the response in Markdown syntax."
+                    Content = userPrompt
                 }
             ]
         };
