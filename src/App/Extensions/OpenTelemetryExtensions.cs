@@ -145,9 +145,12 @@ internal static class OpenTelemetryExtensions
     {
         return builder
             .AddSource("MuzakBot.App.Modules.ShareMusicCommandModule")
+            .AddSource("MuzakBot.App.Modules.LyricsAnalyzerCommandModule")
             .AddSource("MuzakBot.App.Services.DiscordService")
             .AddSource("MuzakBot.App.Services.ItunesApiService")
             .AddSource("MuzakBot.App.Services.MusicBrainzService")
-            .AddSource("MuzakBot.App.Services.OdesliService");
+            .AddSource("MuzakBot.App.Services.OdesliService")
+            .AddSource("MuzakBot.App.Services.OpenAiService")
+            .AddSource("MuzakBot.App.Service.GeniusApiService");
     }
 }
