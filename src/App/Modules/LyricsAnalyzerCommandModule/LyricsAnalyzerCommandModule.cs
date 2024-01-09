@@ -18,6 +18,7 @@ public partial class LyricsAnalyzerCommandModule : InteractionModuleBase, IDispo
     private readonly IMusicBrainzService _musicBrainzService;
     private readonly IGeniusApiService _geniusApiService;
     private readonly IOpenAiService _openAiService;
+    private readonly ICosmosDbService _cosmosDbService;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<LyricsAnalyzerCommandModule> _logger;
     private readonly DiscordServiceConfig _discordServiceConfig;
@@ -30,11 +31,12 @@ public partial class LyricsAnalyzerCommandModule : InteractionModuleBase, IDispo
     /// <param name="openAiService">The <see cref="IOpenAiService"/>.</param>
     /// <param name="httpClientFactory">The <see cref="IHttpClientFactory"/>.</param>
     /// <param name="logger">The logger.</param>
-    public LyricsAnalyzerCommandModule(IMusicBrainzService musicBrainzService, IGeniusApiService geniusApiService, IOpenAiService openAiService, IHttpClientFactory httpClientFactory, ILogger<LyricsAnalyzerCommandModule> logger, DiscordServiceConfig discordServiceConfig)
+    public LyricsAnalyzerCommandModule(IMusicBrainzService musicBrainzService, IGeniusApiService geniusApiService, IOpenAiService openAiService, ICosmosDbService cosmosDbService, IHttpClientFactory httpClientFactory, ILogger<LyricsAnalyzerCommandModule> logger, DiscordServiceConfig discordServiceConfig)
     {
         _musicBrainzService = musicBrainzService;
         _geniusApiService = geniusApiService;
         _openAiService = openAiService;
+        _cosmosDbService = cosmosDbService;
         _httpClientFactory = httpClientFactory;
         _logger = logger;
         _discordServiceConfig = discordServiceConfig;
