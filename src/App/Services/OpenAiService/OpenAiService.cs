@@ -17,7 +17,6 @@ public partial class OpenAiService : IOpenAiService
     private readonly ActivitySource _activitySource = new("MuzakBot.App.Services.OpenAiService");
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly string _apiKey;
-    private readonly bool _apiKeyIsSet;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="OpenAiService"/> class.
