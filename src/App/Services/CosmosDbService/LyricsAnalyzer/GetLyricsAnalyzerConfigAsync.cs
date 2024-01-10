@@ -12,8 +12,6 @@ public partial class CosmosDbService
     public async Task<LyricsAnalyzerConfig> GetLyricsAnalyzerConfigAsync() => await GetLyricsAnalyzerConfigAsync(null);
     public async Task<LyricsAnalyzerConfig> GetLyricsAnalyzerConfigAsync(string? parentActivityId)
     {
-        //using var activity = _activitySource.StartDbGetSongLyricsItemActivity(artistName, songName, parentActivityId);
-
         Container container = _cosmosDbClient.GetContainer(
             databaseId: _options.DatabaseName,
             containerId: "config"
