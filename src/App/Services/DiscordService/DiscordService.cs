@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Text;
 using Discord;
 using Discord.Commands;
 using Discord.Interactions;
@@ -20,6 +21,7 @@ public class DiscordService : IDiscordService, IHostedService
     private bool _isDisposed;
     private readonly ActivitySource _activitySource = new("MuzakBot.App.Services.DiscordService");
     private readonly DiscordSocketClient _discordSocketClient;
+    private readonly InteractionService _interactionService;
     private readonly ILogger<DiscordService> _logger;
     private readonly string _clientToken;
 #if DEBUG
@@ -28,9 +30,10 @@ public class DiscordService : IDiscordService, IHostedService
     private readonly bool _enableLyricsAnalyzer;
     private readonly IServiceProvider _serviceProvider;
 
-    public DiscordService(DiscordSocketClient discordSocketClient, ILogger<DiscordService> logger, IOptions<DiscordServiceOptions> options, IServiceProvider serviceProvider)
+    public DiscordService(DiscordSocketClient discordSocketClient, InteractionService interactionService, ILogger<DiscordService> logger, IOptions<DiscordServiceOptions> options, IServiceProvider serviceProvider)
     {
         _discordSocketClient = discordSocketClient;
+        _interactionService = interactionService;
         _logger = logger;
         _clientToken = options.Value.ClientToken ?? throw new ArgumentNullException(nameof(options), "Client token is null.");
 #if DEBUG
@@ -39,8 +42,6 @@ public class DiscordService : IDiscordService, IHostedService
         _enableLyricsAnalyzer = options.Value.EnableLyricsAnalyzer;
         _serviceProvider = serviceProvider;
     }
-
-    private InteractionService? _interactionService;
 
     /// <inheritdoc cref="IDiscordService.ConnectAsync"/>
     public async Task ConnectAsync()
@@ -65,7 +66,6 @@ public class DiscordService : IDiscordService, IHostedService
 
         // Initialize Discord Interaction Service
         _logger.LogInformation("Initializing Discord Interaction Service...");
-        _interactionService = new(_discordSocketClient.Rest);
 
         _logger.LogInformation("Adding 'ShareMusicCommandModule'.");
         await _interactionService.AddModuleAsync<ShareMusicCommandModule>(_serviceProvider);
@@ -85,6 +85,9 @@ public class DiscordService : IDiscordService, IHostedService
 
         // Add slash command handler
         _discordSocketClient.InteractionCreated += HandleSlashCommand;
+
+        // Add autocomplete handler
+        _discordSocketClient.InteractionCreated += HandleAutocomplete;
 
         // Add ready handler
         _discordSocketClient.Ready += OnClientReadyAsync;
@@ -129,7 +132,33 @@ public class DiscordService : IDiscordService, IHostedService
     private async Task HandleSlashCommand(SocketInteraction interaction)
     {
         SocketInteractionContext interactionContext = new(_discordSocketClient, interaction);
-        await _interactionService!.ExecuteCommandAsync(interactionContext, _serviceProvider);
+        
+        var result = await _interactionService!.ExecuteCommandAsync(interactionContext, _serviceProvider);
+
+        if (!result.IsSuccess)
+        {
+            _logger.LogError("Failed to execute slash command executed by '{Username}'. Is DM Interaction? {IsDmInteraction}", interaction.User.Username, interaction.IsDMInteraction);
+        }
+        else
+        {
+            _logger.LogInformation("Successfully executed slash command executed by '{Username}'. Is DM Interaction? {IsDmInteraction}", interaction.User.Username, interaction.IsDMInteraction);
+        }
+    }
+
+    private async Task HandleAutocomplete(SocketInteraction interaction)
+    {
+        SocketInteractionContext interactionContext = new(_discordSocketClient, interaction);
+
+        var result = await _interactionService!.ExecuteCommandAsync(interactionContext, _serviceProvider);
+
+        if (!result.IsSuccess)
+        {
+            _logger.LogError("Failed to execute autocomplete executed by '{Username}'. Is DM Interaction? {IsDmInteraction}", interaction.User.Username, interaction.IsDMInteraction);
+        }
+        else
+        {
+            _logger.LogInformation("Successfully executed autocomplete executed by '{Username}'. Is DM Interaction? {IsDmInteraction}", interaction.User.Username, interaction.IsDMInteraction);
+        }
     }
 
     /// <summary>

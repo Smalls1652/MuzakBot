@@ -1,4 +1,5 @@
 using Discord;
+using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -37,6 +38,8 @@ public static class DiscordServiceExtensions
         services.AddSingleton<DiscordSocketClient>(
             implementationInstance: new(discordSocketConfig)
         );
+
+        services.AddSingleton<InteractionService>(serviceProvider => new(serviceProvider.GetRequiredService<DiscordSocketClient>()));
 
         services.AddHostedService<DiscordService>();
 
