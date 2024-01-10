@@ -6,6 +6,15 @@ public class LyricsAnalyzerConfig : DatabaseItem, ILyricsAnalyzerConfig
     public LyricsAnalyzerConfig()
     {}
 
+    public LyricsAnalyzerConfig(bool firstSetup)
+    {
+        if (firstSetup)
+        {
+            Id = Guid.NewGuid().ToString();
+            PartitionKey = "lyricsanalyzer-config";
+        }
+    }
+
     [JsonPropertyName("rateLimitEnabled")]
     public bool RateLimitEnabled { get; set; }
 
