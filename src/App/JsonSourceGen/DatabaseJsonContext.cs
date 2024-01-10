@@ -13,6 +13,11 @@ namespace MuzakBot.App;
 [JsonSerializable(typeof(DatabaseItem))]
 [JsonSerializable(typeof(SongLyricsItem))]
 [JsonSerializable(typeof(SongLyricsItem[]))]
+[JsonSerializable(typeof(LyricsAnalyzerConfig))]
+[JsonSerializable(typeof(LyricsAnalyzerUserRateLimit))]
+[JsonSerializable(typeof(LyricsAnalyzerUserRateLimit[]))]
 [JsonSerializable(typeof(CosmosDbResponse<SongLyricsItem>))]
+[JsonSerializable(typeof(CosmosDbResponse<LyricsAnalyzerConfig>))]
+[JsonSerializable(typeof(CosmosDbResponse<LyricsAnalyzerUserRateLimit>))]
 internal partial class DatabaseJsonContext : JsonSerializerContext
 {}
