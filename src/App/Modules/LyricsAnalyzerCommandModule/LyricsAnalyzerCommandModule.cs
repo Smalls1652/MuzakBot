@@ -5,13 +5,14 @@ using Microsoft.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using MuzakBot.App.Metrics;
 using System.Diagnostics;
+using Discord.Commands;
 
 namespace MuzakBot.App.Modules;
 
 /// <summary>
 /// Command module for hosting the lyrics analyzer commands.
 /// </summary>
-public partial class LyricsAnalyzerCommandModule : InteractionModuleBase, IDisposable
+public partial class LyricsAnalyzerCommandModule : InteractionModuleBase<SocketInteractionContext>, IDisposable
 {
     private bool _isDisposed;
     private readonly ActivitySource _activitySource = new("MuzakBot.App.Modules.LyricsAnalyzerCommandModule");
