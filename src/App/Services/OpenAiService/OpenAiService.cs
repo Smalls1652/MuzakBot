@@ -66,6 +66,7 @@ public partial class OpenAiService : IOpenAiService
         string systemPrompt = promptMode switch
         {
             "snobby" => LyricsAnalysisPromptConstants.SnobbyMusicCriticPrompt,
+            "roast-meme" => LyricsAnalysisPromptConstants.RoastMemePrompt,
             "tame-meme" => LyricsAnalysisPromptConstants.TameMemePrompt,
             "insane-meme" => LyricsAnalysisPromptConstants.InsaneMemePrompt,
             _ => LyricsAnalysisPromptConstants.NormalPrompt
@@ -74,6 +75,7 @@ public partial class OpenAiService : IOpenAiService
         string userPrompt = promptMode switch
         {
             "snobby" => $"Briefly review and scathingly critique the lyrics for the song \"{songName}\" by {artistName}. Format the response in Markdown syntax.",
+            "roast-meme" => $"Briefly roast the lyrics for the song \"{songName}\" by {artistName}. Format the response in Markdown syntax.",
             _ => $"Briefly explain the lyrics for the song \"{songName}\" by {artistName}. Format the response in Markdown syntax."
         };
 
