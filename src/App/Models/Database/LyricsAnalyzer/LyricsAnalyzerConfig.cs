@@ -22,14 +22,14 @@ public class LyricsAnalyzerConfig : DatabaseItem, ILyricsAnalyzerConfig
     public int RateLimitMaxRequests { get; set; }
 
     [JsonPropertyName("rateLimitIgnoredUserIds")]
-    public ulong[]? RateLimitIgnoredUserIds { get; set; }
+    public List<ulong>? RateLimitIgnoredUserIds { get; set; }
 
     [JsonPropertyName("commandIsEnabledToSpecificGuilds")]
     public bool CommandIsEnabledToSpecificGuilds { get; set; }
 
     [JsonPropertyName("commandEnabledGuildIds")]
-    public ulong[]? CommandEnabledGuildIds { get; set; }
+    public List<ulong>? CommandEnabledGuildIds { get; set; }
 
     [JsonPropertyName("commandDisabledGuildIds")]
-    public ulong[]? CommandDisabledGuildIds { get; set; }
+    public List<ulong>? CommandDisabledGuildIds { get; set; }
 }

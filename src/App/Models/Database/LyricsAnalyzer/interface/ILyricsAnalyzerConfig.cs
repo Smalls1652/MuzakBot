@@ -6,8 +6,8 @@ public interface ILyricsAnalyzerConfig
     string PartitionKey { get; set; }
     bool RateLimitEnabled { get; set; }
     int RateLimitMaxRequests { get; set; }
-    ulong[]? RateLimitIgnoredUserIds { get; set; }
+    List<ulong>? RateLimitIgnoredUserIds { get; set; }
     bool CommandIsEnabledToSpecificGuilds { get; set; }
-    ulong[]? CommandEnabledGuildIds { get; set; }
-    ulong[]? CommandDisabledGuildIds { get; set; }
+    List<ulong>? CommandEnabledGuildIds { get; set; }
+    List<ulong>? CommandDisabledGuildIds { get; set; }
 }
