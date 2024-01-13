@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Reflection;
 using System.Text;
 using Discord;
 using Discord.Commands;
@@ -27,6 +28,7 @@ public class DiscordService : IDiscordService, IHostedService
 #if DEBUG
     private readonly ulong _testGuildId;
 #endif
+    private readonly ulong _adminGuildId;
     private readonly bool _enableLyricsAnalyzer;
     private readonly IServiceProvider _serviceProvider;
 
@@ -39,6 +41,7 @@ public class DiscordService : IDiscordService, IHostedService
 #if DEBUG
         _testGuildId = ulong.Parse(options.Value.TestGuildId ?? throw new ArgumentNullException(nameof(options), "Test guild ID is null."));
 #endif
+        _adminGuildId = options.Value.AdminGuildId;
         _enableLyricsAnalyzer = options.Value.EnableLyricsAnalyzer;
         _serviceProvider = serviceProvider;
     }
@@ -69,6 +72,8 @@ public class DiscordService : IDiscordService, IHostedService
 
         _logger.LogInformation("Adding 'ShareMusicCommandModule'.");
         await _interactionService.AddModuleAsync<ShareMusicCommandModule>(_serviceProvider);
+
+        await _interactionService.AddModuleAsync<AdminCommandModule>(_serviceProvider);
 
         if (_enableLyricsAnalyzer)
         {
@@ -110,14 +115,40 @@ public class DiscordService : IDiscordService, IHostedService
     {
 #if DEBUG
         _logger.LogInformation("Running in debug mode. Registering slash commands to test guild '{GuildId}'.", _testGuildId);
-        await _interactionService!.RegisterCommandsToGuildAsync(
+
+        await _interactionService!.AddModulesToGuildAsync(
             guildId: _testGuildId,
-            deleteMissing: true
+            deleteMissing: true,
+            modules: [
+                _interactionService.GetModuleInfo<ShareMusicCommandModule>(),
+                _interactionService.GetModuleInfo<LyricsAnalyzerCommandModule>()
+            ]
+        );
+
+        await _interactionService.AddModulesToGuildAsync(
+            guildId: _testGuildId,
+            deleteMissing: true,
+            modules: [
+                _interactionService.GetModuleInfo<AdminCommandModule>()
+            ]
         );
 #else
         _logger.LogInformation("Registering slash commands globally.");
-        await _interactionService!.RegisterCommandsGloballyAsync(
-            deleteMissing: true
+        
+        await _interactionService.AddModulesGloballyAsync(
+            deleteMissing: true,
+            modules: [
+                _interactionService.GetModuleInfo<ShareMusicCommandModule>(),
+                _interactionService.GetModuleInfo<LyricsAnalyzerCommandModule>()
+            ]
+        );
+
+        await _interactionService.AddModulesToGuildAsync(
+            guildId: _adminGuildId,
+            deleteMissing: true,
+            modules: [
+                _interactionService.GetModuleInfo<AdminCommandModule>()
+            ]
         );
 #endif
 
