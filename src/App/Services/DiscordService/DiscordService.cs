@@ -116,21 +116,9 @@ public class DiscordService : IDiscordService, IHostedService
 #if DEBUG
         _logger.LogInformation("Running in debug mode. Registering slash commands to test guild '{GuildId}'.", _testGuildId);
 
-        await _interactionService!.AddModulesToGuildAsync(
+        await _interactionService!.RegisterCommandsToGuildAsync(
             guildId: _testGuildId,
-            deleteMissing: true,
-            modules: [
-                _interactionService.GetModuleInfo<ShareMusicCommandModule>(),
-                _interactionService.GetModuleInfo<LyricsAnalyzerCommandModule>()
-            ]
-        );
-
-        await _interactionService.AddModulesToGuildAsync(
-            guildId: _testGuildId,
-            deleteMissing: true,
-            modules: [
-                _interactionService.GetModuleInfo<AdminCommandModule>()
-            ]
+            deleteMissing: true
         );
 #else
         _logger.LogInformation("Registering slash commands globally.");
