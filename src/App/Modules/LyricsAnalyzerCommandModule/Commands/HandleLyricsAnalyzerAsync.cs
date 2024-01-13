@@ -53,8 +53,39 @@ public partial class LyricsAnalyzerCommandModule
             ephemeral: isPrivateResponse
         );
 
+        _logger.LogInformation("Getting lyrics analyzer config from database.");
+        LyricsAnalyzerConfig lyricsAnalyzerConfig;
+        try
+        {
+            lyricsAnalyzerConfig = await _cosmosDbService.GetLyricsAnalyzerConfigAsync(activity?.Id);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting lyrics analyzer config from database.");
+            await FollowupAsync(
+                embed: GenerateErrorEmbed("An error occurred. 😥").Build(),
+                components: GenerateRemoveComponent().Build(),
+                ephemeral: isPrivateResponse
+            );
 
-        if (_discordServiceConfig.LyricsAnalyzerEnabledServersArray is not null && !_discordServiceConfig.LyricsAnalyzerEnabledServersArray.Contains(Context.Guild.Id.ToString()))
+            activity?.SetStatus(ActivityStatusCode.Error);
+
+            return;
+        }
+
+
+        if (lyricsAnalyzerConfig.CommandEnabledGuildIds is not null && !lyricsAnalyzerConfig.CommandEnabledGuildIds.Contains(Context.Guild.Id))
+        {
+            await FollowupAsync(
+                embed: GenerateErrorEmbed("This command is not enabled on this server. 😥").Build(),
+                components: GenerateRemoveComponent().Build(),
+                ephemeral: isPrivateResponse
+            );
+
+            return;
+        }
+
+        if (!lyricsAnalyzerConfig.CommandIsEnabledToSpecificGuilds && lyricsAnalyzerConfig.CommandDisabledGuildIds is not null && lyricsAnalyzerConfig.CommandDisabledGuildIds.Contains(Context.Guild.Id))
         {
             await FollowupAsync(
                 embed: GenerateErrorEmbed("This command is not enabled on this server. 😥").Build(),
