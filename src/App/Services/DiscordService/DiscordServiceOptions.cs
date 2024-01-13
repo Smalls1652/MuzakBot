@@ -16,4 +16,6 @@ public class DiscordServiceOptions
     public string? TestGuildId { get; set; }
 
     public bool EnableLyricsAnalyzer { get; set; }
+
+    public ulong AdminGuildId { get; set; }
 }

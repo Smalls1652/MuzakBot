@@ -76,6 +76,8 @@ if (builder.Configuration.GetValue<bool>("ENABLE_LYRICS_ANALYZER"))
 
 builder.Services.AddDiscordService(options =>
 {
+    options.AdminGuildId = builder.Configuration.GetValue<ulong>("DISCORD_ADMIN_GUILD");
+
     options.ClientToken = builder.Configuration.GetValue<string>("DISCORD_CLIENT_TOKEN");
     options.EnableLyricsAnalyzer = builder.Configuration.GetValue<bool>("ENABLE_LYRICS_ANALYZER");
 
