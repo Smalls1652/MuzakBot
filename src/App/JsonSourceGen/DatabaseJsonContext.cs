@@ -8,7 +8,7 @@ namespace MuzakBot.App;
     WriteIndented = false,
     PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
     GenerationMode = JsonSourceGenerationMode.Default,
-    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+    DefaultIgnoreCondition = JsonIgnoreCondition.Never
 )]
 [JsonSerializable(typeof(DatabaseItem))]
 [JsonSerializable(typeof(SongLyricsItem))]
