@@ -14,33 +14,53 @@ public partial class CosmosDbService
     {
         Container container = _cosmosDbClient.GetContainer(
             databaseId: _options.DatabaseName,
-            containerId: "config"
+            containerId: "command-configs"
         );
 
+        _logger.LogInformation("Getting lyrics analyzer config from the database.");
         var query = new QueryDefinition(
             query: "SELECT * FROM c WHERE c.partitionKey = 'lyricsanalyzer-config'"
         );
 
-        using FeedIterator feedIterator = container.GetItemQueryStreamIterator(
-            queryDefinition: query,
-            requestOptions: new()
-            {
-                PartitionKey = new PartitionKey("lyricsanalyzer-config")
-            }
-        );
+        CosmosDbResponse<LyricsAnalyzerConfig>? cosmosDbResponse;
 
-        using ResponseMessage response = await feedIterator.ReadNextAsync();
+        try
+        {
+            using FeedIterator feedIterator = container.GetItemQueryStreamIterator(
+                queryDefinition: query,
+                requestOptions: new()
+                {
+                    PartitionKey = new PartitionKey("lyricsanalyzer-config")
+                }
+            );
 
-        CosmosDbResponse<LyricsAnalyzerConfig>? cosmosDbResponse = await JsonSerializer.DeserializeAsync(
-            utf8Json: response.Content,
-            jsonTypeInfo: DatabaseJsonContext.Default.CosmosDbResponseLyricsAnalyzerConfig
-        );
+            using ResponseMessage response = await feedIterator.ReadNextAsync();
+
+            cosmosDbResponse = await JsonSerializer.DeserializeAsync(
+                utf8Json: response.Content,
+                jsonTypeInfo: DatabaseJsonContext.Default.CosmosDbResponseLyricsAnalyzerConfig
+            );
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "{ErrorMessage}", ex.Message);
+            throw;
+        }
 
         if (cosmosDbResponse is null || cosmosDbResponse.Documents is null || cosmosDbResponse.Documents.Length == 0)
         {
+            _logger.LogWarning("Lyrics analyzer config not found. Creating a new one.");
             LyricsAnalyzerConfig lyricsAnalyzerConfig = new(true);
 
-            await AddOrUpdateLyricsAnalyzerConfigAsync(lyricsAnalyzerConfig);
+            try
+            {
+                await AddOrUpdateLyricsAnalyzerConfigAsync(lyricsAnalyzerConfig);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "{ErrorMessage}", ex.Message);
+                throw;
+            }
 
             return lyricsAnalyzerConfig;
         }
