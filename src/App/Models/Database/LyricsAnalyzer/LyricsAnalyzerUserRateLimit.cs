@@ -35,6 +35,9 @@ public class LyricsAnalyzerUserRateLimit : DatabaseItem, ILyricsAnalyzerUserRate
     /// <param name="lastRequestTime">The last request time.</param>
     public LyricsAnalyzerUserRateLimit(ulong userId, int currentRequestCount, DateTimeOffset lastRequestTime)
     {
+        Id = Guid.NewGuid().ToString();
+        PartitionKey = "user-item";
+
         UserId = userId;
         CurrentRequestCount = currentRequestCount;
         LastRequestTime = lastRequestTime;
@@ -73,5 +76,36 @@ public class LyricsAnalyzerUserRateLimit : DatabaseItem, ILyricsAnalyzerUserRate
     public void ResetRequestCount()
     {
         CurrentRequestCount = 0;
+    }
+
+    /// <summary>
+    /// Checks if the request count should be reset.
+    /// </summary>
+    /// <returns>True if the request count should be reset, false otherwise.</returns>
+    public bool ShouldResetRequestCount()
+    {
+        TimeSpan timeSinceLastRequest = DateTimeOffset.UtcNow - LastRequestTime;
+
+        return timeSinceLastRequest.TotalHours >= 24;
+    }
+
+    /// <summary>
+    /// Evaluates a request.
+    /// </summary>
+    /// <param name="maxRequestCount">The maximum request count.</param>
+    /// <returns>True if the request should be allowed, false otherwise.</returns>
+    public bool EvaluateRequest(int maxRequestCount)
+    {
+        if (ShouldResetRequestCount())
+        {
+            ResetRequestCount();
+        }
+
+        if (CurrentRequestCount >= maxRequestCount)
+        {
+            return false;
+        }
+
+        return true;
     }
 }

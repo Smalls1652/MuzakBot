@@ -10,4 +10,6 @@ public interface ILyricsAnalyzerUserRateLimit
 
     void IncrementRequestCount();
     void ResetRequestCount();
+    bool ShouldResetRequestCount();
+    bool EvaluateRequest(int maxRequestCount);
 }

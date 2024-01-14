@@ -99,6 +99,34 @@ public partial class LyricsAnalyzerCommandModule
             return;
         }
 
+        LyricsAnalyzerUserRateLimit? lyricsAnalyzerUserRateLimit = null;
+        if (lyricsAnalyzerConfig.RateLimitEnabled)
+        {
+            _logger.LogInformation("Getting current rate limit for user '{UserId}' from database.", Context.User.Id);
+            lyricsAnalyzerUserRateLimit = await _cosmosDbService.GetLyricsAnalyzerUserRateLimitAsync(Context.User.Id, activity?.Id);
+
+            _logger.LogInformation("Current rate limit for user '{UserId}' is {CurrentRequestCount}/{MaxRequests}.", Context.User.Id, lyricsAnalyzerUserRateLimit.CurrentRequestCount, lyricsAnalyzerConfig.RateLimitMaxRequests);
+
+            if (!lyricsAnalyzerUserRateLimit.EvaluateRequest(lyricsAnalyzerConfig.RateLimitMaxRequests))
+            {
+                _logger.LogInformation("User '{UserId}' has reached the rate limit.", Context.User.Id);
+
+                StringBuilder rateLimitMessageBuilder = new($"You have reached the rate limit ({lyricsAnalyzerConfig.RateLimitMaxRequests} requests) for this command. 😥\n\n");
+
+                DateTimeOffset resetTime = lyricsAnalyzerUserRateLimit.LastRequestTime.AddDays(1);
+
+                rateLimitMessageBuilder.AppendLine($"Rate limit will reset <t:{resetTime.ToUnixTimeSeconds()}:R>.");
+
+                await FollowupAsync(
+                    embed: GenerateErrorEmbed(rateLimitMessageBuilder.ToString()).Build(),
+                    components: GenerateRemoveComponent().Build(),
+                    ephemeral: isPrivateResponse
+                );
+
+                return;
+            }
+        }
+
         string lyrics = string.Empty;
         bool isSongLyricsItemInDb = false;
         try
@@ -265,6 +293,15 @@ public partial class LyricsAnalyzerCommandModule
                 embed: embedBuilder.Build(),
                 ephemeral: isPrivateResponse
             );
+
+            if (lyricsAnalyzerConfig.RateLimitEnabled)
+            {
+                _logger.LogInformation("Updating rate limit for user '{UserId}' in database.", Context.User.Id);
+                lyricsAnalyzerUserRateLimit!.IncrementRequestCount();
+                lyricsAnalyzerUserRateLimit!.LastRequestTime = DateTimeOffset.UtcNow;
+
+                await _cosmosDbService.AddOrUpdateLyricsAnalyzerUserRateLimitAsync(lyricsAnalyzerUserRateLimit, activity?.Id);
+            }
         }
         catch (Exception ex)
         {
