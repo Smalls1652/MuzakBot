@@ -103,6 +103,50 @@
 			},
 			"problemMatcher": "$msCompile"
 		},
+		{
+			"label": "Run docfx site",
+			"detail": "Start the docfx site locally.",
+			"icon": {
+				"id": "notebook-template",
+				"color": "terminal.ansiBlack"
+			},
+			"type": "process",
+			"command": "dotnet",
+			"args": [
+				"docfx",
+				"docfx.json",
+				"--serve"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/docs_site"
+			},
+			"isBackground": true,
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": false
+			},
+			"problemMatcher": {
+				"owner": "dotnet",
+				"fileLocation": [
+					"relative",
+					"${workspaceFolder}/docs_site"
+				],
+				"base": "$msCompile",
+				"background": {
+					"activeOnStart": true,
+					"beginsPattern": {
+						"regexp": "Using \\.NET Core SDK \\d+\\.\\d+\\.\\d+"
+					},
+					"endsPattern": {
+						"regexp": "Serving \".+?\" on .+?:\\d{1,}\\. Press Ctrl\\+C to stop\\."
+					}
+				}
+			}
+		},
 		// Remaining tasks are only for the VSCode launch configs
 		// or are supporting tasks.
         {
