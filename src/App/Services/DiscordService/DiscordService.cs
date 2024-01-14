@@ -142,6 +142,16 @@ public class DiscordService : IDiscordService, IHostedService
         var context = new SocketInteractionContext(_discordSocketClient, interaction);
 
         var result = await _interactionService!.ExecuteCommandAsync(context, _serviceProvider);
+
+        if (!result.IsSuccess)
+        {
+            _logger.LogError("Failed to execute interaction executed by '{Username}'. Is DM Interaction? {IsDmInteraction}", interaction.User.Username, interaction.IsDMInteraction);
+            _logger.LogError("Error: {ErrorMessage}", result.ErrorReason);
+        }
+        else
+        {
+            _logger.LogInformation("Successfully executed interaction executed by '{Username}'. Is DM Interaction? {IsDmInteraction}", interaction.User.Username, interaction.IsDMInteraction);
+        }
     }
 
     /// <summary>
