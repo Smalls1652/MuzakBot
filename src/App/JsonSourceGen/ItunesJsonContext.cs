@@ -3,6 +3,9 @@ using MuzakBot.App.Models.Itunes;
 
 namespace MuzakBot.App;
 
+/// <summary>
+/// Source generation context for the iTunes models.
+/// </summary>
 [JsonSourceGenerationOptions(
     WriteIndented = false,
     PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,

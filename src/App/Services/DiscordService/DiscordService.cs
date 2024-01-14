@@ -1,4 +1,6 @@
 using System.Diagnostics;
+using System.Reflection;
+using System.Text;
 using Discord;
 using Discord.Commands;
 using Discord.Interactions;
@@ -20,25 +22,29 @@ public class DiscordService : IDiscordService, IHostedService
     private bool _isDisposed;
     private readonly ActivitySource _activitySource = new("MuzakBot.App.Services.DiscordService");
     private readonly DiscordSocketClient _discordSocketClient;
+    private readonly InteractionService _interactionService;
     private readonly ILogger<DiscordService> _logger;
     private readonly string _clientToken;
 #if DEBUG
     private readonly ulong _testGuildId;
 #endif
+    private readonly ulong _adminGuildId;
+    private readonly bool _enableLyricsAnalyzer;
     private readonly IServiceProvider _serviceProvider;
 
-    public DiscordService(DiscordSocketClient discordSocketClient, ILogger<DiscordService> logger, IOptions<DiscordServiceOptions> options, IServiceProvider serviceProvider)
+    public DiscordService(DiscordSocketClient discordSocketClient, InteractionService interactionService, ILogger<DiscordService> logger, IOptions<DiscordServiceOptions> options, IServiceProvider serviceProvider)
     {
         _discordSocketClient = discordSocketClient;
+        _interactionService = interactionService;
         _logger = logger;
         _clientToken = options.Value.ClientToken ?? throw new ArgumentNullException(nameof(options), "Client token is null.");
 #if DEBUG
         _testGuildId = ulong.Parse(options.Value.TestGuildId ?? throw new ArgumentNullException(nameof(options), "Test guild ID is null."));
 #endif
+        _adminGuildId = options.Value.AdminGuildId;
+        _enableLyricsAnalyzer = options.Value.EnableLyricsAnalyzer;
         _serviceProvider = serviceProvider;
     }
-
-    private InteractionService? _interactionService;
 
     /// <inheritdoc cref="IDiscordService.ConnectAsync"/>
     public async Task ConnectAsync()
@@ -63,15 +69,30 @@ public class DiscordService : IDiscordService, IHostedService
 
         // Initialize Discord Interaction Service
         _logger.LogInformation("Initializing Discord Interaction Service...");
-        _interactionService = new(_discordSocketClient.Rest);
 
+        _logger.LogInformation("Adding 'ShareMusicCommandModule'.");
         await _interactionService.AddModuleAsync<ShareMusicCommandModule>(_serviceProvider);
+
+        await _interactionService.AddModuleAsync<AdminCommandModule>(_serviceProvider);
+
+        if (_enableLyricsAnalyzer)
+        {
+            _logger.LogInformation("Lyrics analyzer is enabled. Adding 'LyricsAnalyzerCommandModule'.");
+            await _interactionService.AddModuleAsync<LyricsAnalyzerCommandModule>(_serviceProvider);
+        }
+        else
+        {
+            _logger.LogInformation("Lyrics analyzer is disabled.");
+        }
 
         // Add logging to the DiscordSocketClient and InteractionService
         _discordSocketClient.Log += HandleLog;
 
         // Add slash command handler
         _discordSocketClient.InteractionCreated += HandleSlashCommand;
+
+        // Add autocomplete handler
+        _discordSocketClient.InteractionCreated += HandleAutocomplete;
 
         // Add ready handler
         _discordSocketClient.Ready += OnClientReadyAsync;
@@ -94,14 +115,28 @@ public class DiscordService : IDiscordService, IHostedService
     {
 #if DEBUG
         _logger.LogInformation("Running in debug mode. Registering slash commands to test guild '{GuildId}'.", _testGuildId);
+
         await _interactionService!.RegisterCommandsToGuildAsync(
             guildId: _testGuildId,
             deleteMissing: true
         );
 #else
         _logger.LogInformation("Registering slash commands globally.");
-        await _interactionService!.RegisterCommandsGloballyAsync(
-            deleteMissing: true
+        
+        await _interactionService.AddModulesGloballyAsync(
+            deleteMissing: true,
+            modules: [
+                _interactionService.GetModuleInfo<ShareMusicCommandModule>(),
+                _interactionService.GetModuleInfo<LyricsAnalyzerCommandModule>()
+            ]
+        );
+
+        await _interactionService.AddModulesToGuildAsync(
+            guildId: _adminGuildId,
+            deleteMissing: true,
+            modules: [
+                _interactionService.GetModuleInfo<AdminCommandModule>()
+            ]
         );
 #endif
 
@@ -116,7 +151,38 @@ public class DiscordService : IDiscordService, IHostedService
     private async Task HandleSlashCommand(SocketInteraction interaction)
     {
         SocketInteractionContext interactionContext = new(_discordSocketClient, interaction);
-        await _interactionService!.ExecuteCommandAsync(interactionContext, _serviceProvider);
+        
+        var result = await _interactionService!.ExecuteCommandAsync(interactionContext, _serviceProvider);
+
+        if (!result.IsSuccess)
+        {
+            _logger.LogError("Failed to execute slash command executed by '{Username}'. Is DM Interaction? {IsDmInteraction}", interaction.User.Username, interaction.IsDMInteraction);
+        }
+        else
+        {
+            _logger.LogInformation("Successfully executed slash command executed by '{Username}'. Is DM Interaction? {IsDmInteraction}", interaction.User.Username, interaction.IsDMInteraction);
+        }
+    }
+
+    /// <summary>
+    /// Handler for the interaction service when an autocomplete is received.
+    /// </summary>
+    /// <param name="interaction">Interaction received from Discord's WebSocket API.</param>
+    /// <returns></returns>
+    private async Task HandleAutocomplete(SocketInteraction interaction)
+    {
+        SocketInteractionContext interactionContext = new(_discordSocketClient, interaction);
+
+        var result = await _interactionService!.ExecuteCommandAsync(interactionContext, _serviceProvider);
+
+        if (!result.IsSuccess)
+        {
+            _logger.LogError("Failed to execute autocomplete executed by '{Username}'. Is DM Interaction? {IsDmInteraction}", interaction.User.Username, interaction.IsDMInteraction);
+        }
+        else
+        {
+            _logger.LogInformation("Successfully executed autocomplete executed by '{Username}'. Is DM Interaction? {IsDmInteraction}", interaction.User.Username, interaction.IsDMInteraction);
+        }
     }
 
     /// <summary>
@@ -157,11 +223,21 @@ public class DiscordService : IDiscordService, IHostedService
         return Task.CompletedTask;
     }
 
+    /// <summary>
+    /// Starts the Discord service.
+    /// </summary>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns></returns>
     public async Task StartAsync(CancellationToken cancellationToken)
     {
         await ConnectAsync();
     }
 
+    /// <summary>
+    /// Stops the Discord service.
+    /// </summary>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns></returns>
     public async Task StopAsync(CancellationToken cancellationToken)
     {
         _logger.LogInformation("Disconnecting from Discord...");
@@ -171,6 +247,7 @@ public class DiscordService : IDiscordService, IHostedService
         _logger.LogInformation("Disconnected.");
     }
 
+    /// <inheritdoc cref="IAsyncDisposable.DisposeAsync"/>
     public async ValueTask DisposeAsync()
     {
         ObjectDisposedException.ThrowIf(_isDisposed, nameof(DiscordService));

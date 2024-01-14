@@ -135,6 +135,60 @@ public partial class MusicBrainzService : IMusicBrainzService
     }
 
     /// <summary>
+    /// Searches for recordings of a specific artist and song.
+    /// </summary>
+    /// <param name="artistName">The name of the artist.</param>
+    /// <param name="songName">The name of the song.</param>
+    /// <returns>The search result of artist recordings.</returns>
+    public async Task<MusicBrainzRecordingSearchResult?> SearchArtistByNameRecordingsAsync(string artistName, string songName) => await SearchArtistByNameRecordingsAsync(artistName, songName, null);
+
+    /// <summary>
+    /// Searches for recordings of a specific artist and song.
+    /// </summary>
+    /// <param name="artistName">The name of the artist.</param>
+    /// <param name="songName">The name of the song.</param>
+    /// <param name="parentActivityId">The ID of the parent activity.</param>
+    /// <returns>The search result of artist recordings.</returns>
+    public async Task<MusicBrainzRecordingSearchResult?> SearchArtistByNameRecordingsAsync(string artistName, string songName, string? parentActivityId)
+    {
+        using var activity = _activitySource.StartMusicBrainzServiceActivity(
+            activityType: MusicBrainzActivityType.SearchArtistRecordings,
+            tags: new()
+            {
+                ArtistName = artistName,
+                SongName = songName
+            },
+            parentActivityId: parentActivityId
+        );
+
+        using var httpClient = _httpClientFactory.CreateClient("MusicBrainzApiClient");
+
+        HttpRequestMessage requestMessage = new(
+            method: HttpMethod.Get,
+            requestUri: $"recording/?query=area:{WebUtility.UrlEncode(artistName)} AND {WebUtility.UrlEncode(songName)}&inc=releases&limit=5"
+        );
+
+        var responseMessage = await httpClient.SendAsync(requestMessage);
+
+        try
+        {
+            responseMessage.EnsureSuccessStatusCode();
+        }
+        catch (Exception)
+        {
+            activity?.SetStatus(ActivityStatusCode.Error);
+            throw;
+        }
+
+        await using var contentStream = await responseMessage.Content.ReadAsStreamAsync();
+
+        return await JsonSerializer.DeserializeAsync(
+            utf8Json: contentStream,
+            jsonTypeInfo: MusicBrainzJsonContext.Default.MusicBrainzRecordingSearchResult
+        );
+    }
+
+    /// <summary>
     /// Searches for releases by a given artist and album name.
     /// </summary>
     /// <param name="artistId">The ID of the artist.</param>
