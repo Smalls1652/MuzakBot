@@ -8,6 +8,17 @@ namespace MuzakBot.App.Extensions.DiscordService;
 internal static partial class DiscordServiceLogging
 {
     /// <summary>
+    /// Logs that the Discord service is connecting.
+    /// </summary>
+    /// <param name="logger">The <see cref="ILogger"/> instance.</param>
+    [LoggerMessage(
+        EventId = 0,
+        Level = LogLevel.Information,
+        Message = "Connecting to Discord..."
+    )]
+    public static partial void LogDiscordStartConnecting(this ILogger logger);
+    
+    /// <summary>
     /// Logs that the Discord service is being initialized.
     /// </summary>
     /// <param name="logger">The <see cref="ILogger"/> instance.</param>

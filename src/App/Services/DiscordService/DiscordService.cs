@@ -49,7 +49,7 @@ public class DiscordService : IDiscordService, IHostedService
     public async Task ConnectAsync()
     {
         // Log into Discord
-        _logger.LogInformation("Connecting to Discord...");
+        _logger.LogDiscordStartConnecting();
 
         if (_clientToken is null)
         {
