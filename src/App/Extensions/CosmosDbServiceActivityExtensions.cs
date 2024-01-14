@@ -79,4 +79,104 @@ public static class CosmosDbServiceActivityExtensions
             parentId: parentActivityId
         );
     }
+
+    /// <summary>
+    /// Starts an activity for getting a lyrics analyzer rate limit for a user from the database.
+    /// </summary>
+    /// <param name="activitySource">The <see cref="ActivitySource"/>.</param>
+    /// <param name="userId">The ID of the user.</param>
+    /// <returns>The started <see cref="Activity"/>.</returns>
+    public static Activity? StartDbGetLyricsAnalyzerUserRateLimitActivity(this ActivitySource activitySource, ulong userId) => StartDbGetLyricsAnalyzerUserRateLimitActivity(activitySource, userId, null);
+
+    /// <summary>
+    /// Starts an activity for getting a lyrics analyzer rate limit for a user from the database.
+    /// </summary>
+    /// <param name="activitySource">The <see cref="ActivitySource"/>.</param>
+    /// <param name="userId">The ID of the user.</param>
+    /// <param name="parentActivityId">The parent activity ID.</param>
+    /// <returns>The started <see cref="Activity"/>.</returns>
+    public static Activity? StartDbGetLyricsAnalyzerUserRateLimitActivity(this ActivitySource activitySource, ulong userId, string? parentActivityId)
+    {
+        return activitySource.StartActivity(
+            name: "Database:GetLyricsAnalyzerUserRateLimitAsync",
+            kind: ActivityKind.Internal,
+            tags: new ActivityTagsCollection
+            {
+                { "userId", userId.ToString() }
+            },
+            parentId: parentActivityId
+        );
+    }
+
+    /// <summary>
+    /// Starts an activity for adding or updating a lyrics analyzer rate limit for a user in the database.
+    /// </summary>
+    /// <param name="activitySource">The <see cref="ActivitySource"/>.</param>
+    /// <param name="lyricsAnalyzerUserRateLimit">The lyrics analyzer rate limit for the user.</param>
+    /// <returns>The started <see cref="Activity"/>.</returns>
+    public static Activity? StartDbAddOrUpdateLyricsAnalyzerUserRateLimitActivity(this ActivitySource activitySource, LyricsAnalyzerUserRateLimit lyricsAnalyzerUserRateLimit) => StartDbAddOrUpdateLyricsAnalyzerUserRateLimitActivity(activitySource, lyricsAnalyzerUserRateLimit, null);
+
+    /// <summary>
+    /// Starts an activity for adding or updating a lyrics analyzer rate limit for a user in the database.
+    /// </summary>
+    /// <param name="activitySource">The <see cref="ActivitySource"/>.</param>
+    /// <param name="lyricsAnalyzerUserRateLimit">The lyrics analyzer rate limit for the user.</param>
+    /// <param name="parentActivityId">The parent activity ID.</param>
+    /// <returns>The started <see cref="Activity"/>.</returns>
+    public static Activity? StartDbAddOrUpdateLyricsAnalyzerUserRateLimitActivity(this ActivitySource activitySource, LyricsAnalyzerUserRateLimit lyricsAnalyzerUserRateLimit, string? parentActivityId)
+    {
+        return activitySource.StartActivity(
+            name: "Database:AddOrUpdateLyricsAnalyzerUserRateLimitAsync",
+            kind: ActivityKind.Internal,
+            tags: new ActivityTagsCollection
+            {
+                { "userId", lyricsAnalyzerUserRateLimit.UserId.ToString() }
+            },
+            parentId: parentActivityId
+        );
+    }
+
+    /// <summary>
+    /// Starts an activity for getting the lyrics analyzer config from the database.
+    /// </summary>
+    /// <param name="activitySource">The <see cref="ActivitySource"/>.</param>
+    /// <returns>The started <see cref="Activity"/>.</returns>
+    public static Activity? StartDbGetLyricsAnalyzerConfigActivity(this ActivitySource activitySource) => StartDbGetLyricsAnalyzerConfigActivity(activitySource, null);
+
+    /// <summary>
+    /// Starts an activity for getting the lyrics analyzer config from the database.
+    /// </summary>
+    /// <param name="activitySource">The <see cref="ActivitySource"/>.</param>
+    /// <param name="parentActivityId">The parent activity ID.</param>
+    /// <returns>The started <see cref="Activity"/>.</returns>
+    public static Activity? StartDbGetLyricsAnalyzerConfigActivity(this ActivitySource activitySource, string? parentActivityId)
+    {
+        return activitySource.StartActivity(
+            name: "Database:GetLyricsAnalyzerConfigAsync",
+            kind: ActivityKind.Internal,
+            parentId: parentActivityId
+        );
+    }
+
+    /// <summary>
+    /// Starts an activity for adding or updating the lyrics analyzer config in the database.
+    /// </summary>
+    /// <param name="activitySource">The <see cref="ActivitySource"/>.</param>
+    /// <returns>The started <see cref="Activity"/>.</returns>
+    public static Activity? StartDbAddOrUpdateLyricsAnalyzerConfigActivity(this ActivitySource activitySource) => StartDbAddOrUpdateLyricsAnalyzerConfigActivity(activitySource, null);
+
+    /// <summary>
+    /// Starts an activity for adding or updating the lyrics analyzer config in the database.
+    /// </summary>
+    /// <param name="activitySource">The <see cref="ActivitySource"/>.</param>
+    /// <param name="parentActivityId">The parent activity ID.</param>
+    /// <returns>The started <see cref="Activity"/>.</returns>
+    public static Activity? StartDbAddOrUpdateLyricsAnalyzerConfigActivity(this ActivitySource activitySource, string? parentActivityId)
+    {
+        return activitySource.StartActivity(
+            name: "Database:AddOrUpdateLyricsAnalyzerConfigAsync",
+            kind: ActivityKind.Internal,
+            parentId: parentActivityId
+        );
+    }
 }
