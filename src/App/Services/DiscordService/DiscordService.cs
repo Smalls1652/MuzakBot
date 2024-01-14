@@ -58,13 +58,6 @@ public class DiscordService : IDiscordService, IHostedService
             throw errorException;
         }
 
-        await _discordSocketClient.LoginAsync(
-            tokenType: TokenType.Bot,
-            token: _clientToken
-        );
-
-        await _discordSocketClient.StartAsync();
-
         // Initialize Discord Interaction Service
         _logger.LogInformation("Initializing Discord Interaction Service...");
 
@@ -89,6 +82,13 @@ public class DiscordService : IDiscordService, IHostedService
 
         // Add ready handler
         _discordSocketClient.Ready += OnClientReadyAsync;
+
+        await _discordSocketClient.LoginAsync(
+            tokenType: TokenType.Bot,
+            token: _clientToken
+        );
+
+        await _discordSocketClient.StartAsync();
     }
 
     /// <summary>
