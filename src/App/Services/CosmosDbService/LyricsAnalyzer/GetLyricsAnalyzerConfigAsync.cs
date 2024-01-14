@@ -28,6 +28,10 @@ public partial class CosmosDbService
     /// <returns>The retrieved lyrics analyzer config.</returns>
     public async Task<LyricsAnalyzerConfig> GetLyricsAnalyzerConfigAsync(string? parentActivityId)
     {
+        using var activity = _activitySource.StartDbGetLyricsAnalyzerConfigActivity(
+            parentActivityId: parentActivityId
+        );
+
         Container container = _cosmosDbClient.GetContainer(
             databaseId: _options.DatabaseName,
             containerId: "command-configs"
@@ -60,6 +64,8 @@ public partial class CosmosDbService
         catch (Exception ex)
         {
             _logger.LogError(ex, "{ErrorMessage}", ex.Message);
+            activity?.SetStatus(ActivityStatusCode.Error);
+
             throw;
         }
 
@@ -74,6 +80,7 @@ public partial class CosmosDbService
             }
             catch (Exception ex)
             {
+                activity?.SetStatus(ActivityStatusCode.Error);
                 _logger.LogError(ex, "{ErrorMessage}", ex.Message);
                 throw;
             }

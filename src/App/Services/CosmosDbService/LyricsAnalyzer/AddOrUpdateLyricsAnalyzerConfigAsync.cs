@@ -1,6 +1,7 @@
 using System.Net;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
+using MuzakBot.App.Extensions;
 using MuzakBot.App.Models.Database.LyricsAnalyzer;
 
 namespace MuzakBot.App.Services;
@@ -22,6 +23,10 @@ public partial class CosmosDbService
     /// <returns></returns>
     public async Task AddOrUpdateLyricsAnalyzerConfigAsync(LyricsAnalyzerConfig lyricsAnalyzerConfig, string? parentActivityId)
     {
+        using var activity = _activitySource.StartDbGetLyricsAnalyzerConfigActivity(
+            parentActivityId: parentActivityId
+        );
+
         Container container = _cosmosDbClient.GetContainer(
             databaseId: _options.DatabaseName,
             containerId: "command-configs"

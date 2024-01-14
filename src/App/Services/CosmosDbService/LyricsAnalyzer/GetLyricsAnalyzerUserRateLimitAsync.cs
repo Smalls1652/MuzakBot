@@ -1,6 +1,8 @@
+using System.Diagnostics;
 using System.Net;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
+using MuzakBot.App.Extensions;
 using MuzakBot.App.Models.CosmosDb;
 using MuzakBot.App.Models.Database.LyricsAnalyzer;
 
@@ -23,6 +25,11 @@ public partial class CosmosDbService
     /// <returns>The retrieved lyrics analyzer rate limit for the user.</returns>
     public async Task<LyricsAnalyzerUserRateLimit> GetLyricsAnalyzerUserRateLimitAsync(ulong userId, string? parentActivityId)
     {
+        using var activity = _activitySource.StartDbGetLyricsAnalyzerUserRateLimitActivity(
+            userId: userId,
+            parentActivityId: parentActivityId
+        );
+
         Container container = _cosmosDbClient.GetContainer(
             databaseId: _options.DatabaseName,
             containerId: "rate-limit"
@@ -57,6 +64,8 @@ public partial class CosmosDbService
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to get lyrics analyzer user rate limit from the database.");
+            activity?.SetStatus(ActivityStatusCode.Error);
+
             throw;
         }
 
