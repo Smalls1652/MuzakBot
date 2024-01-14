@@ -29,7 +29,6 @@ public class DiscordService : IDiscordService, IHostedService
     private readonly ulong _testGuildId;
 #endif
     private readonly ulong _adminGuildId;
-    private readonly bool _enableLyricsAnalyzer;
     private readonly IServiceProvider _serviceProvider;
 
     public DiscordService(DiscordSocketClient discordSocketClient, InteractionService interactionService, ILogger<DiscordService> logger, IOptions<DiscordServiceOptions> options, IServiceProvider serviceProvider)
@@ -42,7 +41,6 @@ public class DiscordService : IDiscordService, IHostedService
         _testGuildId = ulong.Parse(options.Value.TestGuildId ?? throw new ArgumentNullException(nameof(options), "Test guild ID is null."));
 #endif
         _adminGuildId = options.Value.AdminGuildId;
-        _enableLyricsAnalyzer = options.Value.EnableLyricsAnalyzer;
         _serviceProvider = serviceProvider;
     }
 
@@ -75,15 +73,7 @@ public class DiscordService : IDiscordService, IHostedService
 
         await _interactionService.AddModuleAsync<AdminCommandModule>(_serviceProvider);
 
-        if (_enableLyricsAnalyzer)
-        {
-            _logger.LogInformation("Lyrics analyzer is enabled. Adding 'LyricsAnalyzerCommandModule'.");
-            await _interactionService.AddModuleAsync<LyricsAnalyzerCommandModule>(_serviceProvider);
-        }
-        else
-        {
-            _logger.LogInformation("Lyrics analyzer is disabled.");
-        }
+        await _interactionService.AddModuleAsync<LyricsAnalyzerCommandModule>(_serviceProvider);
 
         // Add logging to the DiscordSocketClient and InteractionService
         _discordSocketClient.Log += HandleLog;
