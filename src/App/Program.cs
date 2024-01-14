@@ -70,8 +70,6 @@ if (builder.Configuration.GetValue<bool>("ENABLE_LYRICS_ANALYZER"))
         {
             options.AccessToken = builder.Configuration.GetValue<string>("GENIUS_ACCESS_TOKEN") ?? throw new("GENIUS_ACCESS_TOKEN is not set.");
         });
-
-    builder.Services.AddTransient<DiscordServiceConfig>(serviceProvider => new(builder.Configuration.GetValue<string?>("LYRICS_ANALYZER_SERVERS")));
 }
 
 builder.Services.AddDiscordService(options =>
