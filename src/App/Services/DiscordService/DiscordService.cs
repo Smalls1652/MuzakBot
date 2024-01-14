@@ -164,6 +164,11 @@ public class DiscordService : IDiscordService, IHostedService
         }
     }
 
+    /// <summary>
+    /// Handler for the interaction service when an autocomplete is received.
+    /// </summary>
+    /// <param name="interaction">Interaction received from Discord's WebSocket API.</param>
+    /// <returns></returns>
     private async Task HandleAutocomplete(SocketInteraction interaction)
     {
         SocketInteractionContext interactionContext = new(_discordSocketClient, interaction);
@@ -218,11 +223,21 @@ public class DiscordService : IDiscordService, IHostedService
         return Task.CompletedTask;
     }
 
+    /// <summary>
+    /// Starts the Discord service.
+    /// </summary>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns></returns>
     public async Task StartAsync(CancellationToken cancellationToken)
     {
         await ConnectAsync();
     }
 
+    /// <summary>
+    /// Stops the Discord service.
+    /// </summary>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns></returns>
     public async Task StopAsync(CancellationToken cancellationToken)
     {
         _logger.LogInformation("Disconnecting from Discord...");
@@ -232,6 +247,7 @@ public class DiscordService : IDiscordService, IHostedService
         _logger.LogInformation("Disconnected.");
     }
 
+    /// <inheritdoc cref="IAsyncDisposable.DisposeAsync"/>
     public async ValueTask DisposeAsync()
     {
         ObjectDisposedException.ThrowIf(_isDisposed, nameof(DiscordService));

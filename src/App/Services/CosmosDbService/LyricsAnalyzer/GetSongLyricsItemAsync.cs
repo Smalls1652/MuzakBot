@@ -9,7 +9,22 @@ namespace MuzakBot.App.Services;
 
 public partial class CosmosDbService
 {
+    /// <summary>
+    /// Gets a song lyrics item from the database.
+    /// </summary>
+    /// <param name="artistName">The name of the artist.</param>
+    /// <param name="songName">The name of the song.</param>
+    /// <returns>The retrieved song lyrics item.</returns>
     public async Task<SongLyricsItem> GetSongLyricsItemAsync(string artistName, string songName) => await GetSongLyricsItemAsync(artistName, songName, null);
+
+    /// <summary>
+    /// Gets a song lyrics item from the database.
+    /// </summary>
+    /// <param name="artistName">The name of the artist.</param>
+    /// <param name="songName">The name of the song.</param>
+    /// <param name="parentActivityId">The parent activity ID.</param>
+    /// <returns>The retrieved song lyrics item.</returns>
+    /// <exception cref="NullReferenceException"></exception>
     public async Task<SongLyricsItem> GetSongLyricsItemAsync(string artistName, string songName, string? parentActivityId)
     {
         using var activity = _activitySource.StartDbGetSongLyricsItemActivity(artistName, songName, parentActivityId);

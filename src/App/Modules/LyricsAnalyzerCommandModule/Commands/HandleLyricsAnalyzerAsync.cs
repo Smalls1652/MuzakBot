@@ -19,8 +19,10 @@ public partial class LyricsAnalyzerCommandModule
     /// <summary>
     /// Handles the 'lyricsanalyzer' slash command.
     /// </summary>
-    /// <param name="artistId">The ID of the artist.</param>
-    /// <param name="songId">The ID of the song.</param>
+    /// <param name="artistName">The name of the artist.</param>
+    /// <param name="songName">The name of the song.</param>
+    /// <param name="promptMode">The style of the response.</param>
+    /// <param name="isPrivateResponse">Whether or not to send the response privately.</param>
     /// <returns></returns>
     /// <exception cref="NullReferenceException"></exception>
     [EnabledInDm(true)]

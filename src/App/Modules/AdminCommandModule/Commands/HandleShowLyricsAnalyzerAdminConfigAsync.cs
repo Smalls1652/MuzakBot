@@ -13,6 +13,10 @@ public partial class AdminCommandModule
     private const string _lyricsAnalyzerAdminCommandName = "lyricsanalyzer-admin";
 #endif
 
+    /// <summary>
+    /// Handles the slash command for the lyrics analyzer admin command.
+    /// </summary>
+    /// <returns></returns>
     [SlashCommand(name: _lyricsAnalyzerAdminCommandName, description: "Configuration utility for the lyrics analyzer command.")]
     [RequireOwner(Group = "Permission")]
     public async Task HandleShowLyricsAnalyzerAdminConfigAsync()

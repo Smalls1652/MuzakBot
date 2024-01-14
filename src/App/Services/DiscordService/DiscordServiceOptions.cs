@@ -15,7 +15,13 @@ public class DiscordServiceOptions
     /// </summary>
     public string? TestGuildId { get; set; }
 
+    /// <summary>
+    /// Whether or not to enable the lyrics analyzer.
+    /// </summary>
     public bool EnableLyricsAnalyzer { get; set; }
 
+    /// <summary>
+    /// The ID of the guild to register admin commands to.
+    /// </summary>
     public ulong AdminGuildId { get; set; }
 }

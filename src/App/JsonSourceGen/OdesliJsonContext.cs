@@ -3,6 +3,9 @@ using MuzakBot.App.Models.Odesli;
 
 namespace MuzakBot.App;
 
+/// <summary>
+/// Source generation context for the Odesli models.
+/// </summary>
 [JsonSourceGenerationOptions(
     WriteIndented = false,
     PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,

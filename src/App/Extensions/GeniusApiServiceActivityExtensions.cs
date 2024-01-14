@@ -2,6 +2,9 @@ using System.Diagnostics;
 
 namespace MuzakBot.App.Extensions;
 
+/// <summary>
+/// Extensions for <see cref="ActivitySource"/> to start activities for <see cref="GeniusApiService"/>.
+/// </summary>
 internal static class GeniusApiServiceActivityExtensions
 {
     /// <summary>

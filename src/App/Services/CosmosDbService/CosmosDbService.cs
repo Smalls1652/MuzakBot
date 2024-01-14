@@ -5,6 +5,9 @@ using Microsoft.Extensions.Options;
 
 namespace MuzakBot.App.Services;
 
+/// <summary>
+/// Service for interacting with Azure Cosmos DB.
+/// </summary>
 public partial class CosmosDbService : ICosmosDbService
 {
     private bool _isDisposed;
@@ -13,6 +16,11 @@ public partial class CosmosDbService : ICosmosDbService
     private readonly CosmosDbServiceOptions _options;
     private readonly CosmosClient _cosmosDbClient;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="CosmosDbService"/> class.
+    /// </summary>
+    /// <param name="logger">The logger.</param>
+    /// <param name="options">The <see cref="CosmosDbServiceOptions"/> to configure the service.</param>
     public CosmosDbService(ILogger<CosmosDbService> logger, IOptions<CosmosDbServiceOptions> options)
     {
         _logger = logger;

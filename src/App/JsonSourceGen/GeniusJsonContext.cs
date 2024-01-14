@@ -2,6 +2,9 @@ using MuzakBot.App.Models.Genius;
 
 namespace MuzakBot.App;
 
+/// <summary>
+/// Source generation context for the Genius models.
+/// </summary>
 [JsonSourceGenerationOptions(
     WriteIndented = false,
     PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,

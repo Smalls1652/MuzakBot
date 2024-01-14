@@ -5,10 +5,26 @@ using MuzakBot.App.Models.Database.LyricsAnalyzer;
 
 namespace MuzakBot.App.Extensions;
 
+/// <summary>
+/// Extensions for <see cref="ActivitySource"/> to start activities for the <see cref="CosmosDbService"/>.
+/// </summary>
 public static class CosmosDbServiceActivityExtensions
 {
+    /// <summary>
+    /// Starts an activity for adding or updating a song lyrics item in the database.
+    /// </summary>
+    /// <param name="activitySource">The <see cref="ActivitySource"/>.</param>
+    /// <param name="songLyricsItem">The song lyrics item.</param>
+    /// <returns>The started <see cref="Activity"/>.</returns>
     public static Activity? StartDbAddOrUpdateSongLyricsItemActivity(this ActivitySource activitySource, SongLyricsItem songLyricsItem) => StartDbAddOrUpdateSongLyricsItemActivity(activitySource, songLyricsItem, null);
 
+    /// <summary>
+    /// Starts an activity for adding or updating a song lyrics item in the database.
+    /// </summary>
+    /// <param name="activitySource">The <see cref="ActivitySource"/>.</param>
+    /// <param name="songLyricsItem">The song lyrics item.</param>
+    /// <param name="parentActivityId">The parent activity ID.</param>
+    /// <returns>The started <see cref="Activity"/>.</returns>
     public static Activity? StartDbAddOrUpdateSongLyricsItemActivity(this ActivitySource activitySource, SongLyricsItem songLyricsItem, string? parentActivityId)
     {
         StringBuilder lyricsHashBuilder = new();
@@ -33,8 +49,23 @@ public static class CosmosDbServiceActivityExtensions
         );
     }
 
+    /// <summary>
+    /// Starts an activity for getting a song lyrics item from the database.
+    /// </summary>
+    /// <param name="activitySource">The <see cref="ActivitySource"/>.</param>
+    /// <param name="artistName">The name of the artist.</param>
+    /// <param name="songName">The name of the song.</param>
+    /// <returns>The started <see cref="Activity"/>.</returns>
     public static Activity? StartDbGetSongLyricsItemActivity(this ActivitySource activitySource, string artistName, string songName) => StartDbGetSongLyricsItemActivity(activitySource, artistName, songName, null);
 
+    /// <summary>
+    /// Starts an activity for getting a song lyrics item from the database.
+    /// </summary>
+    /// <param name="activitySource">The <see cref="ActivitySource"/>.</param>
+    /// <param name="artistName">The name of the artist.</param>
+    /// <param name="songName">The name of the song.</param>
+    /// <param name="parentActivityId">The parent activity ID.</param>
+    /// <returns>The started <see cref="Activity"/>.</returns>
     public static Activity? StartDbGetSongLyricsItemActivity(this ActivitySource activitySource, string artistName, string songName, string? parentActivityId)
     {
         return activitySource.StartActivity(

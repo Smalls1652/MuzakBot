@@ -7,6 +7,11 @@ namespace MuzakBot.App.Modules;
 
 public partial class AdminCommandModule
 {
+    /// <summary>
+    /// Handles the component interaction for the "Enable for all servers" button.
+    /// </summary>
+    /// <param name="componentId">The unique ID of the component.</param>
+    /// <returns></returns>
     [ComponentInteraction(customId: "lyricsanalyzer-enabled-*")]
     public async Task HandleEnableForAllServersButtonClickAsync(
         string componentId

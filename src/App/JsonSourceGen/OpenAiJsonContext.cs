@@ -2,6 +2,9 @@ using MuzakBot.App.Models.OpenAi;
 
 namespace MuzakBot.App;
 
+/// <summary>
+/// Source generation context for the OpenAI models.
+/// </summary>
 [JsonSourceGenerationOptions(
     WriteIndented = false,
     PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,

@@ -7,7 +7,19 @@ namespace MuzakBot.App.Services;
 
 public partial class CosmosDbService
 {
+    /// <summary>
+    /// Adds or updates the lyrics analyzer config in the database.
+    /// </summary>
+    /// <param name="lyricsAnalyzerConfig">The config to add or update.</param>
+    /// <returns></returns>
     public async Task AddOrUpdateLyricsAnalyzerConfigAsync(LyricsAnalyzerConfig lyricsAnalyzerConfig) => await AddOrUpdateLyricsAnalyzerConfigAsync(lyricsAnalyzerConfig, null);
+
+    /// <summary>
+    /// Adds or updates the lyrics analyzer config in the database.
+    /// </summary>
+    /// <param name="lyricsAnalyzerConfig">The config to add or update.</param>
+    /// <param name="parentActivityId">The parent activity ID.</param>
+    /// <returns></returns>
     public async Task AddOrUpdateLyricsAnalyzerConfigAsync(LyricsAnalyzerConfig lyricsAnalyzerConfig, string? parentActivityId)
     {
         Container container = _cosmosDbClient.GetContainer(

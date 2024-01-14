@@ -4,6 +4,9 @@ using MuzakBot.App.Models.Database.LyricsAnalyzer;
 
 namespace MuzakBot.App;
 
+/// <summary>
+/// Source generation context for the database models.
+/// </summary>
 [JsonSourceGenerationOptions(
     WriteIndented = false,
     PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,

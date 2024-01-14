@@ -13,6 +13,12 @@ public partial class AdminCommandModule
     private const string _enableLyricsAnalyzerForServerCommandName = "lyricsanalyzerservers";
 #endif
 
+    /// <summary>
+    /// Handles the slash command for enabling/disabling the lyrics analyzer command for a specific server.
+    /// </summary>
+    /// <param name="guildId">The ID of the guild.</param>
+    /// <param name="newState">The state to set for the server.</param>
+    /// <returns></returns>
     [SlashCommand(name: _enableLyricsAnalyzerForServerCommandName, description: "Enable/disable the lyrics analyzer command for a specific server.")]
     [RequireOwner(Group = "Permission")]
     private async Task HandleEnableLyricsAnalyzerForServerAsync(

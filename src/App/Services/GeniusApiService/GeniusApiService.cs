@@ -150,8 +150,19 @@ public partial class GeniusApiService : IGeniusApiService
         return lyrics;
     }
 
+    /// <summary>
+    /// Gets the latest Wayback Machine snapshot of the URL.
+    /// </summary>
+    /// <param name="url">The URL to get the latest Wayback Machine snapshot of.</param>
+    /// <returns>The URL of the latest Wayback Machine snapshot.</returns>
     private async Task<string?> GetLatestWayback(string url) => await GetLatestWayback(url, false);
 
+    /// <summary>
+    /// Gets the latest Wayback Machine snapshot of the URL.
+    /// </summary>
+    /// <param name="url">The URL to get the latest Wayback Machine snapshot of.</param>
+    /// <param name="isSecondRun">Whether or not this is the second run of the method.</param>
+    /// <returns>The URL of the latest Wayback Machine snapshot.</returns>
     private async Task<string?> GetLatestWayback(string url, bool isSecondRun)
     {
         using var client = _httpClientFactory.CreateClient("InternetArchiveClient");
@@ -201,6 +212,13 @@ public partial class GeniusApiService : IGeniusApiService
         return latestWaybackUrl;
     }
 
+    /// <summary>
+    /// Invokes the Wayback Machine to archive the URL.
+    /// </summary>
+    /// <param name="url">The URL to archive.</param>
+    /// <returns>The URL of the archived page.</returns>
+    /// <exception cref="Exception"></exception>
+    /// <exception cref="TimeoutException"></exception>
     private async Task<string> InvokeWaybackArchive(string url)
     {
         using var client = _httpClientFactory.CreateClient("InternetArchiveClient");
@@ -265,6 +283,11 @@ public partial class GeniusApiService : IGeniusApiService
         throw new TimeoutException("The Wayback Machine archive job timed out.");
     }
 
+    /// <summary>
+    /// Converts a Wayback Machine timestamp to a <see cref="DateTimeOffset"/>.
+    /// </summary>
+    /// <param name="timestamp">The timestamp to convert.</param>
+    /// <returns>The converted timestamp as a <see cref="DateTimeOffset"/>.</returns>
     private DateTimeOffset? ConvertWaybackTimeStampToDateTimeOffset(string timestamp)
     {
         if (!WaybackTimestampRegex().IsMatch(timestamp))

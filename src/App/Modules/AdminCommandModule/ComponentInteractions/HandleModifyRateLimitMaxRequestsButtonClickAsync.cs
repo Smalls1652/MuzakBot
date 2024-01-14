@@ -8,6 +8,12 @@ namespace MuzakBot.App.Modules;
 
 public partial class AdminCommandModule
 {
+    /// <summary>
+    /// Handles the component interaction for the "Modify rate limit max requests" selection.
+    /// </summary>
+    /// <param name="componentId">The unique ID of the component.</param>
+    /// <param name="selectedValue">The selected value of the component.</param>
+    /// <returns></returns>
     [ComponentInteraction(customId: "lyricsanalyzer-ratelimitmaxrequests-*")]
     public async Task HandleModifyRateLimitMaxRequestsSelectionAsync(
         string componentId,

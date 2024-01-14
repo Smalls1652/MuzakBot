@@ -3,6 +3,9 @@ using MuzakBot.App.Models.MusicBrainz;
 
 namespace MuzakBot.App;
 
+/// <summary>
+/// Source generation context for the MusicBrainz models.
+/// </summary>
 [JsonSourceGenerationOptions(
     WriteIndented = false,
     PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,

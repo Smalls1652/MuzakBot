@@ -7,6 +7,12 @@ namespace MuzakBot.App.Modules;
 
 public partial class AdminCommandModule
 {
+    /// <summary>
+    /// Generates the admin config component for the lyrics analyzer command.
+    /// </summary>
+    /// <param name="currentGuildId">The current guild ID.</param>
+    /// <param name="componentId">The unique ID of the component.</param>
+    /// <returns></returns>
     public async Task<ComponentBuilder> GenerateAdminConfigComponentAsync(ulong currentGuildId, string? componentId)
     {
         string uniqueId = componentId ?? Guid.NewGuid().ToString().Split('-').First();

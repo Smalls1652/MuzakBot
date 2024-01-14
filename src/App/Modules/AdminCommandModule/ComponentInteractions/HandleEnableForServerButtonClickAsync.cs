@@ -7,6 +7,15 @@ namespace MuzakBot.App.Modules;
 
 public partial class AdminCommandModule
 {
+    /// <summary>
+    /// Handles the component interaction for the "Enable for server" button.
+    /// </summary>
+    /// <remarks>
+    /// This method will be removed, since the "Enable for server" button is no longer used.
+    /// </remarks>
+    /// <param name="componentId">The unique ID of the component.</param>
+    /// <returns></returns>
+    [Obsolete("This method will be removed, since the \"Enable for server\" button is no longer used.")]
     [ComponentInteraction(customId: "lyricsanalyzer-enabledforserver-*")]
     public async Task HandleEnableForServerButtonClickAsync(
         string componentId

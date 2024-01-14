@@ -8,7 +8,19 @@ namespace MuzakBot.App.Services;
 
 public partial class CosmosDbService
 {
+    /// <summary>
+    /// Adds or updates the song lyrics item in the database.
+    /// </summary>
+    /// <param name="songLyricsItem">The song lyrics.</param>
+    /// <returns></returns>
     public async Task AddOrUpdateSongLyricsItemAsync(SongLyricsItem songLyricsItem) => await AddOrUpdateSongLyricsItemAsync(songLyricsItem, null);
+
+    /// <summary>
+    /// Adds or updates the song lyrics item in the database.
+    /// </summary>
+    /// <param name="songLyricsItem">The song lyrics.</param>
+    /// <param name="parentActivityId">The parent activity ID.</param>
+    /// <returns></returns>
     public async Task AddOrUpdateSongLyricsItemAsync(SongLyricsItem songLyricsItem, string? parentActivityId)
     {
         using var activity = _activitySource.StartDbAddOrUpdateSongLyricsItemActivity(songLyricsItem, parentActivityId);

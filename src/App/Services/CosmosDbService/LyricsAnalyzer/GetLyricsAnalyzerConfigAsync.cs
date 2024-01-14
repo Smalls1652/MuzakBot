@@ -9,7 +9,23 @@ namespace MuzakBot.App.Services;
 
 public partial class CosmosDbService
 {
+    /// <summary>
+    /// Gets the lyrics analyzer config from the database.
+    /// </summary>
+    /// <remarks>
+    /// If the config does not exist, a new one will be created.
+    /// </remarks>
+    /// <returns>The retrieved lyrics analyzer config.</returns>
     public async Task<LyricsAnalyzerConfig> GetLyricsAnalyzerConfigAsync() => await GetLyricsAnalyzerConfigAsync(null);
+
+    /// <summary>
+    /// Gets the lyrics analyzer config from the database.
+    /// </summary>
+    /// <remarks>
+    /// If the config does not exist, a new one will be created.
+    /// </remarks>
+    /// <param name="parentActivityId">The parent activity ID.</param>
+    /// <returns>The retrieved lyrics analyzer config.</returns>
     public async Task<LyricsAnalyzerConfig> GetLyricsAnalyzerConfigAsync(string? parentActivityId)
     {
         Container container = _cosmosDbClient.GetContainer(
