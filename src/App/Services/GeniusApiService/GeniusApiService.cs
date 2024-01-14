@@ -5,6 +5,7 @@ using System.Web;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MuzakBot.App.Extensions;
+using MuzakBot.App.Extensions.GeniusApiService;
 using MuzakBot.App.Models.Genius;
 using MuzakBot.App.Models.Wayback;
 
@@ -53,6 +54,8 @@ public partial class GeniusApiService : IGeniusApiService
     public async Task<GeniusApiResponse<GeniusSearchResult>?> SearchAsync(string artistName, string songName, string? parentActvitityId)
     {
         using var activity = _activitySource.StartGeniusSearchAsyncActivity(artistName, songName, parentActvitityId);
+
+        _logger.LogGeniusSearch(songName, artistName);
 
         using var client = _httpClientFactory.CreateClient("GeniusApiClient");
 
@@ -110,6 +113,8 @@ public partial class GeniusApiService : IGeniusApiService
     {
         using var activity = _activitySource.StartGeniusGetLyricsAsyncActivity(url, parentActvitityId);
 
+        _logger.LogGeniusGetLyrics(url);
+
         string? latestWaybackUrl = await GetLatestWayback(url);
 
         if (latestWaybackUrl is null)
@@ -165,6 +170,8 @@ public partial class GeniusApiService : IGeniusApiService
     /// <returns>The URL of the latest Wayback Machine snapshot.</returns>
     private async Task<string?> GetLatestWayback(string url, bool isSecondRun)
     {
+        _logger.LogGeniusGetLatestWayback(url);
+
         using var client = _httpClientFactory.CreateClient("InternetArchiveClient");
 
         using HttpRequestMessage requestMessage = new(
@@ -178,17 +185,15 @@ public partial class GeniusApiService : IGeniusApiService
 
         string responseContent = await responseMessage.Content.ReadAsStringAsync();
 
-        _logger.LogInformation("{ResponseContent}", responseContent);
-
         ArchivedStatus? archivedStatus = JsonSerializer.Deserialize<ArchivedStatus>(responseContent);
 
         if (archivedStatus is null || archivedStatus.ArchivedSnapshots is null || archivedStatus.ArchivedSnapshots.Closest is null || archivedStatus.ArchivedSnapshots.Closest.Available == false || ConvertWaybackTimeStampToDateTimeOffset(archivedStatus.ArchivedSnapshots.Closest.Timestamp) < DateTimeOffset.UtcNow.AddDays(-30))
         {
-            _logger.LogWarning("Could not find a Wayback Machine snapshot of the URL.");
+            _logger.LogGeniusGetLatestWaybackNotFound(url);
             
             if (!isSecondRun)
             {
-                _logger.LogInformation("Attempting to archive the URL.");
+                _logger.LogGeniusGetLatestWaybackAttemptArchive(url);
 
                 string newArchiveUrl;
                 try
@@ -197,17 +202,19 @@ public partial class GeniusApiService : IGeniusApiService
                 }
                 catch (Exception)
                 {
-                    _logger.LogWarning("Could not archive the URL.");
+                    _logger.LogGeniusGetLatestWaybackNotArchived(url);
                     return null;
                 }
 
-                _logger.LogInformation("Successfully archived the URL.");
+                _logger.LogGeniusGetLatestWaybackArchiveSuccess(url, newArchiveUrl);
 
                 return newArchiveUrl;
             }
         }
 
         string latestWaybackUrl = archivedStatus!.ArchivedSnapshots!.Closest!.Url!;
+
+        _logger.LogGeniusGetLatestWaybackLatestFound(url, latestWaybackUrl);
 
         return latestWaybackUrl;
     }
@@ -221,6 +228,8 @@ public partial class GeniusApiService : IGeniusApiService
     /// <exception cref="TimeoutException"></exception>
     private async Task<string> InvokeWaybackArchive(string url)
     {
+        _logger.LogGeniusInvokeWaybackArchive(url);
+
         using var client = _httpClientFactory.CreateClient("InternetArchiveClient");
 
         using HttpRequestMessage requestMessage = new(
@@ -271,7 +280,10 @@ public partial class GeniusApiService : IGeniusApiService
 
             if (jobResponse is null)
             {
-                throw new Exception("Could not deserialize job response.");
+                Exception deserializationException = new("Could not deserialize response from Wayback Machine.");
+
+                _logger.LogGeniusInvokeWaybackArchiveDeserializationError(deserializationException);
+                throw deserializationException;
             }
 
             if (jobResponse.Status == "success" && jobResponse.Timestamp is not null)
@@ -312,10 +324,11 @@ public partial class GeniusApiService : IGeniusApiService
     /// </summary>
     /// <param name="html">The HTML content containing the lyrics.</param>
     /// <returns>The extracted lyrics as a string, or null if the HTML does not contain any lyrics.</returns>
-    private static string? ParseLyricsHtml(string html)
+    private string? ParseLyricsHtml(string html)
     {
         if (!LyricsContainerRegex().IsMatch(html))
         {
+            _logger.LogGeniusParseLyricsHtmlNotParsed();
             return null;
         }
 
@@ -323,6 +336,7 @@ public partial class GeniusApiService : IGeniusApiService
 
         if (containerMatches.Count == 0)
         {
+            _logger.LogGeniusParseLyricsHtmlNotParsed();
             return null;
         }
 
