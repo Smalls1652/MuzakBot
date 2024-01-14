@@ -78,6 +78,9 @@ public class DiscordService : IDiscordService, IHostedService
         // Add logging to the DiscordSocketClient and InteractionService
         _discordSocketClient.Log += HandleLog;
 
+        // Add interaction handler
+        _discordSocketClient.InteractionCreated += HandleInteraction;
+
         // Add slash command handler
         _discordSocketClient.InteractionCreated += HandleSlashCommand;
 
@@ -132,6 +135,13 @@ public class DiscordService : IDiscordService, IHostedService
 
         string slashCommandsLoadedString = string.Join(",", _interactionService.SlashCommands);
         _logger.LogInformation("Slash commands loaded: {SlashCommandsLoaded}", slashCommandsLoadedString);
+    }
+
+    private async Task HandleInteraction(SocketInteraction interaction)
+    {
+        var context = new SocketInteractionContext(_discordSocketClient, interaction);
+
+        var result = await _interactionService!.ExecuteCommandAsync(context, _serviceProvider);
     }
 
     /// <summary>
