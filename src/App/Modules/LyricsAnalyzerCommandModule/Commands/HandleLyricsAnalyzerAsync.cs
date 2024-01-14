@@ -77,7 +77,7 @@ public partial class LyricsAnalyzerCommandModule
         }
 
 
-        if (lyricsAnalyzerConfig.CommandEnabledGuildIds is not null && !lyricsAnalyzerConfig.CommandEnabledGuildIds.Contains(Context.Guild.Id))
+        if (!Context.Interaction.IsDMInteraction && lyricsAnalyzerConfig.CommandIsEnabledToSpecificGuilds && lyricsAnalyzerConfig.CommandEnabledGuildIds is not null && !lyricsAnalyzerConfig.CommandEnabledGuildIds.Contains(Context.Guild.Id))
         {
             await FollowupAsync(
                 embed: GenerateErrorEmbed("This command is not enabled on this server. 😥").Build(),
@@ -88,7 +88,7 @@ public partial class LyricsAnalyzerCommandModule
             return;
         }
 
-        if (!lyricsAnalyzerConfig.CommandIsEnabledToSpecificGuilds && lyricsAnalyzerConfig.CommandDisabledGuildIds is not null && lyricsAnalyzerConfig.CommandDisabledGuildIds.Contains(Context.Guild.Id))
+        if (!Context.Interaction.IsDMInteraction && !lyricsAnalyzerConfig.CommandIsEnabledToSpecificGuilds && lyricsAnalyzerConfig.CommandDisabledGuildIds is not null && lyricsAnalyzerConfig.CommandDisabledGuildIds.Contains(Context.Guild.Id))
         {
             await FollowupAsync(
                 embed: GenerateErrorEmbed("This command is not enabled on this server. 😥").Build(),
