@@ -1,3 +1,4 @@
+using MuzakBot.App.Models.Database.LyricsAnalyzer;
 using MuzakBot.App.Models.OpenAi;
 
 namespace MuzakBot.App.Services;
@@ -7,6 +8,6 @@ namespace MuzakBot.App.Services;
 /// </summary>
 public interface IOpenAiService : IDisposable
 {
-    Task<OpenAiChatCompletion?> GetLyricAnalysisAsync(string artistName, string songName, string lyrics, string promptMode);
-    Task<OpenAiChatCompletion?> GetLyricAnalysisAsync(string artistName, string songName, string lyrics, string promptMode, string? parentActivityId);
+    Task<OpenAiChatCompletion?> GetLyricAnalysisAsync(string artistName, string songName, string lyrics, LyricsAnalyzerPromptStyle promptStyle);
+    Task<OpenAiChatCompletion?> GetLyricAnalysisAsync(string artistName, string songName, string lyrics, LyricsAnalyzerPromptStyle promptStyle, string? parentActivityId);
 }

@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MuzakBot.App.Extensions;
 using MuzakBot.App.Logging.OpenAi;
+using MuzakBot.App.Models.Database.LyricsAnalyzer;
 using MuzakBot.App.Models.OpenAi;
 
 namespace MuzakBot.App.Services;
@@ -40,7 +41,7 @@ public partial class OpenAiService : IOpenAiService
     /// <param name="lyrics">The lyrics of the song.</param>
     /// <returns>The lyric analysis from the API.</returns>
     /// <exception cref="NullReferenceException">The response from the OpenAI API was null.</exception>
-    public async Task<OpenAiChatCompletion?> GetLyricAnalysisAsync(string artistName, string songName, string lyrics, string promptMode) => await GetLyricAnalysisAsync(artistName, songName, lyrics, promptMode, null);
+    public async Task<OpenAiChatCompletion?> GetLyricAnalysisAsync(string artistName, string songName, string lyrics, LyricsAnalyzerPromptStyle promptStyle) => await GetLyricAnalysisAsync(artistName, songName, lyrics, promptStyle, null);
 
     /// <summary>
     /// Gets the lyric analysis for a song using the OpenAI API.
@@ -51,11 +52,11 @@ public partial class OpenAiService : IOpenAiService
     /// <param name="parentActivityId">The ID of the parent activity (optional).</param>
     /// <returns>The lyric analysis from the API.</returns>
     /// <exception cref="NullReferenceException">The response from the OpenAI API was null.</exception>
-    public async Task<OpenAiChatCompletion?> GetLyricAnalysisAsync(string artistName, string songName, string lyrics, string promptMode, string? parentActivityId)
+    public async Task<OpenAiChatCompletion?> GetLyricAnalysisAsync(string artistName, string songName, string lyrics, LyricsAnalyzerPromptStyle promptStyle, string? parentActivityId)
     {
         using var activity = _activitySource.StartGetLyricAnalysisAsyncActivity(artistName, songName, parentActivityId);
 
-        _logger.LogOpenAiApiServiceLyricAnalysisStart(artistName, songName, promptMode);
+        _logger.LogOpenAiApiServiceLyricAnalysisStart(artistName, songName, promptStyle.ShortName);
 
         using var client = _httpClientFactory.CreateClient("OpenAiApiClient");
 
@@ -65,22 +66,6 @@ public partial class OpenAiService : IOpenAiService
         );
 
         requestMessage.Headers.Authorization = new("Bearer", _apiKey);
-
-        string systemPrompt = promptMode switch
-        {
-            "snobby" => LyricsAnalysisPromptConstants.SnobbyMusicCriticPrompt,
-            "roast-meme" => LyricsAnalysisPromptConstants.RoastMemePrompt,
-            "tame-meme" => LyricsAnalysisPromptConstants.TameMemePrompt,
-            "insane-meme" => LyricsAnalysisPromptConstants.InsaneMemePrompt,
-            _ => LyricsAnalysisPromptConstants.NormalPrompt
-        };
-
-        string userPrompt = promptMode switch
-        {
-            "snobby" => $"Briefly review and scathingly critique the lyrics for the song \"{songName}\" by {artistName}. Format the response in Markdown syntax.",
-            "roast-meme" => $"Briefly roast the lyrics for the song \"{songName}\" by {artistName}. Format the response in Markdown syntax.",
-            _ => $"Briefly explain the lyrics for the song \"{songName}\" by {artistName}. Format the response in Markdown syntax."
-        };
 
         OpenAiChatCompletionRequest request = new()
         {
@@ -95,7 +80,7 @@ public partial class OpenAiService : IOpenAiService
                 new()
                 {
                     Role = "system",
-                    Content = systemPrompt
+                    Content = promptStyle.Prompt
                 },
                 new()
                 {
@@ -105,7 +90,7 @@ public partial class OpenAiService : IOpenAiService
                 new()
                 {
                     Role = "user",
-                    Content = userPrompt
+                    Content = promptStyle.UserPrompt.Replace("{{songName}}", songName).Replace("{{artistName}}", artistName)
                 }
             ]
         };

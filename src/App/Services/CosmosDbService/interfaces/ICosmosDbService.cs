@@ -21,4 +21,13 @@ public interface ICosmosDbService : IDisposable
 
     Task<SongLyricsItem> GetSongLyricsItemAsync(string artistName, string songName);
     Task<SongLyricsItem> GetSongLyricsItemAsync(string artistName, string songName, string? parentActivityId);
+
+    Task AddOrUpdateLyricsAnalyzerPromptStyleAsync(LyricsAnalyzerPromptStyle promptStyle);
+    Task AddOrUpdateLyricsAnalyzerPromptStyleAsync(LyricsAnalyzerPromptStyle promptStyle, string? parentActivityId);
+
+    Task<LyricsAnalyzerPromptStyle?> GetLyricsAnalyzerPromptStyleAsync(string shortName);
+    Task<LyricsAnalyzerPromptStyle?> GetLyricsAnalyzerPromptStyleAsync(string shortName, string? parentActivityId);
+
+    Task<LyricsAnalyzerPromptStyle[]> GetLyricsAnalyzerPromptStylesAsync();
+    Task<LyricsAnalyzerPromptStyle[]> GetLyricsAnalyzerPromptStylesAsync(string? parentActivityId);
 }

@@ -13,13 +13,13 @@ internal static partial class OpenAiServiceLogging
     /// <param name="logger">The <see cref="ILogger"/> instance.</param>
     /// <param name="artistName">The name of the artist.</param>
     /// <param name="songName">The name of the song.</param>
-    /// <param name="promptMode">The prompt mode being used.</param>
+    /// <param name="promptStyle">The prompt style being used.</param>
     [LoggerMessage(
         EventName = "OpenAiApiService.LyricAnalysis.Start",
         Level = LogLevel.Information,
-        Message = "Starting lyric analysis for '{artistName} - {songName}' using the '{promptMode}' style."
+        Message = "Starting lyric analysis for '{artistName} - {songName}' using the '{promptStyle}' style."
     )]
-    public static partial void LogOpenAiApiServiceLyricAnalysisStart(this ILogger logger, string artistName, string songName, string promptMode);
+    public static partial void LogOpenAiApiServiceLyricAnalysisStart(this ILogger logger, string artistName, string songName, string promptStyle);
 
     /// <summary>
     /// Logs a failed lyric analysis.
