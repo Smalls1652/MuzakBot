@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
 
-namespace MuzakBot.App.Extensions.DiscordService;
+namespace MuzakBot.App.Logging.Discord;
 
 /// <summary>
 /// Source generated logging methods for the <see cref="DiscordService"/> class.

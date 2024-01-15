@@ -10,7 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using MuzakBot.App.Extensions.DiscordService;
+using MuzakBot.App.Logging.Discord;
 using MuzakBot.App.Modules;
 
 namespace MuzakBot.App.Services;
