@@ -2,6 +2,8 @@ using System.Net;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
 using MuzakBot.App.Extensions;
+using MuzakBot.App.Logging.CosmosDb;
+using MuzakBot.App.Models.CosmosDb;
 using MuzakBot.App.Models.Database.LyricsAnalyzer;
 
 namespace MuzakBot.App.Services;
@@ -28,20 +30,22 @@ public partial class CosmosDbService
             parentActivityId: parentActivityId
         );
 
+        _logger.LogAddOrUpdateOperationStart(
+            itemType: CosmosDbServiceLoggingConstants.ItemTypes.LyricsAnalyzerUserRateLimit,
+            id: lyricsAnalyzerUserRateLimit.UserId.ToString()
+        );
+
         Container container = _cosmosDbClient.GetContainer(
             databaseId: _options.DatabaseName,
             containerId: "rate-limit"
         );
 
-        _logger.LogInformation("Serializing lyrics analyzer user rate limit.");
         using MemoryStream itemPayload = new();
         await JsonSerializer.SerializeAsync(
             utf8Json: itemPayload,
             value: lyricsAnalyzerUserRateLimit,
             jsonTypeInfo: DatabaseJsonContext.Default.LyricsAnalyzerUserRateLimit
         );
-
-        _logger.LogInformation("Pushing to the database.");
 
         try
         {
@@ -50,7 +54,11 @@ public partial class CosmosDbService
                 partitionKey: new PartitionKey(lyricsAnalyzerUserRateLimit.PartitionKey)
             );
 
-            _logger.LogInformation("Lyrics analyzer user rate limit added.");
+            _logger.LogAddOrUpdateOperationAdded(
+                itemType: CosmosDbServiceLoggingConstants.ItemTypes.LyricsAnalyzerUserRateLimit,
+                id: lyricsAnalyzerUserRateLimit.UserId.ToString(),
+                state: CosmosDbServiceLoggingConstants.OperationTypes.Added
+            );
         }
         catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.Conflict)
         {
@@ -60,7 +68,11 @@ public partial class CosmosDbService
                 partitionKey: new PartitionKey(lyricsAnalyzerUserRateLimit.PartitionKey)
             );
 
-            _logger.LogInformation("Lyrics analyzer user rate limit updated.");
+            _logger.LogAddOrUpdateOperationAdded(
+                itemType: CosmosDbServiceLoggingConstants.ItemTypes.LyricsAnalyzerUserRateLimit,
+                id: lyricsAnalyzerUserRateLimit.UserId.ToString(),
+                state: CosmosDbServiceLoggingConstants.OperationTypes.Updated
+            );
         }
     }
 }

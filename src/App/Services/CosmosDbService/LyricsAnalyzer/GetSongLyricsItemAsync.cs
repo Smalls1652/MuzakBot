@@ -2,6 +2,7 @@ using System.Diagnostics;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
 using MuzakBot.App.Extensions;
+using MuzakBot.App.Logging.CosmosDb;
 using MuzakBot.App.Models.CosmosDb;
 using MuzakBot.App.Models.Database.LyricsAnalyzer;
 
@@ -29,6 +30,11 @@ public partial class CosmosDbService
     {
         using var activity = _activitySource.StartDbGetSongLyricsItemActivity(artistName, songName, parentActivityId);
 
+        _logger.LogGetOperationStart(
+            itemType: CosmosDbServiceLoggingConstants.ItemTypes.LyricsAnalyzerSongLyrics,
+            id: $"{artistName} - {songName}"
+        );
+
         Container container = _cosmosDbClient.GetContainer(
             databaseId: _options.DatabaseName,
             containerId: "song-lyrics"
@@ -54,7 +60,6 @@ public partial class CosmosDbService
             }
         );
 
-        _logger.LogInformation("Getting item for '{ArtistName}' - '{SongName}' from the 'song-lyrics' container.", artistName, songName);
         using ResponseMessage response = await feedIterator.ReadNextAsync();
 
         CosmosDbResponse<SongLyricsItem>? cosmosDbResponse = await JsonSerializer.DeserializeAsync(
@@ -64,10 +69,19 @@ public partial class CosmosDbService
 
         if (cosmosDbResponse is null || cosmosDbResponse.Documents is null || cosmosDbResponse.Documents.Length == 0)
         {
-            _logger.LogWarning("An item for '{ArtistName}' - '{SongName}' was not found in the 'song-lyrics' container.", artistName, songName);
+            _logger.LogGetOperationNotFound(
+                itemType: CosmosDbServiceLoggingConstants.ItemTypes.LyricsAnalyzerSongLyrics,
+                id: $"{artistName} - {songName}"
+            );
+
             activity?.SetStatus(ActivityStatusCode.Error);
             throw new NullReferenceException("The Cosmos DB response was null.");
         }
+
+        _logger.LogGetOperationFound(
+            itemType: CosmosDbServiceLoggingConstants.ItemTypes.LyricsAnalyzerSongLyrics,
+            id: $"{artistName} - {songName}"
+        );
 
         return cosmosDbResponse.Documents.FirstOrDefault()!;
     }

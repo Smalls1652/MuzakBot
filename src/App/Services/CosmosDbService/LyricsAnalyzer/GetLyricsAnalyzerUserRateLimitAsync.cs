@@ -3,6 +3,7 @@ using System.Net;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
 using MuzakBot.App.Extensions;
+using MuzakBot.App.Logging.CosmosDb;
 using MuzakBot.App.Models.CosmosDb;
 using MuzakBot.App.Models.Database.LyricsAnalyzer;
 
@@ -30,12 +31,13 @@ public partial class CosmosDbService
             parentActivityId: parentActivityId
         );
 
+        _logger.LogGetLyricsAnalyzerUserRateLimitStart(userId);
+
         Container container = _cosmosDbClient.GetContainer(
             databaseId: _options.DatabaseName,
             containerId: "rate-limit"
         );
 
-        _logger.LogInformation("Getting lyrics analyzer user rate limit from the database.");
         var query = new QueryDefinition(
             query: "SELECT * FROM c WHERE c.partitionKey = @partitionKey AND c.userId = @userId"
         )
@@ -63,15 +65,14 @@ public partial class CosmosDbService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to get lyrics analyzer user rate limit from the database.");
+            _logger.LogGetLyricsAnalyzerUserRateLimitFailed(userId, ex);
             activity?.SetStatus(ActivityStatusCode.Error);
-
             throw;
         }
 
         if (cosmosDbResponse is null || cosmosDbResponse.Documents is null || cosmosDbResponse.Documents.Length == 0)
         {
-            _logger.LogInformation("Lyrics analyzer user rate limit does not exist. Creating a new one.");
+            _logger.LogGetLyricsAnalyzerUserRateLimitNotFound(userId);
 
             LyricsAnalyzerUserRateLimit lyricsAnalyzerUserRateLimit = new(
                 userId: userId
@@ -82,7 +83,7 @@ public partial class CosmosDbService
             return lyricsAnalyzerUserRateLimit;
         }
 
-        _logger.LogInformation("Lyrics analyzer user rate limit retrieved.");
+        _logger.LogGetLyricsAnalyzerUserRateLimitSuccess(userId);
 
         return cosmosDbResponse.Documents.FirstOrDefault()!;
     }
