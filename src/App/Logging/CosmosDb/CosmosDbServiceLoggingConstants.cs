@@ -45,5 +45,10 @@ public static class CosmosDbServiceLoggingConstants
         /// The lyrics analyzer config item type.
         /// </summary>
         public const string LyricsAnalyzerConfig = "lyrics analyzer config";
+
+        /// <summary>
+        /// The lyrics analyzer prompt style item type.
+        /// </summary>
+        public const string LyricsAnalyzerPromptStyle = "lyrics analyzer prompt style";
     }
 }
