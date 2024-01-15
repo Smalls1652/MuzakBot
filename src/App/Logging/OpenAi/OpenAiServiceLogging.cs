@@ -5,7 +5,7 @@ namespace MuzakBot.App.Logging.OpenAi;
 /// <summary>
 /// Source generated logging methods for the <see cref="Services.OpenAiService"/> class.
 /// </summary>
-public static partial class OpenAiServiceLogging
+internal static partial class OpenAiServiceLogging
 {
     /// <summary>
     /// Logs the start of a lyric analysis.

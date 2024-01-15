@@ -5,7 +5,7 @@ namespace MuzakBot.App.Logging.Odesli;
 /// <summary>
 /// Source generated logging methods for the <see cref="Services.OdesliService"/> class.
 /// </summary>
-public static partial class OdesliServiceLogging
+internal static partial class OdesliServiceLogging
 {
     /// <summary>
     /// Logs a search on the Odesli API.

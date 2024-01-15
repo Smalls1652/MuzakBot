@@ -5,7 +5,7 @@ namespace MuzakBot.App.Logging.MusicBrainz;
 /// <summary>
 /// Source generated logging methods for the <see cref="Services.MusicBrainzService"/> class.
 /// </summary>
-public static partial class MusicBrainzServiceLogging
+internal static partial class MusicBrainzServiceLogging
 {
     /// <summary>
     /// Logs a search on the MusicBrainz API.

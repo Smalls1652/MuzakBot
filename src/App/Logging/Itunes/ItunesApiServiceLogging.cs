@@ -5,7 +5,7 @@ namespace MuzakBot.App.Logging.Itunes;
 /// <summary>
 /// Source generated logging methods for the <see cref="Services.ItunesApiService"/> class.
 /// </summary>
-public static partial class ItunesApiServiceLogging
+internal static partial class ItunesApiServiceLogging
 {
     /// <summary>
     /// Logs a search on the iTunes API.
