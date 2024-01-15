@@ -179,4 +179,61 @@ public static class CosmosDbServiceActivityExtensions
             parentId: parentActivityId
         );
     }
+
+    /// <summary>
+    /// Starts an activity for adding or updating a lyrics analyzer prompt style in the database.
+    /// </summary>
+    /// <param name="activitySource">The <see cref="ActivitySource"/>.</param>
+    /// <param name="promptStyle">The lyrics analyzer prompt style.</param>
+    /// <param name="parentActivityId">The parent activity ID.</param>
+    /// <returns>The started <see cref="Activity"/>.</returns>
+    public static Activity? StartDbAddOrUpdateLyricsAnalyzerPromptStyleActivity(this ActivitySource activitySource, LyricsAnalyzerPromptStyle promptStyle, string? parentActivityId)
+    {
+        return activitySource.CreateActivity(
+            name: "Database:AddOrUpdateLyricsAnalyzerPromptStyleAsync",
+            kind: ActivityKind.Internal,
+            tags: new ActivityTagsCollection
+            {
+                { "db_Id", promptStyle.Id },
+                { "name", promptStyle.Name },
+                { "shortName", promptStyle.ShortName }
+            },
+            parentId: parentActivityId
+        );
+    }
+
+    /// <summary>
+    /// Starts an activity for getting a lyrics analyzer prompt style from the database.
+    /// </summary>
+    /// <param name="activitySource">The <see cref="ActivitySource"/>.</param>
+    /// <param name="shortName">The short name of the prompt style.</param>
+    /// <param name="parentActivityId">The parent activity ID.</param>
+    /// <returns>The started <see cref="Activity"/>.</returns>
+    public static Activity? StartDbGetLyricsAnalyzerPromptStyleActivity(this ActivitySource activitySource, string shortName, string? parentActivityId)
+    {
+        return activitySource.CreateActivity(
+            name: "Database:GetLyricsAnalyzerPromptStyleAsync",
+            kind: ActivityKind.Internal,
+            tags: new ActivityTagsCollection
+            {
+                { "shortName", shortName }
+            },
+            parentId: parentActivityId
+        );
+    }
+
+    /// <summary>
+    /// Starts an activity for getting all lyrics analyzer prompt styles from the database.
+    /// </summary>
+    /// <param name="activitySource">The <see cref="ActivitySource"/>.</param>
+    /// <param name="parentActivityId">The parent activity ID.</param>
+    /// <returns>The started <see cref="Activity"/>.</returns>
+    public static Activity? StartDbGetLyricsAnalyzerPromptStylesActivity(this ActivitySource activitySource, string? parentActivityId)
+    {
+        return activitySource.CreateActivity(
+            name: "Database:GetLyricsAnalyzerPromptStylesAsync",
+            kind: ActivityKind.Internal,
+            parentId: parentActivityId
+        );
+    }
 }
