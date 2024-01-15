@@ -2,6 +2,7 @@ using System.Diagnostics;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
 using MuzakBot.App.Extensions;
+using MuzakBot.App.Logging.CosmosDb;
 using MuzakBot.App.Models.CosmosDb;
 using MuzakBot.App.Models.Database.LyricsAnalyzer;
 
@@ -32,12 +33,16 @@ public partial class CosmosDbService
             parentActivityId: parentActivityId
         );
 
+        _logger.LogGetOperationStart(
+            itemType: CosmosDbServiceLoggingConstants.ItemTypes.LyricsAnalyzerConfig,
+            id: "default"
+        );
+
         Container container = _cosmosDbClient.GetContainer(
             databaseId: _options.DatabaseName,
             containerId: "command-configs"
         );
 
-        _logger.LogInformation("Getting lyrics analyzer config from the database.");
         var query = new QueryDefinition(
             query: "SELECT * FROM c WHERE c.partitionKey = 'lyricsanalyzer-config'"
         );
@@ -63,7 +68,11 @@ public partial class CosmosDbService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "{ErrorMessage}", ex.Message);
+            _logger.LogGetOperationFailed(
+                itemType: CosmosDbServiceLoggingConstants.ItemTypes.LyricsAnalyzerConfig,
+                id: "default",
+                exception: ex
+            );
             activity?.SetStatus(ActivityStatusCode.Error);
 
             throw;
@@ -71,7 +80,11 @@ public partial class CosmosDbService
 
         if (cosmosDbResponse is null || cosmosDbResponse.Documents is null || cosmosDbResponse.Documents.Length == 0)
         {
-            _logger.LogWarning("Lyrics analyzer config not found. Creating a new one.");
+            _logger.LogGetOperationNotFound(
+                itemType: CosmosDbServiceLoggingConstants.ItemTypes.LyricsAnalyzerConfig,
+                id: "default"
+            );
+
             LyricsAnalyzerConfig lyricsAnalyzerConfig = new(true);
 
             try
@@ -80,13 +93,29 @@ public partial class CosmosDbService
             }
             catch (Exception ex)
             {
+                _logger.LogGetOperationFailed(
+                    itemType: CosmosDbServiceLoggingConstants.ItemTypes.LyricsAnalyzerConfig,
+                    id: "default",
+                    exception: ex
+                );
+
                 activity?.SetStatus(ActivityStatusCode.Error);
-                _logger.LogError(ex, "{ErrorMessage}", ex.Message);
+                
                 throw;
             }
 
+            _logger.LogGetOperationFound(
+                itemType: CosmosDbServiceLoggingConstants.ItemTypes.LyricsAnalyzerConfig,
+                id: "default"
+            );
+
             return lyricsAnalyzerConfig;
         }
+
+        _logger.LogGetOperationFound(
+            itemType: CosmosDbServiceLoggingConstants.ItemTypes.LyricsAnalyzerConfig,
+            id: "default"
+        );
 
         return cosmosDbResponse.Documents.FirstOrDefault()!;
     }

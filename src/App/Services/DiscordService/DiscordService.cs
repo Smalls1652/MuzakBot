@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using MuzakBot.App.Logging.Discord;
 using MuzakBot.App.Modules;
 
 namespace MuzakBot.App.Services;
@@ -48,24 +49,26 @@ public class DiscordService : IDiscordService, IHostedService
     public async Task ConnectAsync()
     {
         // Log into Discord
-        _logger.LogInformation("Connecting to Discord...");
+        _logger.LogDiscordStartConnecting();
 
         if (_clientToken is null)
         {
             Exception errorException = new("DISCORD_CLIENT_TOKEN is null. Please set the DISCORD_CLIENT_TOKEN environment variable.");
 
-            _logger.LogError(errorException, "{ErrorMessage}", errorException.Message);
+            _logger.LogMissingConfigValueError(errorException.Message, errorException);
             throw errorException;
         }
 
         // Initialize Discord Interaction Service
-        _logger.LogInformation("Initializing Discord Interaction Service...");
+        _logger.LogInitializeDiscordInteractionService();
 
-        _logger.LogInformation("Adding 'ShareMusicCommandModule'.");
+        _logger.LogAddModuleToInteractionService("ShareMusicCommandModule");
         await _interactionService.AddModuleAsync<ShareMusicCommandModule>(_serviceProvider);
 
+        _logger.LogAddModuleToInteractionService("AdminCommandModule");
         await _interactionService.AddModuleAsync<AdminCommandModule>(_serviceProvider);
 
+        _logger.LogAddModuleToInteractionService("LyricsAnalyzerCommandModule");
         await _interactionService.AddModuleAsync<LyricsAnalyzerCommandModule>(_serviceProvider);
 
         // Add logging to the DiscordSocketClient and InteractionService
@@ -107,15 +110,14 @@ public class DiscordService : IDiscordService, IHostedService
     private async Task OnClientReadyAsync()
     {
 #if DEBUG
-        _logger.LogInformation("Running in debug mode. Registering slash commands to test guild '{GuildId}'.", _testGuildId);
+        _logger.LogRegisterCommandsDebugMode(_testGuildId);
 
         await _interactionService!.RegisterCommandsToGuildAsync(
             guildId: _testGuildId,
             deleteMissing: true
         );
 #else
-        _logger.LogInformation("Registering slash commands globally.");
-        
+        _logger.LogRegisterCommandsGlobally();
         await _interactionService.AddModulesGloballyAsync(
             deleteMissing: true,
             modules: [
@@ -124,6 +126,7 @@ public class DiscordService : IDiscordService, IHostedService
             ]
         );
 
+        _logger.LogRegisterAdminCommands(_adminGuildId);
         await _interactionService.AddModulesToGuildAsync(
             guildId: _adminGuildId,
             deleteMissing: true,
@@ -134,7 +137,7 @@ public class DiscordService : IDiscordService, IHostedService
 #endif
 
         string slashCommandsLoadedString = string.Join(",", _interactionService.SlashCommands);
-        _logger.LogInformation("Slash commands loaded: {SlashCommandsLoaded}", slashCommandsLoadedString);
+        _logger.LogSlashCommandsLoaded(slashCommandsLoadedString);
     }
 
     private async Task HandleInteraction(SocketInteraction interaction)
@@ -145,12 +148,12 @@ public class DiscordService : IDiscordService, IHostedService
 
         if (!result.IsSuccess)
         {
-            _logger.LogError("Failed to execute interaction executed by '{Username}'. Is DM Interaction? {IsDmInteraction}", interaction.User.Username, interaction.IsDMInteraction);
-            _logger.LogError("Error: {ErrorMessage}", result.ErrorReason);
+            _logger.LogFailedToExecuteInteraction(interaction.User.Username, interaction.IsDMInteraction);
+            _logger.LogInteractionErrorMessage(result.ErrorReason);
         }
         else
         {
-            _logger.LogInformation("Successfully executed interaction executed by '{Username}'. Is DM Interaction? {IsDmInteraction}", interaction.User.Username, interaction.IsDMInteraction);
+            _logger.LogSuccessfullyExecutedInteraction(interaction.User.Username, interaction.IsDMInteraction);
         }
     }
 
@@ -166,11 +169,12 @@ public class DiscordService : IDiscordService, IHostedService
 
         if (!result.IsSuccess)
         {
-            _logger.LogError("Failed to execute slash command executed by '{Username}'. Is DM Interaction? {IsDmInteraction}", interaction.User.Username, interaction.IsDMInteraction);
+            _logger.LogFailedToExecuteSlashCommand(interaction.User.Username, interaction.IsDMInteraction);
+            _logger.LogSlashCommandErrorMessage(result.ErrorReason);
         }
         else
         {
-            _logger.LogInformation("Successfully executed slash command executed by '{Username}'. Is DM Interaction? {IsDmInteraction}", interaction.User.Username, interaction.IsDMInteraction);
+            _logger.LogSuccessfullyExecutedSlashCommand(interaction.User.Username, interaction.IsDMInteraction);
         }
     }
 
@@ -187,11 +191,12 @@ public class DiscordService : IDiscordService, IHostedService
 
         if (!result.IsSuccess)
         {
-            _logger.LogError("Failed to execute autocomplete executed by '{Username}'. Is DM Interaction? {IsDmInteraction}", interaction.User.Username, interaction.IsDMInteraction);
+            _logger.LogFailedToExecuteAutocomplete(interaction.User.Username, interaction.IsDMInteraction);
+            _logger.LogAutocompleteErrorMessage(result.ErrorReason);
         }
         else
         {
-            _logger.LogInformation("Successfully executed autocomplete executed by '{Username}'. Is DM Interaction? {IsDmInteraction}", interaction.User.Username, interaction.IsDMInteraction);
+            _logger.LogSuccessfullyExecutedAutocomplete(interaction.User.Username, interaction.IsDMInteraction);
         }
     }
 
@@ -250,11 +255,11 @@ public class DiscordService : IDiscordService, IHostedService
     /// <returns></returns>
     public async Task StopAsync(CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Disconnecting from Discord...");
+        _logger.LogDiscordBotDisconnect();
 
         await _discordSocketClient.LogoutAsync();
 
-        _logger.LogInformation("Disconnected.");
+        _logger.LogDiscordBotDisconnected();
     }
 
     /// <inheritdoc cref="IAsyncDisposable.DisposeAsync"/>

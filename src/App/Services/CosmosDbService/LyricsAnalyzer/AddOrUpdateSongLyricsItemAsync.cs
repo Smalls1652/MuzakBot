@@ -2,6 +2,7 @@ using System.Net;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
 using MuzakBot.App.Extensions;
+using MuzakBot.App.Logging.CosmosDb;
 using MuzakBot.App.Models.Database.LyricsAnalyzer;
 
 namespace MuzakBot.App.Services;
@@ -25,6 +26,11 @@ public partial class CosmosDbService
     {
         using var activity = _activitySource.StartDbAddOrUpdateSongLyricsItemActivity(songLyricsItem, parentActivityId);
 
+        _logger.LogAddOrUpdateOperationStart(
+            itemType: CosmosDbServiceLoggingConstants.ItemTypes.LyricsAnalyzerSongLyrics,
+            id: songLyricsItem.Id
+        );
+
         Container container = _cosmosDbClient.GetContainer(
             databaseId: _options.DatabaseName,
             containerId: "song-lyrics"
@@ -39,19 +45,29 @@ public partial class CosmosDbService
 
         try
         {
-            _logger.LogInformation("Adding item for '{Id}' to the 'song-lyrics' container.", songLyricsItem.Id);
             await container.UpsertItemStreamAsync(
                 streamPayload: itemPayload,
                 partitionKey: new PartitionKey(songLyricsItem.PartitionKey)
             );
+
+            _logger.LogAddOrUpdateOperationAdded(
+                itemType: CosmosDbServiceLoggingConstants.ItemTypes.LyricsAnalyzerSongLyrics,
+                id: songLyricsItem.Id,
+                state: CosmosDbServiceLoggingConstants.OperationTypes.Added
+            );
         }
         catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.Conflict)
         {
-            _logger.LogInformation(" The item for '{Id}' already exists. Replacing item for '{Id}' in the 'song-lyrics' container.", songLyricsItem.Id, songLyricsItem.Id);
             await container.ReplaceItemStreamAsync(
                 streamPayload: itemPayload,
                 id: songLyricsItem.Id,
                 partitionKey: new PartitionKey(songLyricsItem.PartitionKey)
+            );
+
+            _logger.LogAddOrUpdateOperationAdded(
+                itemType: CosmosDbServiceLoggingConstants.ItemTypes.LyricsAnalyzerSongLyrics,
+                id: songLyricsItem.Id,
+                state: CosmosDbServiceLoggingConstants.OperationTypes.Updated
             );
         }
     }

@@ -2,6 +2,7 @@ using System.Net;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
 using MuzakBot.App.Extensions;
+using MuzakBot.App.Logging.CosmosDb;
 using MuzakBot.App.Models.Database.LyricsAnalyzer;
 
 namespace MuzakBot.App.Services;
@@ -27,20 +28,22 @@ public partial class CosmosDbService
             parentActivityId: parentActivityId
         );
 
+        _logger.LogAddOrUpdateOperationStart(
+            itemType: CosmosDbServiceLoggingConstants.ItemTypes.LyricsAnalyzerConfig,
+            id: lyricsAnalyzerConfig.Id
+        );
+
         Container container = _cosmosDbClient.GetContainer(
             databaseId: _options.DatabaseName,
             containerId: "command-configs"
         );
 
-        _logger.LogInformation("Serializing lyrics analyzer config.");
         using MemoryStream itemPayload = new();
         await JsonSerializer.SerializeAsync(
             utf8Json: itemPayload,
             value: lyricsAnalyzerConfig,
             jsonTypeInfo: DatabaseJsonContext.Default.LyricsAnalyzerConfig
         );
-
-        _logger.LogInformation("Pushing to the database.");
 
         try
         {
@@ -49,7 +52,11 @@ public partial class CosmosDbService
                 partitionKey: new PartitionKey(lyricsAnalyzerConfig.PartitionKey)
             );
 
-            _logger.LogInformation("Lyrics analyzer config added.");
+            _logger.LogAddOrUpdateOperationAdded(
+                itemType: CosmosDbServiceLoggingConstants.ItemTypes.LyricsAnalyzerConfig,
+                id: lyricsAnalyzerConfig.Id,
+                state: CosmosDbServiceLoggingConstants.OperationTypes.Added
+            );
         }
         catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.Conflict)
         {
@@ -59,7 +66,11 @@ public partial class CosmosDbService
                 partitionKey: new PartitionKey(lyricsAnalyzerConfig.PartitionKey)
             );
 
-            _logger.LogInformation("Lyrics analyzer config updated.");
+            _logger.LogAddOrUpdateOperationAdded(
+                itemType: CosmosDbServiceLoggingConstants.ItemTypes.LyricsAnalyzerConfig,
+                id: lyricsAnalyzerConfig.Id,
+                state: CosmosDbServiceLoggingConstants.OperationTypes.Updated
+            );
         }
     }
 }
