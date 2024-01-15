@@ -2,6 +2,7 @@ using Discord;
 using Discord.Interactions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using MuzakBot.App.Models.Database.LyricsAnalyzer;
 using MuzakBot.App.Models.Itunes;
 using MuzakBot.App.Models.MusicBrainz;
 using MuzakBot.App.Services;
@@ -10,29 +11,52 @@ namespace MuzakBot.App.Handlers;
 
 public class LyricsAnalyzerPromptStyleAutoCompleteHandler : AutocompleteHandler
 {
-    private readonly IReadOnlyList<AutocompleteResult> _promptStyleOptions = [
-        new("Normal", "normal"),
-        new("Meme: Tame", "tame-meme"),
-        new("Meme: Insane", "insane-meme"),
-        new("Meme: Roast", "roast-meme"),
-        new("Snobby Music Critic", "snobby-music-critic")
-    ];
+    private readonly ILogger<LyricsAnalyzerPromptStyleAutoCompleteHandler> _logger;
+    private readonly ICosmosDbService _cosmosDbService;
+
+    public LyricsAnalyzerPromptStyleAutoCompleteHandler(ILogger<LyricsAnalyzerPromptStyleAutoCompleteHandler> logger, ICosmosDbService cosmosDbService)
+    {
+        _logger = logger;
+        _cosmosDbService = cosmosDbService;
+    }
 
     public override async Task<AutocompletionResult> GenerateSuggestionsAsync(IInteractionContext context, IAutocompleteInteraction autocompleteInteraction, IParameterInfo parameter, IServiceProvider services)
     {
         List<AutocompleteResult> results = new();
 
-        AutocompleteOption? promptStyleInput = autocompleteInteraction.Data.Options.FirstOrDefault(item => item.Name == "prompt-style");
+        LyricsAnalyzerPromptStyle[] promptStyles = await _cosmosDbService.GetLyricsAnalyzerPromptStylesAsync();
+        Array.Sort(promptStyles, (item1, item2) => item1.Name.CompareTo(item2.Name));
+
+        _logger.LogInformation("Returned {Count} prompt styles from the database.", promptStyles.Length);
+
+        AutocompleteOption? promptStyleInput = autocompleteInteraction.Data.Options.FirstOrDefault(item => item.Name == "style");
 
         if (promptStyleInput is null || promptStyleInput.Value is null || string.IsNullOrWhiteSpace(promptStyleInput.Value.ToString()))
         {
-            return AutocompletionResult.FromSuccess(_promptStyleOptions);
+            _logger.LogInformation("Prompt style input was null or empty, returning all prompt styles.");
+
+            foreach (LyricsAnalyzerPromptStyle promptStyle in promptStyles)
+            {
+                results.Add(new AutocompleteResult
+                {
+                    Name = promptStyle.Name,
+                    Value = promptStyle.ShortName
+                });
+            }
+
+            return AutocompletionResult.FromSuccess(results.AsEnumerable());
         }
 
-        _promptStyleOptions
-            .Where(item => item.Value.ToString()!.Contains(promptStyleInput.Value.ToString()!, StringComparison.OrdinalIgnoreCase))
+        promptStyles
+            .Where(item => item.ShortName.Contains(promptStyleInput.Value.ToString()!, StringComparison.OrdinalIgnoreCase))
             .ToList()
-            .ForEach(item => results.Add(item));
+            .ForEach(item => results.Add(new AutocompleteResult
+            {
+                Name = item.Name,
+                Value = item.ShortName
+            }));
+
+        _logger.LogInformation("Filtered down to {Count} prompt styles based off the input {input}.", results.Count, promptStyleInput.Value.ToString()!);
 
         return AutocompletionResult.FromSuccess(results.AsEnumerable());
     }
