@@ -3,6 +3,7 @@ using System.Text;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MuzakBot.App.Extensions;
+using MuzakBot.App.Logging.OpenAi;
 using MuzakBot.App.Models.OpenAi;
 
 namespace MuzakBot.App.Services;
@@ -53,6 +54,8 @@ public partial class OpenAiService : IOpenAiService
     public async Task<OpenAiChatCompletion?> GetLyricAnalysisAsync(string artistName, string songName, string lyrics, string promptMode, string? parentActivityId)
     {
         using var activity = _activitySource.StartGetLyricAnalysisAsyncActivity(artistName, songName, parentActivityId);
+
+        _logger.LogOpenAiApiServiceLyricAnalysisStart(artistName, songName, promptMode);
 
         using var client = _httpClientFactory.CreateClient("OpenAiApiClient");
 
@@ -124,10 +127,9 @@ public partial class OpenAiService : IOpenAiService
         }
         catch (Exception ex)
         {
-            string errorResponseContent = await responseMessage.Content.ReadAsStringAsync();
-            _logger.LogError(ex, "Error sending request to OpenAI API: {ErrorResponse}", errorResponseContent);
-
+            _logger.LogOpenAiApiServiceFailure(ex);
             activity?.SetStatus(ActivityStatusCode.Error);
+
             throw;
         }
 
@@ -146,8 +148,6 @@ public partial class OpenAiService : IOpenAiService
             value: response,
             jsonTypeInfo: OpenAiJsonContext.Default.OpenAiChatCompletion
         );
-
-        _logger.LogInformation("{ResponseJson}", responseJson);
 
         activity?.AddOpenAiChatCompletionResponseTags(response);
 
