@@ -4,6 +4,7 @@ using Microsoft.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
 using MuzakBot;
+using MuzakBot.App.Logging.Odesli;
 using MuzakBot.App.Models.Odesli;
 using System.Diagnostics;
 using MuzakBot.App.Extensions;
@@ -49,9 +50,10 @@ public partial class OdesliService : IOdesliService
     {
         using var activity = _activitySource.StartGetShareLinksActivity(inputUrl, parentActvitityId);
 
+        _logger.LogOdesliApiServiceShareLinksStart(inputUrl);
+
         using var httpClient = _httpClientFactory.CreateClient("OdesliApiClient");
 
-        _logger.LogInformation("Getting share links for '{inputUrl}'.", inputUrl);
         string encodedUrl = WebUtility.UrlEncode(inputUrl);
 
         HttpRequestMessage requestMessage = new(
@@ -65,8 +67,9 @@ public partial class OdesliService : IOdesliService
         {
             responseMessage.EnsureSuccessStatusCode();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            _logger.LogOdesliApiServiceFailure(ex);
             activity?.SetStatus(ActivityStatusCode.Error);
             throw;
         }
