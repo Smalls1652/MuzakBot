@@ -31,7 +31,10 @@ public partial class CosmosDbService
             parentActivityId: parentActivityId
         );
 
-        _logger.LogGetLyricsAnalyzerUserRateLimitStart(userId);
+        _logger.LogGetOperationStart(
+            itemType: CosmosDbServiceLoggingConstants.ItemTypes.LyricsAnalyzerUserRateLimit,
+            id: userId.ToString()
+        );
 
         Container container = _cosmosDbClient.GetContainer(
             databaseId: _options.DatabaseName,
@@ -65,14 +68,21 @@ public partial class CosmosDbService
         }
         catch (Exception ex)
         {
-            _logger.LogGetLyricsAnalyzerUserRateLimitFailed(userId, ex);
+            _logger.LogGetOperationFailed(
+                itemType: CosmosDbServiceLoggingConstants.ItemTypes.LyricsAnalyzerUserRateLimit,
+                id: userId.ToString(),
+                exception: ex
+            );
             activity?.SetStatus(ActivityStatusCode.Error);
             throw;
         }
 
         if (cosmosDbResponse is null || cosmosDbResponse.Documents is null || cosmosDbResponse.Documents.Length == 0)
         {
-            _logger.LogGetLyricsAnalyzerUserRateLimitNotFound(userId);
+            _logger.LogGetOperationNotFound(
+                itemType: CosmosDbServiceLoggingConstants.ItemTypes.LyricsAnalyzerUserRateLimit,
+                id: userId.ToString()
+            );
 
             LyricsAnalyzerUserRateLimit lyricsAnalyzerUserRateLimit = new(
                 userId: userId
@@ -83,7 +93,10 @@ public partial class CosmosDbService
             return lyricsAnalyzerUserRateLimit;
         }
 
-        _logger.LogGetLyricsAnalyzerUserRateLimitSuccess(userId);
+        _logger.LogGetOperationFound(
+            itemType: CosmosDbServiceLoggingConstants.ItemTypes.LyricsAnalyzerUserRateLimit,
+            id: userId.ToString()
+        );
 
         return cosmosDbResponse.Documents.FirstOrDefault()!;
     }
