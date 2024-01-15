@@ -13,5 +13,5 @@ public interface ILyricsAnalyzerPromptStyle
     DateTimeOffset CreatedOn { get; set; }
     DateTimeOffset LastUpdated { get; set; }
 
-    void SetLastUpdated();
+    void UpdateLastUpdateTime();
 }
