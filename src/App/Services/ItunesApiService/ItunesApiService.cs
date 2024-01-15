@@ -3,6 +3,7 @@ using System.Net;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using MuzakBot.App.Extensions;
+using MuzakBot.App.Logging.Itunes;
 using MuzakBot.App.Models.Diagnostics;
 using MuzakBot.App.Models.Itunes;
 
@@ -53,6 +54,8 @@ public partial class ItunesApiService : IItunesApiService
             parentActivityId: parentActvitityId
         );
 
+        _logger.LogItunesApiServiceSearchStart(artistName);
+
         using var httpClient = _httpClientFactory.CreateClient("ItunesApiClient");
 
         string encodedSearch = WebUtility.UrlEncode(artistName);
@@ -68,8 +71,9 @@ public partial class ItunesApiService : IItunesApiService
         {
             responseMessage.EnsureSuccessStatusCode();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            _logger.LogItunesApiServiceFailure(ex);
             activity?.SetStatus(ActivityStatusCode.Error);
             throw;
         }
@@ -106,6 +110,8 @@ public partial class ItunesApiService : IItunesApiService
             parentActivityId: parentActvitityId
         );
 
+        _logger.LogItunesApiServiceSearchStart(artistId);
+
         using var httpClient = _httpClientFactory.CreateClient("ItunesApiClient");
 
         HttpRequestMessage requestMessage = new(
@@ -119,8 +125,9 @@ public partial class ItunesApiService : IItunesApiService
         {
             responseMessage.EnsureSuccessStatusCode();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            _logger.LogItunesApiServiceFailure(ex);
             activity?.SetStatus(ActivityStatusCode.Error);
             throw;
         }
@@ -157,6 +164,8 @@ public partial class ItunesApiService : IItunesApiService
             parentActivityId: parentActvitityId
         );
 
+        _logger.LogItunesApiServiceSearchStart(trackId);
+
         using var httpClient = _httpClientFactory.CreateClient("ItunesApiClient");
 
         HttpRequestMessage requestMessage = new(
@@ -170,8 +179,9 @@ public partial class ItunesApiService : IItunesApiService
         {
             responseMessage.EnsureSuccessStatusCode();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            _logger.LogItunesApiServiceFailure(ex);
             activity?.SetStatus(ActivityStatusCode.Error);
             throw;
         }
@@ -211,6 +221,8 @@ public partial class ItunesApiService : IItunesApiService
             parentActivityId: parentActvitityId
         );
 
+        _logger.LogItunesApiServiceSearchStart($"{artistName} - {songName}");
+
         using var httpClient = _httpClientFactory.CreateClient("ItunesApiClient");
 
         string encodedSearch = WebUtility.UrlEncode($"{artistName} {songName}");
@@ -226,8 +238,9 @@ public partial class ItunesApiService : IItunesApiService
         {
             responseMessage.EnsureSuccessStatusCode();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            _logger.LogItunesApiServiceFailure(ex);
             activity?.SetStatus(ActivityStatusCode.Error);
             throw;
         }
@@ -267,6 +280,8 @@ public partial class ItunesApiService : IItunesApiService
             parentActivityId: parentActvitityId
         );
 
+        _logger.LogItunesApiServiceSearchStart($"{artistName} - {albumName}");
+
         using var httpClient = _httpClientFactory.CreateClient("ItunesApiClient");
 
         string encodedSearch = WebUtility.UrlEncode($"{artistName} {albumName}");
@@ -282,8 +297,9 @@ public partial class ItunesApiService : IItunesApiService
         {
             responseMessage.EnsureSuccessStatusCode();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            _logger.LogItunesApiServiceFailure(ex);
             activity?.SetStatus(ActivityStatusCode.Error);
             throw;
         }
