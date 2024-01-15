@@ -1,5 +1,6 @@
 using System.Net;
 using Microsoft.Azure.Cosmos;
+using Microsoft.Extensions.Logging;
 using MuzakBot.App.Extensions;
 using MuzakBot.App.Logging.CosmosDb;
 using MuzakBot.App.Models.Database.LyricsAnalyzer;
@@ -38,6 +39,11 @@ public partial class CosmosDbService
             containerId: "prompt-styles"
         );
 
+        string promptStyleJson = JsonSerializer.Serialize(
+            value: promptStyle,
+            jsonTypeInfo: DatabaseJsonContext.Default.LyricsAnalyzerPromptStyle
+        );
+
         using MemoryStream itemPayload = new();
         await JsonSerializer.SerializeAsync(
             utf8Json: itemPayload,
@@ -60,13 +66,17 @@ public partial class CosmosDbService
         }
         catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.Conflict)
         {
+            await container.ReplaceItemStreamAsync(
+                streamPayload: itemPayload,
+                id: promptStyle.Id,
+                partitionKey: new PartitionKey(promptStyle.PartitionKey)
+            );
+
             _logger.LogAddOrUpdateOperationAdded(
                 itemType: CosmosDbServiceLoggingConstants.ItemTypes.LyricsAnalyzerPromptStyle,
                 id: promptStyle.Id,
                 state: CosmosDbServiceLoggingConstants.OperationTypes.Updated
             );
-
-            throw;
         }
     }
 }

@@ -43,8 +43,10 @@ public partial class CosmosDbService
 
         int resultCount = await GetResultCountAsync(
             container: container,
-            coreQuery: query.QueryText
+            coreQuery: "WHERE c.partitionKey = 'prompt-style'"
         );
+
+        _logger.LogInformation("Found {Count} prompt styles in the database.", resultCount);
 
         LyricsAnalyzerPromptStyle[] promptStyles = new LyricsAnalyzerPromptStyle[resultCount];
 

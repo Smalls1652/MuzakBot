@@ -16,7 +16,7 @@ public partial class CosmosDbService
     /// <param name="shortName">The short name of the prompt style.</param>
     /// <returns>The retrieved lyrics analyzer prompt style.</returns>
     /// <exception cref="Exception"></exception>
-    public async Task<LyricsAnalyzerPromptStyle> GetLyricsAnalyzerPromptStyleAsync(string shortName) => await GetLyricsAnalyzerPromptStyleAsync(shortName, null);
+    public async Task<LyricsAnalyzerPromptStyle?> GetLyricsAnalyzerPromptStyleAsync(string shortName) => await GetLyricsAnalyzerPromptStyleAsync(shortName, null);
 
     /// <summary>
     /// Gets a specific lyrics analyzer prompt style from the database.
@@ -25,7 +25,7 @@ public partial class CosmosDbService
     /// <param name="parentActivityId">The parent activity ID.</param>
     /// <returns>The retrieved lyrics analyzer prompt style.</returns>
     /// <exception cref="Exception"></exception>
-    public async Task<LyricsAnalyzerPromptStyle> GetLyricsAnalyzerPromptStyleAsync(string shortName, string? parentActivityId)
+    public async Task<LyricsAnalyzerPromptStyle?> GetLyricsAnalyzerPromptStyleAsync(string shortName, string? parentActivityId)
     {
         using var activity = _activitySource.StartDbGetLyricsAnalyzerPromptStyleActivity(
             shortName: shortName,
@@ -79,18 +79,11 @@ public partial class CosmosDbService
             throw;
         }
 
-        if (cosmosDbResponse is null || cosmosDbResponse.Documents is null || cosmosDbResponse.Documents.Length == 0)
+        if (cosmosDbResponse is null || cosmosDbResponse.Documents is null)
         {
-            _logger.LogGetOperationNotFound(
-                itemType: CosmosDbServiceLoggingConstants.ItemTypes.LyricsAnalyzerPromptStyle,
-                id: shortName
-            );
-
-            activity?.SetStatus(ActivityStatusCode.Error);
-
-            throw new Exception($"No prompt style with short name '{shortName}' was found.");
+            return null;
         }
 
-        return cosmosDbResponse.Documents[0];
+        return cosmosDbResponse.Documents.FirstOrDefault();
     }
 }
