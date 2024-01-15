@@ -18,11 +18,29 @@ internal static class LyricsAnalyzerCommandModuleActivityExtensions
     /// <returns>The started activity.</returns>
     public static Activity? StartHandleLyricsAnalyzerAsyncActivity(this ActivitySource activitySource, string artistName, string songName, IInteractionContext context)
     {
-        return activitySource.StartActivity(
-            name: "HandleLyricsAnalyzerAsync",
-            kind: ActivityKind.Server,
-            tags: new ActivityTagsCollection
-            {
+        if (context.Interaction.IsDMInteraction)
+        {
+            return activitySource.StartActivity(
+                name: "HandleLyricsAnalyzerAsync",
+                kind: ActivityKind.Server,
+                tags: new ActivityTagsCollection
+                {
+                    { "command_Type", "SlashCommand"},
+                    { "command_Name", "getsonglyrics" },
+                    { "artist_Name", artistName },
+                    { "song_Name", songName },
+                    { "user_Id", context.User.Id },
+                    { "isDM", true }
+                }
+            );
+        }
+        else
+        {
+            return activitySource.StartActivity(
+                name: "HandleLyricsAnalyzerAsync",
+                kind: ActivityKind.Server,
+                tags: new ActivityTagsCollection
+                {
                 { "command_Type", "SlashCommand"},
                 { "command_Name", "getsonglyrics" },
                 { "artist_Name", artistName },
@@ -31,7 +49,8 @@ internal static class LyricsAnalyzerCommandModuleActivityExtensions
                 { "guild_Name", context.Guild.Name },
                 { "channel_Id", context.Channel.Id },
                 { "channel_Name", context.Channel.Name }
-            }
-        );
+                }
+            );
+        }
     }
 }
