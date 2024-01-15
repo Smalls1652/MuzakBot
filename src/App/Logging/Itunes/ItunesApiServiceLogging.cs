@@ -2,6 +2,9 @@ using Microsoft.Extensions.Logging;
 
 namespace MuzakBot.App.Logging.Itunes;
 
+/// <summary>
+/// Source generated logging methods for the <see cref="Services.ItunesApiService"/> class.
+/// </summary>
 public static partial class ItunesApiServiceLogging
 {
     /// <summary>

@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 namespace MuzakBot.App.Logging.Discord;
 
 /// <summary>
-/// Source generated logging methods for the <see cref="DiscordService"/> class.
+/// Source generated logging methods for the <see cref="Services.DiscordService"/> class.
 /// </summary>
 internal static partial class DiscordServiceLogging
 {

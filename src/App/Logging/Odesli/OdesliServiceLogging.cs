@@ -2,6 +2,9 @@ using Microsoft.Extensions.Logging;
 
 namespace MuzakBot.App.Logging.Odesli;
 
+/// <summary>
+/// Source generated logging methods for the <see cref="Services.OdesliService"/> class.
+/// </summary>
 public static partial class OdesliServiceLogging
 {
     /// <summary>
