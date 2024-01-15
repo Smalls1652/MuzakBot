@@ -1,3 +1,5 @@
+using MuzakBot.App.Models.CommandModules;
+
 namespace MuzakBot.App.Models.Database.LyricsAnalyzer;
 
 /// <summary>
@@ -14,19 +16,29 @@ public class LyricsAnalyzerPromptStyle : DatabaseItem, ILyricsAnalyzerPromptStyl
     /// <summary>
     /// Initializes a new instance of the <see cref="LyricsAnalyzerPromptStyle"/> class.
     /// </summary>
+    /// <param name="inputModal">The <see cref="LyricsAnalyzerPromptStyleModal"/> to initialize from.</param>
+    public LyricsAnalyzerPromptStyle(LyricsAnalyzerPromptStyleModal inputModal)
+    {
+        Id = Guid.NewGuid().ToString();
+        PartitionKey = "prompt-style";
+        UpdateFromModalInput(inputModal);
+        CreatedOn = DateTimeOffset.UtcNow;
+        LastUpdated = DateTimeOffset.UtcNow;
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="LyricsAnalyzerPromptStyle"/> class.
+    /// </summary>
     /// <param name="name">The name of the prompt style.</param>
     /// <param name="shortName">The short name of the prompt style.</param>
     /// <param name="description">The description of the prompt style.</param>
     /// <param name="analysisType">The analysis type of the prompt style.</param>
     /// <param name="prompt">The prompt used for the style.</param>
     /// <param name="noticeText">The notice text used for the prompt style.</param>
-    public LyricsAnalyzerPromptStyle(string name, string shortName, string description, string analysisType, string prompt, string noticeText)
+    public LyricsAnalyzerPromptStyle(string name, string shortName, string analysisType, string prompt, string noticeText)
     {
-        Id = Guid.NewGuid().ToString();
-        PartitionKey = "prompt-style";
         Name = name;
         ShortName = shortName;
-        Description = description;
         AnalysisType = analysisType;
         Prompt = prompt;
         NoticeText = noticeText;
@@ -47,12 +59,6 @@ public class LyricsAnalyzerPromptStyle : DatabaseItem, ILyricsAnalyzerPromptStyl
     public string ShortName { get; set; } = null!;
 
     /// <summary>
-    /// The description of the prompt style.
-    /// </summary>
-    [JsonPropertyName("description")]
-    public string Description { get; set; } = null!;
-
-    /// <summary>
     /// The analysis type of the prompt style.
     /// </summary>
     [JsonPropertyName("analysisType")]
@@ -63,6 +69,11 @@ public class LyricsAnalyzerPromptStyle : DatabaseItem, ILyricsAnalyzerPromptStyl
     /// </summary>
     [JsonPropertyName("prompt")]
     public string Prompt { get; set; } = null!;
+
+    /// <summary>
+    /// The prompt used as a user prompt for the style.
+    /// </summary>
+    public string UserPrompt { get; set; } = "Briefly explain the lyrics for the song \"{{songName}}\" by {{artistName}}. Format the response in Markdown syntax.";
 
     /// <summary>
     /// The notice text used for the prompt style.
@@ -81,6 +92,19 @@ public class LyricsAnalyzerPromptStyle : DatabaseItem, ILyricsAnalyzerPromptStyl
     /// </summary>
     [JsonPropertyName("lastUpdated")]
     public DateTimeOffset LastUpdated { get; set; }
+
+    /// <summary>
+    /// Updates the prompt style from <see cref="LyricsAnalyzerPromptStyleModal"/>.
+    /// </summary>
+    /// <param name="inputModal">The <see cref="LyricsAnalyzerPromptStyleModal"/> to update from.</param>
+    public void UpdateFromModalInput(LyricsAnalyzerPromptStyleModal inputModal)
+    {
+        Name = inputModal.Name;
+        ShortName = inputModal.ShortName;
+        AnalysisType = inputModal.AnalysisType;
+        Prompt = inputModal.Prompt;
+        NoticeText = inputModal.NoticeText;
+    }
 
     /// <summary>
     /// Updates the last updated time to the current date and time.
