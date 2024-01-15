@@ -5,7 +5,7 @@ using System.Web;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MuzakBot.App.Extensions;
-using MuzakBot.App.Extensions.GeniusApiService;
+using MuzakBot.App.Logging.Genius;
 using MuzakBot.App.Models.Genius;
 using MuzakBot.App.Models.Wayback;
 

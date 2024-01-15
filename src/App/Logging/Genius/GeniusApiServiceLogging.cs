@@ -1,9 +1,9 @@
 using Microsoft.Extensions.Logging;
 
-namespace MuzakBot.App.Extensions.GeniusApiService;
+namespace MuzakBot.App.Logging.Genius;
 
 /// <summary>
-/// Source generated logging methods for the <see cref="GeniusApiService"/> class.
+/// Source generated logging methods for the <see cref="Services.GeniusApiService"/> class.
 /// </summary>
 internal static partial class GeniusApiServiceLogging
 {
