@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
+using MuzakBot.App.Logging.MusicBrainz;
 using MuzakBot.App.Models.MusicBrainz;
 using MuzakBot.App.Models.Diagnostics;
 using MuzakBot.App.Extensions;
@@ -53,6 +54,8 @@ public partial class MusicBrainzService : IMusicBrainzService
             parentActivityId: parentActivityId
         );
 
+        _logger.LogMusicBrainzApiServiceSearchStart(artistName);
+
         using var httpClient = _httpClientFactory.CreateClient("MusicBrainzApiClient");
 
         HttpRequestMessage requestMessage = new(
@@ -66,8 +69,9 @@ public partial class MusicBrainzService : IMusicBrainzService
         {
             responseMessage.EnsureSuccessStatusCode();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            _logger.LogMusicBrainzApiServiceFailure(ex);
             activity?.SetStatus(ActivityStatusCode.Error);
             throw;
         }
@@ -107,6 +111,8 @@ public partial class MusicBrainzService : IMusicBrainzService
             parentActivityId: parentActivityId
         );
 
+        _logger.LogMusicBrainzApiServiceSearchStart($"{artistId} - {songName}");
+
         using var httpClient = _httpClientFactory.CreateClient("MusicBrainzApiClient");
 
         HttpRequestMessage requestMessage = new(
@@ -120,8 +126,9 @@ public partial class MusicBrainzService : IMusicBrainzService
         {
             responseMessage.EnsureSuccessStatusCode();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            _logger.LogMusicBrainzApiServiceFailure(ex);
             activity?.SetStatus(ActivityStatusCode.Error);
             throw;
         }
@@ -161,6 +168,8 @@ public partial class MusicBrainzService : IMusicBrainzService
             parentActivityId: parentActivityId
         );
 
+        _logger.LogMusicBrainzApiServiceSearchStart($"{artistName} - {songName}");
+
         using var httpClient = _httpClientFactory.CreateClient("MusicBrainzApiClient");
 
         HttpRequestMessage requestMessage = new(
@@ -174,8 +183,9 @@ public partial class MusicBrainzService : IMusicBrainzService
         {
             responseMessage.EnsureSuccessStatusCode();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            _logger.LogMusicBrainzApiServiceFailure(ex);
             activity?.SetStatus(ActivityStatusCode.Error);
             throw;
         }
@@ -215,6 +225,8 @@ public partial class MusicBrainzService : IMusicBrainzService
             parentActivityId: parentActivityId
         );
 
+        _logger.LogMusicBrainzApiServiceSearchStart($"{artistId} - {albumName}");
+
         using var httpClient = _httpClientFactory.CreateClient("MusicBrainzApiClient");
 
         HttpRequestMessage requestMessage = new(
@@ -228,8 +240,9 @@ public partial class MusicBrainzService : IMusicBrainzService
         {
             responseMessage.EnsureSuccessStatusCode();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            _logger.LogMusicBrainzApiServiceFailure(ex);
             activity?.SetStatus(ActivityStatusCode.Error);
             throw;
         }
@@ -266,6 +279,8 @@ public partial class MusicBrainzService : IMusicBrainzService
             parentActivityId: parentActivityId
         );
 
+        _logger.LogMusicBrainzApiServiceSearchStart(artistId);
+
         using var httpClient = _httpClientFactory.CreateClient("MusicBrainzApiClient");
 
         HttpRequestMessage requestMessage = new(
@@ -279,8 +294,9 @@ public partial class MusicBrainzService : IMusicBrainzService
         {
             responseMessage.EnsureSuccessStatusCode();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            _logger.LogMusicBrainzApiServiceFailure(ex);
             activity?.SetStatus(ActivityStatusCode.Error);
             throw;
         }
@@ -317,6 +333,8 @@ public partial class MusicBrainzService : IMusicBrainzService
             parentActivityId: parentActivityId
         );
 
+        _logger.LogMusicBrainzApiServiceSearchStart(releaseId);
+
         using var httpClient = _httpClientFactory.CreateClient("MusicBrainzApiClient");
 
         HttpRequestMessage requestMessage = new(
@@ -330,8 +348,9 @@ public partial class MusicBrainzService : IMusicBrainzService
         {
             responseMessage.EnsureSuccessStatusCode();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            _logger.LogMusicBrainzApiServiceFailure(ex);
             activity?.SetStatus(ActivityStatusCode.Error);
             throw;
         }
@@ -368,6 +387,8 @@ public partial class MusicBrainzService : IMusicBrainzService
             parentActivityId: parentActivityId
         );
 
+        _logger.LogMusicBrainzApiServiceSearchStart(recordingId);
+
         using var httpClient = _httpClientFactory.CreateClient("MusicBrainzApiClient");
 
         HttpRequestMessage requestMessage = new(
@@ -381,8 +402,9 @@ public partial class MusicBrainzService : IMusicBrainzService
         {
             responseMessage.EnsureSuccessStatusCode();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            _logger.LogMusicBrainzApiServiceFailure(ex);
             activity?.SetStatus(ActivityStatusCode.Error);
             throw;
         }
