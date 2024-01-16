@@ -16,7 +16,7 @@ public class LyricsAnalyzerUserRateLimit : DatabaseItem, ILyricsAnalyzerUserRate
     /// Initializes a new instance of the <see cref="LyricsAnalyzerUserRateLimit"/> class.
     /// </summary>
     /// <param name="userId">The user's ID.</param>
-    public LyricsAnalyzerUserRateLimit(ulong userId): this(userId, 0, DateTimeOffset.UtcNow)
+    public LyricsAnalyzerUserRateLimit(string userId): this(userId, 0, DateTimeOffset.UtcNow)
     {}
 
     /// <summary>
@@ -24,7 +24,7 @@ public class LyricsAnalyzerUserRateLimit : DatabaseItem, ILyricsAnalyzerUserRate
     /// </summary>
     /// <param name="userId">The user's ID.</param>
     /// <param name="currentRequestCount">The current request count.</param>
-    public LyricsAnalyzerUserRateLimit(ulong userId, int currentRequestCount): this(userId, currentRequestCount, DateTimeOffset.UtcNow)
+    public LyricsAnalyzerUserRateLimit(string userId, int currentRequestCount): this(userId, currentRequestCount, DateTimeOffset.UtcNow)
     {}
 
     /// <summary>
@@ -33,7 +33,7 @@ public class LyricsAnalyzerUserRateLimit : DatabaseItem, ILyricsAnalyzerUserRate
     /// <param name="userId">The user's ID.</param>
     /// <param name="currentRequestCount">The current request count.</param>
     /// <param name="lastRequestTime">The last request time.</param>
-    public LyricsAnalyzerUserRateLimit(ulong userId, int currentRequestCount, DateTimeOffset lastRequestTime)
+    public LyricsAnalyzerUserRateLimit(string userId, int currentRequestCount, DateTimeOffset lastRequestTime)
     {
         Id = Guid.NewGuid().ToString();
         PartitionKey = "user-item";
@@ -47,7 +47,7 @@ public class LyricsAnalyzerUserRateLimit : DatabaseItem, ILyricsAnalyzerUserRate
     /// The user's ID.
     /// </summary>
     [JsonPropertyName("userId")]
-    public ulong UserId { get; set; }
+    public string UserId { get; set; } = null!;
 
     /// <summary>
     /// The current request count.
