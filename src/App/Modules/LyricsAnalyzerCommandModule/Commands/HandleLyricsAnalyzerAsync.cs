@@ -95,8 +95,10 @@ public partial class LyricsAnalyzerCommandModule
             return;
         }
 
+        bool userIsOnRateLimitIgnoreList = lyricsAnalyzerConfig.RateLimitIgnoredUserIds is not null && lyricsAnalyzerConfig.RateLimitIgnoredUserIds.Contains(Context.User.Id.ToString());
+
         LyricsAnalyzerUserRateLimit? lyricsAnalyzerUserRateLimit = null;
-        if (lyricsAnalyzerConfig.RateLimitEnabled)
+        if (lyricsAnalyzerConfig.RateLimitEnabled && !userIsOnRateLimitIgnoreList)
         {
             _logger.LogInformation("Getting current rate limit for user '{UserId}' from database.", Context.User.Id);
             lyricsAnalyzerUserRateLimit = await _cosmosDbService.GetLyricsAnalyzerUserRateLimitAsync(Context.User.Id.ToString(), activity?.Id);
@@ -304,7 +306,7 @@ public partial class LyricsAnalyzerCommandModule
                 ephemeral: isPrivateResponse
             );
 
-            if (lyricsAnalyzerConfig.RateLimitEnabled)
+            if (lyricsAnalyzerConfig.RateLimitEnabled && !userIsOnRateLimitIgnoreList)
             {
                 _logger.LogInformation("Updating rate limit for user '{UserId}' in database.", Context.User.Id);
                 lyricsAnalyzerUserRateLimit!.IncrementRequestCount();
