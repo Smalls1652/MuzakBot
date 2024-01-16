@@ -82,4 +82,8 @@ builder.Services.AddDiscordService(options =>
 
 using var host = builder.Build();
 
+// Initialize the database and containers for the Cosmos DB service
+// before running the host.
+await host.Services.GetRequiredService<ICosmosDbService>().InitializeDatabaseAsync();
+
 await host.RunAsync();

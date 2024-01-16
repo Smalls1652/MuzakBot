@@ -86,7 +86,7 @@ public static class CosmosDbServiceActivityExtensions
     /// <param name="activitySource">The <see cref="ActivitySource"/>.</param>
     /// <param name="userId">The ID of the user.</param>
     /// <returns>The started <see cref="Activity"/>.</returns>
-    public static Activity? StartDbGetLyricsAnalyzerUserRateLimitActivity(this ActivitySource activitySource, ulong userId) => StartDbGetLyricsAnalyzerUserRateLimitActivity(activitySource, userId, null);
+    public static Activity? StartDbGetLyricsAnalyzerUserRateLimitActivity(this ActivitySource activitySource, string userId) => StartDbGetLyricsAnalyzerUserRateLimitActivity(activitySource, userId, null);
 
     /// <summary>
     /// Starts an activity for getting a lyrics analyzer rate limit for a user from the database.
@@ -95,14 +95,14 @@ public static class CosmosDbServiceActivityExtensions
     /// <param name="userId">The ID of the user.</param>
     /// <param name="parentActivityId">The parent activity ID.</param>
     /// <returns>The started <see cref="Activity"/>.</returns>
-    public static Activity? StartDbGetLyricsAnalyzerUserRateLimitActivity(this ActivitySource activitySource, ulong userId, string? parentActivityId)
+    public static Activity? StartDbGetLyricsAnalyzerUserRateLimitActivity(this ActivitySource activitySource, string userId, string? parentActivityId)
     {
         return activitySource.StartActivity(
             name: "Database:GetLyricsAnalyzerUserRateLimitAsync",
             kind: ActivityKind.Internal,
             tags: new ActivityTagsCollection
             {
-                { "userId", userId.ToString() }
+                { "userId", userId }
             },
             parentId: parentActivityId
         );

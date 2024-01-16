@@ -99,7 +99,7 @@ public partial class LyricsAnalyzerCommandModule
         if (lyricsAnalyzerConfig.RateLimitEnabled)
         {
             _logger.LogInformation("Getting current rate limit for user '{UserId}' from database.", Context.User.Id);
-            lyricsAnalyzerUserRateLimit = await _cosmosDbService.GetLyricsAnalyzerUserRateLimitAsync(Context.User.Id, activity?.Id);
+            lyricsAnalyzerUserRateLimit = await _cosmosDbService.GetLyricsAnalyzerUserRateLimitAsync(Context.User.Id.ToString(), activity?.Id);
 
             _logger.LogInformation("Current rate limit for user '{UserId}' is {CurrentRequestCount}/{MaxRequests}.", Context.User.Id, lyricsAnalyzerUserRateLimit.CurrentRequestCount, lyricsAnalyzerConfig.RateLimitMaxRequests);
 

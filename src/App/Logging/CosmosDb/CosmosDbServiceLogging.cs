@@ -8,6 +8,31 @@ namespace MuzakBot.App.Logging.CosmosDb;
 internal static partial class CosmosDbServiceLogging
 {
     /// <summary>
+    /// Logs the initialization of the database and ensures that it exists.
+    /// </summary>
+    /// <param name="logger">The <see cref="ILogger"/> instance.</param>
+    /// <param name="databaseName">The name of the database.</param>
+    [LoggerMessage(
+        EventName = "CosmosDbService.Initialize.EnsureDbExists",
+        Level = LogLevel.Information,
+        Message = "Ensuring that the database, '{databaseName}', exists."
+    )]
+    public static partial void LogInitializeEnsureDbExists(this ILogger logger, string databaseName);
+
+    /// <summary>
+    /// Logs the initialization of a container and ensures that it exists.
+    /// </summary>
+    /// <param name="logger">The <see cref="ILogger"/> instance.</param>
+    /// <param name="containerName">The name of the container.</param>
+    /// <param name="databaseName">The name of the database.</param>
+    [LoggerMessage(
+        EventName = "CosmosDbService.Initialize.EnsureContainerExists",
+        Level = LogLevel.Information,
+        Message = "Ensuring that the container, '{containerName}', exists in '{databaseName}'."
+    )]
+    public static partial void LogInitializeEnsureContainerExists(this ILogger logger, string containerName, string databaseName);
+
+    /// <summary>
     /// Logs the start of an add or update operation to the database.
     /// </summary>
     /// <param name="logger">The <see cref="ILogger"/> instance.</param>
