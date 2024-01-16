@@ -41,7 +41,7 @@ public class LyricsAnalyzerConfig : DatabaseItem, ILyricsAnalyzerConfig
     /// Users to ignore when rate limiting.
     /// </summary>
     [JsonPropertyName("rateLimitIgnoredUserIds")]
-    public List<ulong>? RateLimitIgnoredUserIds { get; set; }
+    public List<string>? RateLimitIgnoredUserIds { get; set; }
 
     /// <summary>
     /// Whether or not the lyrics analyzer is enabled only to specific guilds/servers.
