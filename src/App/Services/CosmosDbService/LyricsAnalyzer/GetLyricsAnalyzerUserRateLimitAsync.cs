@@ -16,7 +16,7 @@ public partial class CosmosDbService
     /// </summary>
     /// <param name="userId">The ID of the user.</param>
     /// <returns>The retrieved lyrics analyzer rate limit for the user.</returns>
-    public async Task<LyricsAnalyzerUserRateLimit> GetLyricsAnalyzerUserRateLimitAsync(ulong userId) => await GetLyricsAnalyzerUserRateLimitAsync(userId, null);
+    public async Task<LyricsAnalyzerUserRateLimit> GetLyricsAnalyzerUserRateLimitAsync(string userId) => await GetLyricsAnalyzerUserRateLimitAsync(userId, null);
 
     /// <summary>
     /// Gets the lyrics analyzer rate limit for a user from the database.
@@ -24,7 +24,7 @@ public partial class CosmosDbService
     /// <param name="userId">The ID of the user.</param>
     /// <param name="parentActivityId">The parent activity ID.</param>
     /// <returns>The retrieved lyrics analyzer rate limit for the user.</returns>
-    public async Task<LyricsAnalyzerUserRateLimit> GetLyricsAnalyzerUserRateLimitAsync(ulong userId, string? parentActivityId)
+    public async Task<LyricsAnalyzerUserRateLimit> GetLyricsAnalyzerUserRateLimitAsync(string userId, string? parentActivityId)
     {
         using var activity = _activitySource.StartDbGetLyricsAnalyzerUserRateLimitActivity(
             userId: userId,
