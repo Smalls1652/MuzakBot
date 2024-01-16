@@ -4,6 +4,8 @@ namespace MuzakBot.App.Services;
 
 public interface ICosmosDbService : IDisposable
 {
+    Task InitializeDatabaseAsync();
+
     Task<LyricsAnalyzerConfig> GetLyricsAnalyzerConfigAsync();
     Task<LyricsAnalyzerConfig> GetLyricsAnalyzerConfigAsync(string? parentActivityId);
 
