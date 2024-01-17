@@ -26,7 +26,7 @@ internal static class LyricsAnalyzerCommandModuleActivityExtensions
                 tags: new ActivityTagsCollection
                 {
                     { "command_Type", "SlashCommand"},
-                    { "command_Name", "getsonglyrics" },
+                    { "command_Name", "lyricsanalyzer" },
                     { "artist_Name", artistName },
                     { "song_Name", songName },
                     { "user_Id", context.User.Id },
@@ -42,7 +42,7 @@ internal static class LyricsAnalyzerCommandModuleActivityExtensions
                 tags: new ActivityTagsCollection
                 {
                 { "command_Type", "SlashCommand"},
-                { "command_Name", "getsonglyrics" },
+                { "command_Name", "lyricsanalyzer" },
                 { "artist_Name", artistName },
                 { "song_Name", songName },
                 { "guild_Id", context.Guild.Id },
