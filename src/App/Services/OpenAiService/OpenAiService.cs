@@ -69,7 +69,7 @@ public partial class OpenAiService : IOpenAiService
 
         OpenAiChatCompletionRequest request = new()
         {
-            Model = "gpt-4-1106-preview",
+            Model = "gpt-4-turbo-preview",
             Temperature = 1,
             MaxTokens = 512,
             TopP = 1,
