@@ -28,4 +28,8 @@
     <CorePackageVersion>8.0.*</CorePackageVersion>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Lib\Lib.csproj" />
+  </ItemGroup>
+
 </Project>
