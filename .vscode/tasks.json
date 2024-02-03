@@ -195,6 +195,10 @@
 				{
 					"label": "MuzakBot: App",
 					"value": "src/App"
+				},
+				{
+					"label": "MuzakBot: Lib",
+					"value": "src/Lib"
 				}
 			]
 		},
