@@ -151,10 +151,6 @@ public class DiscordService : IDiscordService, IHostedService
             _logger.LogFailedToExecuteInteraction(interaction.User.Username, interaction.IsDMInteraction);
             _logger.LogInteractionErrorMessage(result.ErrorReason);
         }
-        else
-        {
-            _logger.LogSuccessfullyExecutedInteraction(interaction.User.Username, interaction.IsDMInteraction);
-        }
     }
 
     /// <summary>
@@ -171,10 +167,6 @@ public class DiscordService : IDiscordService, IHostedService
         {
             _logger.LogFailedToExecuteSlashCommand(interaction.User.Username, interaction.IsDMInteraction);
             _logger.LogSlashCommandErrorMessage(result.ErrorReason);
-        }
-        else
-        {
-            _logger.LogSuccessfullyExecutedSlashCommand(interaction.User.Username, interaction.IsDMInteraction);
         }
     }
 
@@ -193,10 +185,6 @@ public class DiscordService : IDiscordService, IHostedService
         {
             _logger.LogFailedToExecuteAutocomplete(interaction.User.Username, interaction.IsDMInteraction);
             _logger.LogAutocompleteErrorMessage(result.ErrorReason);
-        }
-        else
-        {
-            _logger.LogSuccessfullyExecutedAutocomplete(interaction.User.Username, interaction.IsDMInteraction);
         }
     }
 
