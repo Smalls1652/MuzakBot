@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 using MuzakBot.App.Extensions;
 using MuzakBot.App.Logging.Itunes;
 using MuzakBot.App.Models.Diagnostics;
-using MuzakBot.App.Models.Itunes;
+using MuzakBot.Lib.Models.Itunes;
 
 namespace MuzakBot.App.Services;
 

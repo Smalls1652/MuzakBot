@@ -1,4 +1,4 @@
-using MuzakBot.App.Models.Itunes;
+using MuzakBot.Lib.Models.Itunes;
 
 namespace MuzakBot.App.Services;
 

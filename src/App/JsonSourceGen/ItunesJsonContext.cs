@@ -1,5 +1,5 @@
 ﻿using System.Text.Json.Serialization;
-using MuzakBot.App.Models.Itunes;
+using MuzakBot.Lib.Models.Itunes;
 
 namespace MuzakBot.App;
 

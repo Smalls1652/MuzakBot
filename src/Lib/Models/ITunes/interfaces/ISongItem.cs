@@ -1,4 +1,4 @@
-namespace MuzakBot.App.Models.Itunes;
+namespace MuzakBot.Lib.Models.Itunes;
 
 public interface ISongItem
 {

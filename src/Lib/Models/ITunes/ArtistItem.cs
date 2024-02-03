@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace MuzakBot.App.Models.Itunes;
+namespace MuzakBot.Lib.Models.Itunes;
 
 /// <summary>
 /// Represents an artist item retrieved from iTunes.

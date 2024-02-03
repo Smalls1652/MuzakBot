@@ -6,7 +6,7 @@ using Discord.Interactions;
 using Microsoft.Extensions.Logging;
 using MuzakBot.App.Extensions;
 using MuzakBot.App.Handlers;
-using MuzakBot.App.Models.Itunes;
+using MuzakBot.Lib.Models.Itunes;
 using MuzakBot.App.Models.MusicBrainz;
 using MuzakBot.App.Models.Odesli;
 
