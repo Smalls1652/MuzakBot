@@ -28,4 +28,8 @@
     <CorePackageVersion>8.0.*</CorePackageVersion>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Discord.Net" Version="3.13.0" PrivateAssets="all" />
+  </ItemGroup>
+
 </Project>
