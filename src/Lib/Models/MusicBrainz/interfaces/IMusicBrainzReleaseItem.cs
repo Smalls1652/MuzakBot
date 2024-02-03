@@ -1,4 +1,4 @@
-namespace MuzakBot.App.Models.MusicBrainz;
+namespace MuzakBot.Lib.Models.MusicBrainz;
 
 public interface IMusicBrainzReleaseItem
 {

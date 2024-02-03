@@ -3,7 +3,7 @@ using Discord.Interactions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MuzakBot.Lib.Models.Itunes;
-using MuzakBot.App.Models.MusicBrainz;
+using MuzakBot.Lib.Models.MusicBrainz;
 using MuzakBot.App.Services;
 
 namespace MuzakBot.App.Handlers;

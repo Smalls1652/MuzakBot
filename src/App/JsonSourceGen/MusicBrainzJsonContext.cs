@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-using MuzakBot.App.Models.MusicBrainz;
+using MuzakBot.Lib.Models.MusicBrainz;
 
 namespace MuzakBot.App;
 

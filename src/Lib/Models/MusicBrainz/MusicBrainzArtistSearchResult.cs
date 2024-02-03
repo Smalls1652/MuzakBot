@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace MuzakBot.App.Models.MusicBrainz;
+namespace MuzakBot.Lib.Models.MusicBrainz;
 
 /// <summary>
 /// Represents an artists search result retrieved from MusicBrainz.

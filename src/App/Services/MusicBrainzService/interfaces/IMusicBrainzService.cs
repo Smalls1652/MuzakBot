@@ -1,4 +1,4 @@
-using MuzakBot.App.Models.MusicBrainz;
+using MuzakBot.Lib.Models.MusicBrainz;
 
 namespace MuzakBot.App.Services;
 

@@ -3,7 +3,7 @@ using System.Net;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using MuzakBot.App.Logging.MusicBrainz;
-using MuzakBot.App.Models.MusicBrainz;
+using MuzakBot.Lib.Models.MusicBrainz;
 using MuzakBot.App.Models.Diagnostics;
 using MuzakBot.App.Extensions;
 
