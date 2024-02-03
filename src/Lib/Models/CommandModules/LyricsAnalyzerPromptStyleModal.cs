@@ -1,9 +1,9 @@
 using Discord;
 using Discord.Interactions;
-using MuzakBot.App.Models.Database;
-using MuzakBot.App.Models.Database.LyricsAnalyzer;
+using MuzakBot.Lib.Models.Database;
+using MuzakBot.Lib.Models.Database.LyricsAnalyzer;
 
-namespace MuzakBot.App.Models.CommandModules;
+namespace MuzakBot.Lib.Models.CommandModules;
 
 public class LyricsAnalyzerPromptStyleModal : IModal
 {
