@@ -11,6 +11,9 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        project: [ "./src/App/", "./src/Lib/" ]
     env:
       DOTNET_NOLOGO: true
     steps:
@@ -25,7 +28,7 @@ jobs:
           global-json-file: global.json
 
       - name: Run 'dotnet restore'
-        run: dotnet restore ./src/App/
+        run: dotnet restore ${{ matrix.project}}
 
       - name: Run 'dotnet build'
-        run: dotnet build ./src/App/ --configuration Release
+        run: dotnet build ${{ matrix.project }} --configuration Release
