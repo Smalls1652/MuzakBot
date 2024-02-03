@@ -1,4 +1,4 @@
-namespace MuzakBot.App.Models.Genius;
+namespace MuzakBot.Lib.Models.Genius;
 
 /// <summary>
 /// Holds metadata returned by the Genius API.

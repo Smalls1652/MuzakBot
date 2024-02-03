@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 using MuzakBot.App.Extensions;
 using MuzakBot.App.Handlers;
 using MuzakBot.App.Models.Database.LyricsAnalyzer;
-using MuzakBot.App.Models.Genius;
+using MuzakBot.Lib.Models.Genius;
 using MuzakBot.Lib.Models.MusicBrainz;
 using MuzakBot.App.Models.OpenAi;
 using MuzakBot.App.Services;

@@ -1,4 +1,4 @@
-using MuzakBot.App.Models.Genius;
+using MuzakBot.Lib.Models.Genius;
 
 namespace MuzakBot.App.Services;
 

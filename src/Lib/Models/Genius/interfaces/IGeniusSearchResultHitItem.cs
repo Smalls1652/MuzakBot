@@ -1,4 +1,4 @@
-namespace MuzakBot.App.Models.Genius;
+namespace MuzakBot.Lib.Models.Genius;
 
 public interface IGeniusSearchResultHitItem
 {
