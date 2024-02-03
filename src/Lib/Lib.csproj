@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <RootNamespace>MuzakBot.Lib</RootNamespace>
+    <AssemblyName>MuzakBot.Lib</AssemblyName>
+    <PackageId>MuzakBot.Lib</PackageId>
+
+    <Description>
+      Class library for MuzakBot.
+    </Description>
+
+    <Authors>Timothy Small</Authors>
+    <Company>Smalls.Online</Company>
+    <Copyright>© Smalls.Online</Copyright>
+
+    <RepositoryUrl>https://github.com/Smalls1652/MuzakBot</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <CorePackageVersion>8.0.*</CorePackageVersion>
+  </PropertyGroup>
+
+</Project>
