@@ -1,4 +1,4 @@
-namespace MuzakBot.App.Models.Wayback;
+namespace MuzakBot.Lib.Models.Wayback;
 
 /// <summary>
 /// Represents the archive status of a URL from the Wayback Machine.

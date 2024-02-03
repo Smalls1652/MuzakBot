@@ -1,4 +1,4 @@
-namespace MuzakBot.App.Models.Wayback;
+namespace MuzakBot.Lib.Models.Wayback;
 
 /// <summary>
 /// Holds data for a save job's status from the Wayback Machine.

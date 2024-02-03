@@ -1,4 +1,4 @@
-namespace MuzakBot.App.Models.Wayback;
+namespace MuzakBot.Lib.Models.Wayback;
 
 /// <summary>
 /// Represents a snapshot item from the Wayback Machine.

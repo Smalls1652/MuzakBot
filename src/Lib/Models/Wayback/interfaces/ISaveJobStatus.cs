@@ -1,4 +1,4 @@
-namespace MuzakBot.App.Models.Wayback;
+namespace MuzakBot.Lib.Models.Wayback;
 
 public interface ISaveJobStatus
 {

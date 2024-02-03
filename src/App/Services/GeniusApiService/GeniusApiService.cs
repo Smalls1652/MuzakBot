@@ -7,7 +7,7 @@ using Microsoft.Extensions.Options;
 using MuzakBot.App.Extensions;
 using MuzakBot.App.Logging.Genius;
 using MuzakBot.Lib.Models.Genius;
-using MuzakBot.App.Models.Wayback;
+using MuzakBot.Lib.Models.Wayback;
 
 namespace MuzakBot.App.Services;
 
