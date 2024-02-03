@@ -1,7 +1,7 @@
 using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Extensions.Logging;
-using MuzakBot.App.Models.Database.LyricsAnalyzer;
+using MuzakBot.Lib.Models.Database.LyricsAnalyzer;
 
 namespace MuzakBot.App.Modules;
 

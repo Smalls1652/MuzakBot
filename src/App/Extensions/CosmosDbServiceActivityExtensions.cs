@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
-using MuzakBot.App.Models.Database.LyricsAnalyzer;
+using MuzakBot.Lib.Models.Database.LyricsAnalyzer;
 
 namespace MuzakBot.App.Extensions;
 

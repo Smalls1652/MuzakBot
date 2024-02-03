@@ -1,4 +1,4 @@
-using MuzakBot.App.Models.Database.LyricsAnalyzer;
+using MuzakBot.Lib.Models.Database.LyricsAnalyzer;
 
 namespace MuzakBot.App.Services;
 

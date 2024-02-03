@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MuzakBot.App.Extensions;
 using MuzakBot.App.Logging.OpenAi;
-using MuzakBot.App.Models.Database.LyricsAnalyzer;
+using MuzakBot.Lib.Models.Database.LyricsAnalyzer;
 using MuzakBot.Lib.Models.OpenAi;
 
 namespace MuzakBot.App.Services;

@@ -1,4 +1,4 @@
-namespace MuzakBot.App.Models.Database.LyricsAnalyzer;
+namespace MuzakBot.Lib.Models.Database.LyricsAnalyzer;
 
 public interface ISongLyricsItem
 {

@@ -1,6 +1,6 @@
-using MuzakBot.App.Models.CommandModules;
+using MuzakBot.Lib.Models.CommandModules;
 
-namespace MuzakBot.App.Models.Database.LyricsAnalyzer;
+namespace MuzakBot.Lib.Models.Database.LyricsAnalyzer;
 
 public interface ILyricsAnalyzerPromptStyle
 {

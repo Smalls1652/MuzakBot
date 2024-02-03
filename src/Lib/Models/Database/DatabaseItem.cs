@@ -1,4 +1,4 @@
-namespace MuzakBot.App.Models.Database;
+namespace MuzakBot.Lib.Models.Database;
 
 /// <summary>
 /// Default properties for a database item.

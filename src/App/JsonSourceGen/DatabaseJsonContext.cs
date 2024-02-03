@@ -1,6 +1,6 @@
 using MuzakBot.App.Models.CosmosDb;
-using MuzakBot.App.Models.Database;
-using MuzakBot.App.Models.Database.LyricsAnalyzer;
+using MuzakBot.Lib.Models.Database;
+using MuzakBot.Lib.Models.Database.LyricsAnalyzer;
 
 namespace MuzakBot.App;
 
