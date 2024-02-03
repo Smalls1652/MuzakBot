@@ -1,4 +1,4 @@
-namespace MuzakBot.App.Models.OpenAi;
+namespace MuzakBot.Lib.Models.OpenAi;
 
 /// <summary>
 /// Represents the token usage statistics of the OpenAI API call.

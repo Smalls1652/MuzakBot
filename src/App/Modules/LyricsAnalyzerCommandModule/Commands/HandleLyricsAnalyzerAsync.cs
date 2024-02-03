@@ -9,7 +9,7 @@ using MuzakBot.App.Handlers;
 using MuzakBot.App.Models.Database.LyricsAnalyzer;
 using MuzakBot.Lib.Models.Genius;
 using MuzakBot.Lib.Models.MusicBrainz;
-using MuzakBot.App.Models.OpenAi;
+using MuzakBot.Lib.Models.OpenAi;
 using MuzakBot.App.Services;
 
 namespace MuzakBot.App.Modules;

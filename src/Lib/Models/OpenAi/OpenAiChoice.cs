@@ -1,4 +1,4 @@
-namespace MuzakBot.App.Models.OpenAi;
+namespace MuzakBot.Lib.Models.OpenAi;
 
 /// <summary>
 /// Represents a choice made by the OpenAI model.

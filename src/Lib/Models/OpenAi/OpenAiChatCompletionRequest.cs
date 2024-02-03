@@ -1,4 +1,4 @@
-namespace MuzakBot.App.Models.OpenAi;
+namespace MuzakBot.Lib.Models.OpenAi;
 
 /// <summary>
 /// Represents a request for chat completion using the OpenAI API.

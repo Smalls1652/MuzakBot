@@ -1,5 +1,5 @@
 using MuzakBot.App.Models.Database.LyricsAnalyzer;
-using MuzakBot.App.Models.OpenAi;
+using MuzakBot.Lib.Models.OpenAi;
 
 namespace MuzakBot.App.Services;
 
