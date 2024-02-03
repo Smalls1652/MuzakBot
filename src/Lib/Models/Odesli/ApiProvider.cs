@@ -1,4 +1,4 @@
-namespace MuzakBot.App.Models.Odesli;
+namespace MuzakBot.Lib.Models.Odesli;
 
 /// <summary>
 /// API providers that Odesli gets data from.

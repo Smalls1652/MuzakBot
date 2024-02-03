@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 using Discord;
 using Discord.Interactions;
 using MuzakBot.App.Extensions;
-using MuzakBot.App.Models.Odesli;
+using MuzakBot.Lib.Models.Odesli;
 using MuzakBot.App.Services;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;

@@ -1,4 +1,4 @@
-namespace MuzakBot.App.Models.Odesli;
+namespace MuzakBot.Lib.Models.Odesli;
 
 /// <summary>
 /// Interface that defines properties for a requested entity from Odesli.

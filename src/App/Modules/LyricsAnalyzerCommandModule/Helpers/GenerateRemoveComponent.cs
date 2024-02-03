@@ -1,5 +1,5 @@
 using Discord;
-using MuzakBot.App.Models.Odesli;
+using MuzakBot.Lib.Models.Odesli;
 using Microsoft.Extensions.Logging;
 
 namespace MuzakBot.App.Modules;

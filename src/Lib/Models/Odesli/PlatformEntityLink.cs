@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace MuzakBot.App.Models.Odesli;
+namespace MuzakBot.Lib.Models.Odesli;
 
 /// <summary>
 /// Holds data for a music streaming platform's links to an entity.

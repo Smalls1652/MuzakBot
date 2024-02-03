@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-using MuzakBot.App.Models.Odesli;
+using MuzakBot.Lib.Models.Odesli;
 
 namespace MuzakBot.App;
 

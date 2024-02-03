@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 using System.Reflection;
 using MuzakBot;
 using MuzakBot.App.Logging.Odesli;
-using MuzakBot.App.Models.Odesli;
+using MuzakBot.Lib.Models.Odesli;
 using System.Diagnostics;
 using MuzakBot.App.Extensions;
 
