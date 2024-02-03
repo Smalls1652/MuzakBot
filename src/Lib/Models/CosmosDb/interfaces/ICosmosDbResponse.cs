@@ -1,4 +1,4 @@
-namespace MuzakBot.App.Models.CosmosDb;
+namespace MuzakBot.Lib.Models.CosmosDb;
 
 /// <summary>
 /// Interface for Azure CosmosDB API responses.

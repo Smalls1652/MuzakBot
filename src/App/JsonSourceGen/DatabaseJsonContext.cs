@@ -1,4 +1,4 @@
-using MuzakBot.App.Models.CosmosDb;
+using MuzakBot.Lib.Models.CosmosDb;
 using MuzakBot.Lib.Models.Database;
 using MuzakBot.Lib.Models.Database.LyricsAnalyzer;
 
