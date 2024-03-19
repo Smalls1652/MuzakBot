@@ -2,6 +2,7 @@ using Azure.Monitor.OpenTelemetry.Exporter;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MuzakBot.App.Metrics;
+using MuzakBot.Lib.Services.Extensions.Telemetry;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.ResourceDetectors.Container;
@@ -108,7 +109,8 @@ internal static class OpenTelemetryExtensions
                     .AddDetector(new ContainerResourceDetector());
             
                 tracing
-                    .AddMuzakBotTracerSources()
+                    .AddMuzakBotTraceSources()
+                    .AddMuzakBotServicesTraceSources()
                     .SetResourceBuilder(resourceBuilder)
                     .AddHttpClientInstrumentation();
 
@@ -141,17 +143,11 @@ internal static class OpenTelemetryExtensions
     /// </summary>
     /// <param name="builder">The <see cref="TracerProviderBuilder"/> to add the tracer sources to.</param>
     /// <returns>The <see cref="TracerProviderBuilder"/> with the added tracer sources.</returns>
-    public static TracerProviderBuilder AddMuzakBotTracerSources(this TracerProviderBuilder builder)
+    public static TracerProviderBuilder AddMuzakBotTraceSources(this TracerProviderBuilder builder)
     {
         return builder
             .AddSource("MuzakBot.App.Modules.ShareMusicCommandModule")
             .AddSource("MuzakBot.App.Modules.LyricsAnalyzerCommandModule")
-            .AddSource("MuzakBot.App.Services.DiscordService")
-            .AddSource("MuzakBot.App.Services.ItunesApiService")
-            .AddSource("MuzakBot.App.Services.MusicBrainzService")
-            .AddSource("MuzakBot.App.Services.OdesliService")
-            .AddSource("MuzakBot.App.Services.OpenAiService")
-            .AddSource("MuzakBot.App.Service.GeniusApiService")
-            .AddSource("MuzakBot.App.Services.CosmosDbService");
+            .AddSource("MuzakBot.App.Services.DiscordService");
     }
 }

@@ -1,10 +1,10 @@
-{
-    "debug.internalConsoleOptions": "neverOpen",
-    "git.detectSubmodules": false,
-    "dotnet.defaultSolution": "MuzakBot.sln",
-    "dotnet.server.useOmnisharp": true,
-    "dotnet.server.path": "latest",
-    "task.quickOpen.history": 0,
-    "task.autoDetect": "off",
-    "powershell.startAutomatically": false
+﻿{
+  "debug.internalConsoleOptions": "neverOpen",
+  "git.detectSubmodules": false,
+  "dotnet.defaultSolution": "MuzakBot.sln",
+  "dotnet.server.useOmnisharp": true,
+  "dotnet.server.path": "latest",
+  "task.quickOpen.history": 0,
+  "task.autoDetect": "off",
+  "powershell.startAutomatically": false
 }

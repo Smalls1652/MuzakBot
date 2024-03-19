@@ -26,30 +26,31 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <CorePackageVersion>8.0.*</CorePackageVersion>
-  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Azure.Monitor.OpenTelemetry.Exporter" />
+    <PackageReference Include="Discord.Net" />
+    <PackageReference Include="Microsoft.Azure.Cosmos" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" />
+    <PackageReference Include="Microsoft.Extensions.Logging" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" />
+    <PackageReference Include="Microsoft.Extensions.Http" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+    <PackageReference Include="OpenTelemetry.Exporter.Console" />
+    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" />
+    <PackageReference Include="OpenTelemetry.Extensions.Hosting" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.Http" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" />
+    <PackageReference Include="OpenTelemetry.ResourceDetectors.Azure" />
+    <PackageReference Include="OpenTelemetry.ResourceDetectors.Container" />
+  </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Azure.Monitor.OpenTelemetry.Exporter" Version="1.2.0" />
-    <PackageReference Include="Discord.Net" Version="3.13.1" />
-    <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.38.0" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="$(CorePackageVersion)" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="$(CorePackageVersion)" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="$(CorePackageVersion)" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="$(CorePackageVersion)" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="$(CorePackageVersion)" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(CorePackageVersion)" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="$(CorePackageVersion)" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="$(CorePackageVersion)" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="$(CorePackageVersion)" />
-    <PackageReference Include="OpenTelemetry.Exporter.Console" Version="1.7.0" />
-    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.7.0" />
-    <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.7.0" />
-    <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.7.0" />
-    <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" Version="1.7.0" />
-    <PackageReference Include="OpenTelemetry.ResourceDetectors.Azure" Version="1.0.0-beta.4" />
-    <PackageReference Include="OpenTelemetry.ResourceDetectors.Container" Version="1.0.0-beta.5" />
+    <ProjectReference Include="..\Lib\Lib.csproj" />
+    <ProjectReference Include="..\Lib.Services\Lib.Services.csproj" />
   </ItemGroup>
   
 </Project>

@@ -1,224 +1,230 @@
-{
-    "version": "2.0.0",
-    "tasks": [
+﻿{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Watch",
+      "detail": "Run the app for local debugging and watch for changes.",
+      "icon": {
+        "id": "eye-watch",
+        "color": "terminal.ansiCyan"
+      },
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "watch",
+        "--",
+        "run",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/${input:watchProject}",
+        "env": {
+          "DOTNET_ENVIRONMENT": "Development"
+        }
+      },
+      "runOptions": {
+        "instanceLimit": 2
+      },
+      "presentation": {
+        "echo": false,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": true
+      },
+      "isBackground": true,
+      "problemMatcher": [
         {
-			"label": "Watch",
-			"detail": "Run the app for local debugging and watch for changes.",
-			"icon": {
-				"id": "eye-watch",
-				"color": "terminal.ansiCyan"
-			},
-			"type": "process",
-			"command": "dotnet",
-			"args": [
-				"watch",
-				"--",
-				"run",
-				"/consoleloggerparameters:NoSummary"
-			],
-			"options": {
-				"cwd": "${workspaceFolder}/${input:watchProject}",
-				"env": {
-					"DOTNET_ENVIRONMENT": "Development"
-				}
-			},
-			"runOptions": {
-				"instanceLimit": 2,
-			},
-			"presentation": {
-				"echo": false,
-				"reveal": "always",
-				"focus": false,
-				"panel": "shared",
-				"showReuseMessage": true,
-				"clear": true
-			},
-			"isBackground": true,
-			"problemMatcher": [
-				{
-					"base": "$msCompile",
-					"background": {
-						"activeOnStart": true,
-						"beginsPattern": "^info: Microsoft.\\Hosting\\.Lifetime",
-						"endsPattern": "^\\s*Application started\\..+?$"
-					}
-				}
-			]
-		},
-		{
-			"label": "Build project",
-			"detail": "Build a project.",
-			"icon": {
-				"id": "tools",
-				"color": "terminal.ansiYellow"
-			},
-			"type": "process",
-			"command": "dotnet",
-			"args": [
-				"build",
-				"${workspaceFolder}/${input:projectItem}",
-				"--configuration",
-				"${input:dotnetConfiguration}"
-			],
-			"options": {
-				"cwd": "${workspaceFolder}"
-			},
-			"problemMatcher": "$msCompile"
-		},
-		{
-			"label": "Clean project",
-			"detail": "Clean a project.",
-			"icon": {
-				"id": "trashcan",
-				"color": "terminal.ansiBlack"
-			},
-			"type": "process",
-			"command": "dotnet",
-			"args": [
-				"clean",
-				"${workspaceFolder}/${input:projectItem}",
-				"--configuration",
-				"${input:dotnetConfiguration}"
-			],
-			"options": {
-				"cwd": "${workspaceFolder}"
-			},
-			"problemMatcher": "$msCompile"
-		},
-		{
-			"label": "Restore project",
-			"detail": "Restore a project.",
-			"icon": {
-				"id": "sync",
-				"color": "terminal.ansiBlue"
-			},
-			"type": "process",
-			"command": "dotnet",
-			"args": [
-				"restore",
-				"${workspaceFolder}/${input:projectItem}"
-			],
-			"options": {
-				"cwd": "${workspaceFolder}"
-			},
-			"problemMatcher": "$msCompile"
-		},
-		// Remaining tasks are only for the VSCode launch configs
-		// or are supporting tasks.
+          "base": "$msCompile",
+          "background": {
+            "activeOnStart": true,
+            "beginsPattern": "^info: Microsoft.\\Hosting\\.Lifetime",
+            "endsPattern": "^\\s*Application started\\..+?$"
+          }
+        }
+      ]
+    },
+    {
+      "label": "Build project",
+      "detail": "Build a project.",
+      "icon": {
+        "id": "tools",
+        "color": "terminal.ansiYellow"
+      },
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "build",
+        "${workspaceFolder}/${input:projectItem}",
+        "--configuration",
+        "${input:dotnetConfiguration}"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "Clean project",
+      "detail": "Clean a project.",
+      "icon": {
+        "id": "trashcan",
+        "color": "terminal.ansiBlack"
+      },
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "clean",
+        "${workspaceFolder}/${input:projectItem}",
+        "--configuration",
+        "${input:dotnetConfiguration}"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "Restore project",
+      "detail": "Restore a project.",
+      "icon": {
+        "id": "sync",
+        "color": "terminal.ansiBlue"
+      },
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "restore",
+        "${workspaceFolder}/${input:projectItem}"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "Build: MuzakBot.App",
+      "detail": "Build the MuzakBot.App project.",
+      "hide": true,
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "build",
+        "${workspaceFolder}/src/App",
+        "--configuration",
+        "Debug"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "Watch: MuzakBot.App",
+      "detail": "Run the app for local debugging and watch for changes.",
+      "hide": true,
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "watch",
+        "--",
+        "run",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/src/App",
+        "env": {
+          "DOTNET_ENVIRONMENT": "Development"
+        }
+      },
+      "runOptions": {
+        "instanceLimit": 2
+      },
+      "presentation": {
+        "echo": false,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": true
+      },
+      "isBackground": true,
+      "problemMatcher": [
         {
-			"label": "Build: MuzakBot.App",
-			"detail": "Build the MuzakBot.App project.",
-			"hide": true,
-			"type": "process",
-			"command": "dotnet",
-			"args": [
-				"build",
-				"${workspaceFolder}/src/App",
-				"--configuration",
-				"Debug"
-			],
-			"options": {
-				"cwd": "${workspaceFolder}"
-			},
-			"problemMatcher": "$msCompile"
-		},
-		{
-			"label": "Watch: MuzakBot.App",
-			"detail": "Run the app for local debugging and watch for changes.",
-			"hide": true,
-			"type": "process",
-			"command": "dotnet",
-			"args": [
-				"watch",
-				"--",
-				"run",
-				"/property:GenerateFullPaths=true",
-				"/consoleloggerparameters:NoSummary"
-			],
-			"options": {
-				"cwd": "${workspaceFolder}/src/App",
-				"env": {
-					"DOTNET_ENVIRONMENT": "Development"
-				}
-			},
-			"runOptions": {
-				"instanceLimit": 2,
-			},
-			"presentation": {
-				"echo": false,
-				"reveal": "always",
-				"focus": false,
-				"panel": "shared",
-				"showReuseMessage": true,
-				"clear": true
-			},
-			"isBackground": true,
-			"problemMatcher": [
-				{
-					"base": "$msCompile",
-					"background": {
-						"activeOnStart": true,
-						"beginsPattern": "^info: Microsoft.\\Hosting\\.Lifetime",
-						"endsPattern": "^\\s*Application started\\..+?$"
-					}
-				}
-			]
-		},
-    ],
-    "inputs": [
-		{
-			"id": "dotnetConfiguration",
-			"description": "Select a configuration for compilation.",
-			"type": "pickString",
-			"default": "Debug",
-			"options": [
-				{
-					"label": "Debug",
-					"value": "Debug"
-				},
-				{
-					"label": "Release",
-					"value": "Release"
-				}
-			]
-		},
-		{
-			"id": "projectItem",
-			"description": "Select a project.",
-			"type": "pickString",
-			"default": "MuzakBot.sln",
-			"options": [
-				{
-					"label": "Entire solution",
-					"value": "MuzakBot.sln"
-				},
-				{
-					"label": "MuzakBot: App",
-					"value": "src/App"
-				}
-			]
-		},
-		{
-			"id": "containerPlatformArch",
-			"description": "Select a platform architecture for the container.",
-			"type": "pickString",
-			"default": "linux/arm64",
-			"options": [
-				"linux/amd64",
-				"linux/arm64"
-			]
-		},
-		{
-			"id": "watchProject",
-			"description": "Select a project to run 'dotnet watch' on.",
-			"type": "pickString",
-			"default": "src/App",
-			"options": [
-				{
-					"label": "MuzakBot: App",
-					"value": "src/App"
-				}
-			]
-		}
-	]
+          "base": "$msCompile",
+          "background": {
+            "activeOnStart": true,
+            "beginsPattern": "^info: Microsoft.\\Hosting\\.Lifetime",
+            "endsPattern": "^\\s*Application started\\..+?$"
+          }
+        }
+      ]
+    }
+  ],
+  "inputs": [
+    {
+      "id": "dotnetConfiguration",
+      "description": "Select a configuration for compilation.",
+      "type": "pickString",
+      "default": "Debug",
+      "options": [
+        {
+          "label": "Debug",
+          "value": "Debug"
+        },
+        {
+          "label": "Release",
+          "value": "Release"
+        }
+      ]
+    },
+    {
+      "id": "projectItem",
+      "description": "Select a project.",
+      "type": "pickString",
+      "default": "MuzakBot.sln",
+      "options": [
+        {
+          "label": "Entire solution",
+          "value": "MuzakBot.sln"
+        },
+        {
+          "label": "MuzakBot: App",
+          "value": "src/App"
+        },
+        {
+          "label": "MuzakBot: Lib",
+          "value": "src/Lib"
+        },
+        {
+          "label": "MuzakBot: Lib.Services",
+          "value": "src/Lib.Services/"
+        }
+      ]
+    },
+    {
+      "id": "containerPlatformArch",
+      "description": "Select a platform architecture for the container.",
+      "type": "pickString",
+      "default": "linux/arm64",
+      "options": [
+        "linux/amd64",
+        "linux/arm64"
+      ]
+    },
+    {
+      "id": "watchProject",
+      "description": "Select a project to run 'dotnet watch' on.",
+      "type": "pickString",
+      "default": "src/App",
+      "options": [
+        {
+          "label": "MuzakBot: App",
+          "value": "src/App"
+        }
+      ]
+    }
+  ]
 }

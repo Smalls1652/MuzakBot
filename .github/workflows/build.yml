@@ -2,6 +2,8 @@
 name: Build
 on:
   push:
+    branches:
+      - main
     paths-ignore:
       - "README.md"
   pull_request:
@@ -11,6 +13,9 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        project: ["./src/App/", "./src/Lib/", "./src/Lib.Services/"]
     env:
       DOTNET_NOLOGO: true
     steps:
@@ -25,7 +30,7 @@ jobs:
           global-json-file: global.json
 
       - name: Run 'dotnet restore'
-        run: dotnet restore ./src/App/
+        run: dotnet restore ${{ matrix.project}}
 
       - name: Run 'dotnet build'
-        run: dotnet build ./src/App/ --configuration Release
+        run: dotnet build ${{ matrix.project }} --configuration Release

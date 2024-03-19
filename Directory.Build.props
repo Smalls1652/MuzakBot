@@ -1,0 +1,10 @@
+<Project>
+  <!-- See https://aka.ms/dotnet/msbuild/customize for more details on customizing your build -->
+  <PropertyGroup>
+
+    <ArtifactsPath>$(MSBuildThisFileDirectory)artifacts</ArtifactsPath>
+
+    <ArtifactsPivots Condition="'$(CONTAINER_IMAGE_BUILD)'=='true'">$(Configuration.ToLower())</ArtifactsPivots>
+
+  </PropertyGroup>
+</Project>

@@ -1,5 +1,5 @@
 using Microsoft.Extensions.Logging;
-using MuzakBot.App.Models.Odesli;
+using MuzakBot.Lib.Models.Odesli;
 
 namespace MuzakBot.App.Modules;
 
