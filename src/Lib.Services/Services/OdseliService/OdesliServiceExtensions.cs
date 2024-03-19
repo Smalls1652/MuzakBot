@@ -1,7 +1,7 @@
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace MuzakBot.App.Services;
+namespace MuzakBot.Lib.Services;
 
 /// <summary>
 /// Extension methods for adding <see cref="OdesliService"/> to the <see cref="IServiceCollection"/>.

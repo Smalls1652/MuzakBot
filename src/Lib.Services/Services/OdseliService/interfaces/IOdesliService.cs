@@ -1,6 +1,6 @@
 using MuzakBot.Lib.Models.Odesli;
 
-namespace MuzakBot.App.Services;
+namespace MuzakBot.Lib.Services;
 
 /// <summary>
 /// Interface for the Odesli service.

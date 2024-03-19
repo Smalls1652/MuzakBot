@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-namespace MuzakBot.App.Extensions;
+namespace MuzakBot.Lib.Services.Extensions.Telemetry;
 
 /// <summary>
 /// Provides extension methods for the <see cref="ActivitySource"/> class related to the <see cref="OdesliService"/>.

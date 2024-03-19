@@ -4,12 +4,12 @@ using Microsoft.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
 using MuzakBot;
-using MuzakBot.App.Logging.Odesli;
+using MuzakBot.Lib.Services.Logging.Odesli;
 using MuzakBot.Lib.Models.Odesli;
 using System.Diagnostics;
-using MuzakBot.App.Extensions;
+using MuzakBot.Lib.Services.Extensions.Telemetry;
 
-namespace MuzakBot.App.Services;
+namespace MuzakBot.Lib.Services;
 
 /// <summary>
 /// Service for interacting with the Odesli API.
@@ -17,7 +17,7 @@ namespace MuzakBot.App.Services;
 public partial class OdesliService : IOdesliService
 {
     private bool _isDisposed;
-    private readonly ActivitySource _activitySource = new("MuzakBot.App.Services.OdesliService");
+    private readonly ActivitySource _activitySource = new("MuzakBot.Lib.Services.OdesliService");
     private readonly ILogger<OdesliService> _logger;
     private readonly IHttpClientFactory _httpClientFactory;
 
