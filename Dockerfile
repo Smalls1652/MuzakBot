@@ -19,7 +19,7 @@ RUN dotnet publish --configuration "Release" --os "${TARGETOS}" --arch "${TARGET
 RUN rm -rf /app/artifacts/publish/App/release/*.pdb; \
     rm -rf /app/artifacts/publish/App/release/*.dbg
 
-FROM --platform=$TARGETPLATFORM mcr.microsoft.com/dotnet/runtime:8.0-jammy-chiseled
+FROM --platform=$TARGETPLATFORM mcr.microsoft.com/dotnet/runtime:8.0
 
 ARG TARGETOS
 ARG TARGETARCH
