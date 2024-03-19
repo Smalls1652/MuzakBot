@@ -1,17 +1,19 @@
+using System.Diagnostics;
 using Discord;
+using Discord.Commands;
 using Discord.Interactions;
-using MuzakBot.Lib.Services;
 using Microsoft.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using MuzakBot.App.Metrics;
-using System.Diagnostics;
-using Discord.Commands;
+using MuzakBot.Lib.Services;
 
 namespace MuzakBot.App.Modules;
 
 /// <summary>
 /// Command module for hosting the lyrics analyzer commands.
 /// </summary>
+[CommandContextType(InteractionContextType.Guild, InteractionContextType.PrivateChannel, InteractionContextType.BotDm)]
+[IntegrationType(ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall)]
 public partial class LyricsAnalyzerCommandModule : InteractionModuleBase<SocketInteractionContext>, IDisposable
 {
     private bool _isDisposed;
