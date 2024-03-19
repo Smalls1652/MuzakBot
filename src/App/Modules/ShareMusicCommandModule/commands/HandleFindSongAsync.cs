@@ -14,6 +14,8 @@ namespace MuzakBot.App.Modules;
 
 public partial class ShareMusicCommandModule
 {
+    [CommandContextType(InteractionContextType.Guild, InteractionContextType.PrivateChannel, InteractionContextType.BotDm)]
+    [IntegrationType(ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall)]
     [SlashCommand(
         name: "findsong",
         description: "Find music from an artist"

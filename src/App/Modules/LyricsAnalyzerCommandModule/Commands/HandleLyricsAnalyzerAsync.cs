@@ -26,6 +26,7 @@ public partial class LyricsAnalyzerCommandModule
     /// <returns></returns>
     /// <exception cref="NullReferenceException"></exception>
     [CommandContextType(InteractionContextType.Guild, InteractionContextType.PrivateChannel, InteractionContextType.BotDm)]
+    [IntegrationType(ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall)]
     [SlashCommand(
         name: "lyricsanalyzer",
         description: "Get an analysis of the lyrics of a song"
