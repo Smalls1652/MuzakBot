@@ -16,6 +16,7 @@ public partial class ShareMusicCommandModule
     /// <param name="url">The URL to a song/album on a streaming service.</param>
     /// <exception cref="Exception"></exception>
     [CommandContextType(InteractionContextType.Guild, InteractionContextType.PrivateChannel, InteractionContextType.BotDm)]
+    [IntegrationType(ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall)]
     [SlashCommand(
         name: "sharemusic",
         description: "Get share links to a song or album on various streaming platforms."

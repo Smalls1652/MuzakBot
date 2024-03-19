@@ -17,6 +17,8 @@ public partial class ShareMusicCommandModule
     /// </summary>
     /// <param name="message">The message selected by the client.</param>
     /// <exception cref="Exception"></exception>
+    [CommandContextType(InteractionContextType.Guild, InteractionContextType.PrivateChannel, InteractionContextType.BotDm)]
+    [IntegrationType(ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall)]
     [MessageCommand(
         name: "Get music share links"
     )]
