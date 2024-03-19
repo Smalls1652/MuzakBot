@@ -1,4 +1,4 @@
-namespace MuzakBot.App.Models.Diagnostics;
+namespace MuzakBot.Lib.Models.Diagnostics;
 
 /// <summary>
 /// Represents the type of activity being performed by the <see cref="MusicBrainzApiService"/>.

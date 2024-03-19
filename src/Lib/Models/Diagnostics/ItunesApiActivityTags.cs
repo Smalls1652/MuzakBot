@@ -1,50 +1,39 @@
 using System.Diagnostics;
 
-namespace MuzakBot.App.Models.Diagnostics;
+namespace MuzakBot.Lib.Models.Diagnostics;
 
 /// <summary>
-/// Represents the activity tags for a MusicBrainz entity.
+/// Represents the activity tags for the <see cref="ItunesApiService"/>.
 /// </summary>
-public class MusicBrainzActivityTags
+public class ItunesApiActivityTags
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="MusicBrainzActivityTags"/> class.
-    /// </summary>
-    public MusicBrainzActivityTags()
-    {}
-
-    /// <summary>
-    /// Gets or sets the name of the artist.
+    /// Gets or sets the artist name.
     /// </summary>
     public string? ArtistName { get; set; }
 
     /// <summary>
-    /// Gets or sets the ID of the artist.
+    /// Gets or sets the artist ID.
     /// </summary>
     public string? ArtistId { get; set; }
 
     /// <summary>
-    /// Gets or sets the name of the song.
+    /// Gets or sets the song name.
     /// </summary>
     public string? SongName { get; set; }
 
     /// <summary>
-    /// Gets or sets the name of the album.
+    /// Gets or sets the album name.
     /// </summary>
     public string? AlbumName { get; set; }
 
     /// <summary>
-    /// Gets or sets the ID of the release.
+    /// Gets or sets the track ID.
     /// </summary>
-    public string? ReleaseId { get; set; }
+    public string? TrackId { get; set; }
 
     /// <summary>
-    /// Gets or sets the ID of the recording.
-    /// </summary>
-    public string? RecordingId { get; set; }
-
-    /// <summary>
-    /// Converts the <see cref="MusicBrainzActivityTags"/> object to an <see cref="ActivityTagsCollection"/>.
+    /// Converts the <see cref="ItunesApiActivityTags"/> to an <see cref="ActivityTagsCollection"/>.
     /// </summary>
     /// <returns>The converted <see cref="ActivityTagsCollection"/>.</returns>
     public ActivityTagsCollection ToActivityTagsCollection()
@@ -71,14 +60,9 @@ public class MusicBrainzActivityTags
             tagsCollection.Add("albumName", AlbumName);
         }
 
-        if (ReleaseId is not null)
+        if (TrackId is not null)
         {
-            tagsCollection.Add("releaseId", ReleaseId);
-        }
-
-        if (RecordingId is not null)
-        {
-            tagsCollection.Add("recordingId", RecordingId);
+            tagsCollection.Add("trackId", TrackId);
         }
 
         return tagsCollection;
