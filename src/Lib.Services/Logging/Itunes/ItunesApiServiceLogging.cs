@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
 
-namespace MuzakBot.App.Logging.Itunes;
+namespace MuzakBot.Lib.Services.Logging.Itunes;
 
 /// <summary>
 /// Source generated logging methods for the <see cref="Services.ItunesApiService"/> class.

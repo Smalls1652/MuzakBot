@@ -2,12 +2,12 @@
 using System.Net;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
-using MuzakBot.App.Extensions;
-using MuzakBot.App.Logging.Itunes;
-using MuzakBot.App.Models.Diagnostics;
+using MuzakBot.Lib.Services.Extensions.Telemetry;
+using MuzakBot.Lib.Services.Logging.Itunes;
+using MuzakBot.Lib.Models.Diagnostics;
 using MuzakBot.Lib.Models.Itunes;
 
-namespace MuzakBot.App.Services;
+namespace MuzakBot.Lib.Services;
 
 /// <summary>
 /// Represents a service for interacting with the iTunes API.
@@ -15,7 +15,7 @@ namespace MuzakBot.App.Services;
 public partial class ItunesApiService : IItunesApiService
 {
     private bool _isDisposed;
-    private readonly ActivitySource _activitySource = new("MuzakBot.App.Services.ItunesApiService");
+    private readonly ActivitySource _activitySource = new("MuzakBot.Lib.Services.ItunesApiService");
     private readonly ILogger<ItunesApiService> _logger;
     private readonly IHttpClientFactory _httpClientFactory;
 

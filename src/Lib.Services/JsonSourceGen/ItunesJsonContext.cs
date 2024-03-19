@@ -1,7 +1,6 @@
-﻿using System.Text.Json.Serialization;
-using MuzakBot.Lib.Models.Itunes;
+﻿using MuzakBot.Lib.Models.Itunes;
 
-namespace MuzakBot.App;
+namespace MuzakBot.Lib.Services;
 
 /// <summary>
 /// Source generation context for the iTunes models.
