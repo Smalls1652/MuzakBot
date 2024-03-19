@@ -25,7 +25,7 @@ public partial class LyricsAnalyzerCommandModule
     /// <param name="isPrivateResponse">Whether or not to send the response privately.</param>
     /// <returns></returns>
     /// <exception cref="NullReferenceException"></exception>
-    [EnabledInDm(true)]
+    [CommandContextType(InteractionContextType.Guild, InteractionContextType.PrivateChannel, InteractionContextType.BotDm)]
     [SlashCommand(
         name: "lyricsanalyzer",
         description: "Get an analysis of the lyrics of a song"
