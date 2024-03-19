@@ -1,12 +1,12 @@
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace MuzakBot.Lib.Services;
+namespace MuzakBot.Lib.Services.Extensions;
 
 /// <summary>
 /// Extension methods for adding the Genius API service to the service collection.
 /// </summary>
-public static class GeniusApiServiceExtensions
+public static class GeniusApiServiceSetupExtensions
 {
     /// <summary>
     /// Adds the <see cref="GeniusApiService"/> to the specified <see cref="IServiceCollection"/>.

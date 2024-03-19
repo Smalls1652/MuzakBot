@@ -1,12 +1,12 @@
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace MuzakBot.Lib.Services;
+namespace MuzakBot.Lib.Services.Extensions;
 
 /// <summary>
 /// Extension methods for configuring the <see cref="ItunesApiService"/> in the dependency injection container.
 /// </summary>
-public static class ItunesApiServiceExtensions
+public static class ItunesApiServiceSetupExtensions
 {
     /// <summary>
     /// Adds the <see cref="ItunesApiService"/> to the dependency injection container.

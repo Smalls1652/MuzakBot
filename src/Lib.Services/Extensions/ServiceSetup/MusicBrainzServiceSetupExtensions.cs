@@ -1,34 +1,31 @@
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace MuzakBot.Lib.Services;
+namespace MuzakBot.Lib.Services.Extensions;
 
 /// <summary>
-/// Extension methods for adding the OpenAI service to the service collection.
+/// Extension methods for configuring the <see cref="MusicBrainzService"/> in the dependency injection container.
 /// </summary>
-public static class OpenAiServiceExtensions
+public static class MusicBrainzServiceSetupExtensions
 {
     /// <summary>
-    /// Adds the <see cref="OpenAiService"/> to the specified <see cref="IServiceCollection"/>.
+    /// Adds the <see cref="MusicBrainzService"/> to the dependency injection container.
     /// </summary>
     /// <param name="services">The <see cref="IServiceCollection"/> to add the service to.</param>
-    /// <param name="configure">An action to configure the <see cref="OpenAiService"/>.</param>
     /// <returns>The modified <see cref="IServiceCollection"/>.</returns>
-    public static IServiceCollection AddOpenAiService(this IServiceCollection services, Action<OpenAiServiceOptions> configure)
+    public static IServiceCollection AddMusicBrainzService(this IServiceCollection services)
     {
-        services.Configure(configure);
-
         services.AddHttpClient(
-            name: "OpenAiApiClient",
+            name: "MusicBrainzApiClient",
             configureClient: (serviceProvider, httpClient) =>
             {
                 httpClient.DefaultRequestHeaders.Accept.Add(new("application/json"));
                 httpClient.DefaultRequestHeaders.UserAgent.Add(new("MuzakBot", Assembly.GetExecutingAssembly().GetName().Version!.ToString()));
-                httpClient.BaseAddress = new("https://api.openai.com/v1/");
+                httpClient.BaseAddress = new("https://musicbrainz.org/ws/2/");
             }
         );
 
-        services.AddSingleton<IOpenAiService, OpenAiService>();
+        services.AddSingleton<IMusicBrainzService, MusicBrainzService>();
 
         return services;
     }

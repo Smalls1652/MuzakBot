@@ -1,12 +1,12 @@
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace MuzakBot.Lib.Services;
+namespace MuzakBot.Lib.Services.Extensions;
 
 /// <summary>
 /// Extension methods for adding <see cref="OdesliService"/> to the <see cref="IServiceCollection"/>.
 /// </summary>
-public static class OdesliServiceExtensions
+public static class OdesliServiceSetupExtensions
 {
     /// <summary>
     /// Adds the <see cref="OdesliService"/> to the <see cref="IServiceCollection"/>.

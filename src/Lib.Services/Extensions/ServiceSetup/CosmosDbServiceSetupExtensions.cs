@@ -1,11 +1,11 @@
 using Microsoft.Extensions.DependencyInjection;
 
-namespace MuzakBot.Lib.Services;
+namespace MuzakBot.Lib.Services.Extensions;
 
 /// <summary>
 /// Extensions for <see cref="IServiceCollection"/> to add the <see cref="CosmosDbService"/>.
 /// </summary>
-public static class CosmosDbServiceExtensions
+public static class CosmosDbServiceSetupExtensions
 {
     /// <summary>
     /// Adds the <see cref="CosmosDbService"/> to the <see cref="IServiceCollection"/>.
