@@ -18,6 +18,15 @@ updates:
       - "Smalls1652"
     target-branch: "main"
 
+  - package-ecosystem: "nuget"
+    directory: "/src/Lib.Services/" 
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 10
+    assignees:
+      - "Smalls1652"
+    target-branch: "main"
+
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
