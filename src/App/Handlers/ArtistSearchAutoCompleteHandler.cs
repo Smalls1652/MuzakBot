@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using MuzakBot.Lib.Models.Itunes;
 using MuzakBot.Lib.Models.MusicBrainz;
-using MuzakBot.App.Services;
+using MuzakBot.Lib.Services;
 
 namespace MuzakBot.App.Handlers;
 

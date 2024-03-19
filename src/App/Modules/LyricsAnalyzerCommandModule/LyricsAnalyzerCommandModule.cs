@@ -1,6 +1,6 @@
 using Discord;
 using Discord.Interactions;
-using MuzakBot.App.Services;
+using MuzakBot.Lib.Services;
 using Microsoft.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using MuzakBot.App.Metrics;

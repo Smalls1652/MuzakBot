@@ -5,6 +5,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MuzakBot.App.Extensions;
 using MuzakBot.App.Services;
+using MuzakBot.Lib.Services;
+using MuzakBot.Lib.Services.Extensions;
 
 var builder = Host.CreateApplicationBuilder(args);
 
