@@ -24,17 +24,13 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <CorePackageVersion>8.0.*</CorePackageVersion>
-  </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.38.0" PrivateAssets="all"/>
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="$(CorePackageVersion)" PrivateAssets="all"/>
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="$(CorePackageVersion)" PrivateAssets="all"/>
-    <PackageReference Include="Microsoft.Extensions.Http" Version="$(CorePackageVersion)" PrivateAssets="all"/>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(CorePackageVersion)" PrivateAssets="all"/>
-    <PackageReference Include="OpenTelemetry" Version="1.7.0" PrivateAssets="all"/>
+    <PackageReference Include="Microsoft.Azure.Cosmos" PrivateAssets="all"/>
+    <PackageReference Include="Microsoft.Extensions.Logging" PrivateAssets="all"/>
+    <PackageReference Include="Microsoft.Extensions.Configuration" PrivateAssets="all"/>
+    <PackageReference Include="Microsoft.Extensions.Http" PrivateAssets="all"/>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" PrivateAssets="all"/>
+    <PackageReference Include="OpenTelemetry" PrivateAssets="all"/>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Lib\Lib.csproj" />

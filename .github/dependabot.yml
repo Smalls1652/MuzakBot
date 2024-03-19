@@ -1,25 +1,7 @@
 version: 2
 updates:
   - package-ecosystem: "nuget"
-    directory: "/src/App/" 
-    schedule:
-      interval: "daily"
-    open-pull-requests-limit: 10
-    assignees:
-      - "Smalls1652"
-    target-branch: "main"
-
-  - package-ecosystem: "nuget"
-    directory: "/src/Lib/" 
-    schedule:
-      interval: "daily"
-    open-pull-requests-limit: 10
-    assignees:
-      - "Smalls1652"
-    target-branch: "main"
-
-  - package-ecosystem: "nuget"
-    directory: "/src/Lib.Services/" 
+    directory: "/" 
     schedule:
       interval: "daily"
     open-pull-requests-limit: 10
