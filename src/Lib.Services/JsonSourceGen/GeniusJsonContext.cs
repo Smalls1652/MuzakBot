@@ -1,6 +1,6 @@
 using MuzakBot.Lib.Models.Genius;
 
-namespace MuzakBot.App;
+namespace MuzakBot.Lib.Services;
 
 /// <summary>
 /// Source generation context for the Genius models.

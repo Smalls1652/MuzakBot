@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
 
-namespace MuzakBot.App.Logging.Genius;
+namespace MuzakBot.Lib.Services.Logging.Genius;
 
 /// <summary>
 /// Source generated logging methods for the <see cref="Services.GeniusApiService"/> class.

@@ -1,6 +1,6 @@
 using MuzakBot.Lib.Models.Genius;
 
-namespace MuzakBot.App.Services;
+namespace MuzakBot.Lib.Services;
 
 /// <summary>
 /// Interface for the Genius API service.

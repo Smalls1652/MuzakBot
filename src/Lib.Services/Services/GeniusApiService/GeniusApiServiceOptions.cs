@@ -1,4 +1,4 @@
-namespace MuzakBot.App.Services;
+namespace MuzakBot.Lib.Services;
 
 /// <summary>
 /// Represents the options for the Genius API service.

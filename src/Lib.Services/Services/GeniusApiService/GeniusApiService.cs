@@ -4,12 +4,12 @@ using System.Text.RegularExpressions;
 using System.Web;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using MuzakBot.App.Extensions;
-using MuzakBot.App.Logging.Genius;
+using MuzakBot.Lib.Services.Extensions.Telemetry;
+using MuzakBot.Lib.Services.Logging.Genius;
 using MuzakBot.Lib.Models.Genius;
 using MuzakBot.Lib.Models.Wayback;
 
-namespace MuzakBot.App.Services;
+namespace MuzakBot.Lib.Services;
 
 /// <summary>
 /// Service for interacting with the Genius API and retrieving song lyrics.
@@ -18,7 +18,7 @@ public partial class GeniusApiService : IGeniusApiService
 {
     private bool _isDisposed;
     private readonly ILogger<GeniusApiService> _logger;
-    private readonly ActivitySource _activitySource = new("MuzakBot.App.Services.GeniusApiService");
+    private readonly ActivitySource _activitySource = new("MuzakBot.Lib.Services.GeniusApiService");
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly string _accessToken;
 

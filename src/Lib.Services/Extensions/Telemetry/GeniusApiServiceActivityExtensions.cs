@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-namespace MuzakBot.App.Extensions;
+namespace MuzakBot.Lib.Services.Extensions.Telemetry;
 
 /// <summary>
 /// Extensions for <see cref="ActivitySource"/> to start activities for <see cref="GeniusApiService"/>.
