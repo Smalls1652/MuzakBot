@@ -2,12 +2,12 @@ using System.Diagnostics;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using MuzakBot.App.Extensions;
-using MuzakBot.App.Logging.OpenAi;
+using MuzakBot.Lib.Services.Extensions.Telemetry;
+using MuzakBot.Lib.Services.Logging.OpenAi;
 using MuzakBot.Lib.Models.Database.LyricsAnalyzer;
 using MuzakBot.Lib.Models.OpenAi;
 
-namespace MuzakBot.App.Services;
+namespace MuzakBot.Lib.Services;
 
 /// <summary>
 /// Service for interacting with the OpenAI API.
@@ -16,7 +16,7 @@ public partial class OpenAiService : IOpenAiService
 {
     private bool _isDisposed;
     private readonly ILogger<OpenAiService> _logger;
-    private readonly ActivitySource _activitySource = new("MuzakBot.App.Services.OpenAiService");
+    private readonly ActivitySource _activitySource = new("MuzakBot.Lib.Services.OpenAiService");
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly string _apiKey;
 

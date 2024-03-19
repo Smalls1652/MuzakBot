@@ -1,7 +1,7 @@
 using MuzakBot.Lib.Models.Database.LyricsAnalyzer;
 using MuzakBot.Lib.Models.OpenAi;
 
-namespace MuzakBot.App.Services;
+namespace MuzakBot.Lib.Services;
 
 /// <summary>
 /// Interface for the OpenAI service.

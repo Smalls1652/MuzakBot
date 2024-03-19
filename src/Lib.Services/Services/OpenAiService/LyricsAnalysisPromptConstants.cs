@@ -1,4 +1,4 @@
-namespace MuzakBot.App.Services;
+namespace MuzakBot.Lib.Services;
 
 /// <summary>
 /// Contains constants for engineering the prompt for lyrics analysis.

@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
 
-namespace MuzakBot.App.Logging.OpenAi;
+namespace MuzakBot.Lib.Services.Logging.OpenAi;
 
 /// <summary>
 /// Source generated logging methods for the <see cref="Services.OpenAiService"/> class.

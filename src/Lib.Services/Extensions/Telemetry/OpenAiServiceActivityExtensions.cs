@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using MuzakBot.Lib.Models.OpenAi;
 
-namespace MuzakBot.App.Extensions;
+namespace MuzakBot.Lib.Services.Extensions.Telemetry;
 
 /// <summary>
 /// Extension method for <see cref="Services.OpenAiService"/> activity tracing.

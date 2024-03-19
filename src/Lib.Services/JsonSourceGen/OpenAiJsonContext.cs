@@ -1,6 +1,6 @@
 using MuzakBot.Lib.Models.OpenAi;
 
-namespace MuzakBot.App;
+namespace MuzakBot.Lib.Services;
 
 /// <summary>
 /// Source generation context for the OpenAI models.
