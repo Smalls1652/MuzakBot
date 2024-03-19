@@ -1,6 +1,6 @@
 using MuzakBot.Lib.Models.Database.LyricsAnalyzer;
 
-namespace MuzakBot.App.Services;
+namespace MuzakBot.Lib.Services;
 
 public interface ICosmosDbService : IDisposable
 {

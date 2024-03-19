@@ -2,7 +2,7 @@ using MuzakBot.Lib.Models.CosmosDb;
 using MuzakBot.Lib.Models.Database;
 using MuzakBot.Lib.Models.Database.LyricsAnalyzer;
 
-namespace MuzakBot.App;
+namespace MuzakBot.Lib.Services;
 
 /// <summary>
 /// Source generation context for the database models.

@@ -2,9 +2,9 @@ using System.Diagnostics;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using MuzakBot.App.Logging.CosmosDb;
+using MuzakBot.Lib.Services.Logging.CosmosDb;
 
-namespace MuzakBot.App.Services;
+namespace MuzakBot.Lib.Services;
 
 /// <summary>
 /// Service for interacting with Azure Cosmos DB.
@@ -13,7 +13,7 @@ public partial class CosmosDbService : ICosmosDbService
 {
     private bool _isDisposed;
     private readonly ILogger<CosmosDbService> _logger;
-    private readonly ActivitySource _activitySource = new("MuzakBot.App.Services.CosmosDbService");
+    private readonly ActivitySource _activitySource = new("MuzakBot.Lib.Services.CosmosDbService");
     private readonly CosmosDbServiceOptions _options;
     private readonly CosmosClient _cosmosDbClient;
 

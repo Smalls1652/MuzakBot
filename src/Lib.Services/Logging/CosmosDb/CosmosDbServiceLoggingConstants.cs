@@ -1,4 +1,4 @@
-namespace MuzakBot.App.Logging.CosmosDb;
+namespace MuzakBot.Lib.Services.Logging.CosmosDb;
 
 /// <summary>
 /// Holds constants for logging to Cosmos DB.

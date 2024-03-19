@@ -3,7 +3,7 @@ using System.Security.Cryptography;
 using System.Text;
 using MuzakBot.Lib.Models.Database.LyricsAnalyzer;
 
-namespace MuzakBot.App.Extensions;
+namespace MuzakBot.Lib.Services.Extensions.Telemetry;
 
 /// <summary>
 /// Extensions for <see cref="ActivitySource"/> to start activities for the <see cref="CosmosDbService"/>.

@@ -2,12 +2,12 @@ using System.Diagnostics;
 using System.Net;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
-using MuzakBot.App.Extensions;
-using MuzakBot.App.Logging.CosmosDb;
+using MuzakBot.Lib.Services.Extensions.Telemetry;
+using MuzakBot.Lib.Services.Logging.CosmosDb;
 using MuzakBot.Lib.Models.CosmosDb;
 using MuzakBot.Lib.Models.Database.LyricsAnalyzer;
 
-namespace MuzakBot.App.Services;
+namespace MuzakBot.Lib.Services;
 
 public partial class CosmosDbService
 {

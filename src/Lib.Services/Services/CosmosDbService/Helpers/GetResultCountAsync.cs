@@ -1,6 +1,6 @@
 using Microsoft.Azure.Cosmos;
 
-namespace MuzakBot.App.Services;
+namespace MuzakBot.Lib.Services;
 
 public partial class CosmosDbService
 {

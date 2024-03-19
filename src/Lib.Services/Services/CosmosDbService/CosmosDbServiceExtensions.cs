@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 
-namespace MuzakBot.App.Services;
+namespace MuzakBot.Lib.Services;
 
 /// <summary>
 /// Extensions for <see cref="IServiceCollection"/> to add the <see cref="CosmosDbService"/>.
