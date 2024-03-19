@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
 
-namespace MuzakBot.App.Logging.MusicBrainz;
+namespace MuzakBot.Lib.Services.Logging.MusicBrainz;
 
 /// <summary>
 /// Source generated logging methods for the <see cref="Services.MusicBrainzService"/> class.

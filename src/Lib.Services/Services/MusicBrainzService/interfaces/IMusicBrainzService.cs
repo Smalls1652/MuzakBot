@@ -1,6 +1,6 @@
 using MuzakBot.Lib.Models.MusicBrainz;
 
-namespace MuzakBot.App.Services;
+namespace MuzakBot.Lib.Services;
 
 public interface IMusicBrainzService : IDisposable
 {

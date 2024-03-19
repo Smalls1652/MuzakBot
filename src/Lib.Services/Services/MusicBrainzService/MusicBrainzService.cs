@@ -2,12 +2,12 @@ using System.Diagnostics;
 using System.Net;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
-using MuzakBot.App.Logging.MusicBrainz;
+using MuzakBot.Lib.Services.Logging.MusicBrainz;
 using MuzakBot.Lib.Models.MusicBrainz;
-using MuzakBot.App.Models.Diagnostics;
-using MuzakBot.App.Extensions;
+using MuzakBot.Lib.Models.Diagnostics;
+using MuzakBot.Lib.Services.Extensions.Telemetry;
 
-namespace MuzakBot.App.Services;
+namespace MuzakBot.Lib.Services;
 
 /// <summary>
 /// Service for interacting with the MusicBrainz API.
@@ -15,7 +15,7 @@ namespace MuzakBot.App.Services;
 public partial class MusicBrainzService : IMusicBrainzService
 {
     private bool _isDisposed;
-    private readonly ActivitySource _activitySource = new("MuzakBot.App.Services.MusicBrainzService");
+    private readonly ActivitySource _activitySource = new("MuzakBot.Lib.Services.MusicBrainzService");
     private readonly ILogger<IMusicBrainzService> _logger;
     private readonly IHttpClientFactory _httpClientFactory;
 
