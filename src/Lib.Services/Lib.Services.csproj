@@ -34,6 +34,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="$(CorePackageVersion)" PrivateAssets="all"/>
     <PackageReference Include="Microsoft.Extensions.Http" Version="$(CorePackageVersion)" PrivateAssets="all"/>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(CorePackageVersion)" PrivateAssets="all"/>
+    <PackageReference Include="OpenTelemetry" Version="1.7.0" PrivateAssets="all"/>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Lib\Lib.csproj" />
