@@ -4,5 +4,7 @@
 
     <ArtifactsPath>$(MSBuildThisFileDirectory)artifacts</ArtifactsPath>
 
+    <ArtifactsPivots Condition="'$(CONTAINER_IMAGE_BUILD)'=='true'">$(Configuration.ToLower())</ArtifactsPivots>
+
   </PropertyGroup>
 </Project>
