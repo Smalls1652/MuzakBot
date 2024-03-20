@@ -30,9 +30,7 @@ public partial class ShareMusicCommandModule
         {
             Regex linkRegex = new(@"(?'musicLink'(?>https|http):\/\/(?>[A-Za-z0-9\.]+)(?>\/\S*[^\.\s]|))(?> |)", RegexOptions.Multiline);
 
-            await DeferAsync(
-                ephemeral: true
-            );
+            await DeferAsync();
 
             _logger.LogInformation("Message content: {messageContent}", message.CleanContent);
 
