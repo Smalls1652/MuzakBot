@@ -35,9 +35,7 @@ public partial class ShareMusicCommandModule
 
         try
         {
-            await DeferAsync(
-                ephemeral: false
-            );
+            await DeferAsync();
 
             MusicBrainzArtistItem? artistItem = null;
             try
@@ -49,8 +47,7 @@ public partial class ShareMusicCommandModule
                 _logger.LogError(ex, "Error looking up artist '{artistId}'.", artistId);
                 await FollowupAsync(
                     embed: GenerateErrorEmbed("An error occurred while looking up the artist. 😥").Build(),
-                    components: GenerateRemoveComponent().Build(),
-                    ephemeral: false
+                    components: GenerateRemoveComponent().Build()
                 );
 
                 activity?.SetStatus(ActivityStatusCode.Error);
@@ -69,8 +66,7 @@ public partial class ShareMusicCommandModule
                 _logger.LogError(ex, "Error looking up song '{songId}'.", songId);
                 await FollowupAsync(
                     embed: GenerateErrorEmbed("An error occurred while looking up the song. 😥").Build(),
-                    components: GenerateRemoveComponent().Build(),
-                    ephemeral: false
+                    components: GenerateRemoveComponent().Build()
                 );
 
                 activity?.SetStatus(ActivityStatusCode.Error);
@@ -82,8 +78,7 @@ public partial class ShareMusicCommandModule
             {
                 await FollowupAsync(
                     embed: GenerateErrorEmbed("No results found for that artist and song. 😥").Build(),
-                    components: GenerateRemoveComponent().Build(),
-                    ephemeral: false
+                    components: GenerateRemoveComponent().Build()
                 );
 
                 activity?.SetStatus(ActivityStatusCode.Error);
@@ -97,8 +92,7 @@ public partial class ShareMusicCommandModule
             {
                 await FollowupAsync(
                     embed: GenerateErrorEmbed("No results were found.").Build(),
-                    components: GenerateRemoveComponent().Build(),
-                    ephemeral: false
+                    components: GenerateRemoveComponent().Build()
                 );
 
                 activity?.SetStatus(ActivityStatusCode.Error);
