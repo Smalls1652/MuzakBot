@@ -50,79 +50,109 @@ public partial class ShareMusicCommandModule
 
             MatchCollection linkMatches = linkRegex.Matches(message.CleanContent);
 
-            StringBuilder stringBuilder = new("Results:\n");
-            for (var i = 0; i < linkMatches.Count; i++)
+            bool hasMultipleLinks = linkMatches.Count > 1;
+
+            string url = linkMatches[0].Groups["musicLink"].Value;
+
+            MusicEntityItem? musicEntityItem = null;
+            try
             {
-                string url = linkMatches[i].Groups["musicLink"].Value;
+                musicEntityItem = await _odesliService.GetShareLinksAsync(url, activity?.Id);
 
-                MusicEntityItem? musicEntityItem = null;
-                try
+                if (musicEntityItem is null)
                 {
-                    musicEntityItem = await _odesliService.GetShareLinksAsync(url, activity?.Id);
+                    throw new Exception("No share links found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "No share links found for '{url}'.", url);
 
-                    if (musicEntityItem is null)
-                    {
-                        throw new Exception("No share links found.");
-                    }
-                }
-                catch (Exception e)
-                {
-                    _logger.LogError(e, "No share links found for '{url}'.", url);
-                    stringBuilder.AppendLine($"{i + 1}. No share links were found for `{url}`.");
-                    continue;
-                }
+                await FollowupAsync(
+                    embed: GenerateErrorEmbed("No share links were found. 😥").Build(),
+                    components: GenerateRemoveComponent().Build()
+                );
 
-                PlatformEntityLink? platformEntityLink;
-                try
-                {
-                    platformEntityLink = musicEntityItem.LinksByPlatform!["itunes"];
-                }
-                catch
-                {
-                    /*
+                activity?.SetStatus(ActivityStatusCode.Error);
+
+                throw;
+            }
+
+            PlatformEntityLink? platformEntityLink;
+            try
+            {
+                platformEntityLink = musicEntityItem.LinksByPlatform!["itunes"];
+            }
+            catch (Exception ex)
+            {
+                /*
                     Temporary fix:
                     
                     Amazon is being excluded from the fallback for the time being,
                     because the "apiProvider" value doesn't cleanly match it's platform
                     entity link key.
                 */
-                    var streamingEntityWithThumbnailUrl = musicEntityItem.EntitiesByUniqueId!.FirstOrDefault(entity => entity.Value.ThumbnailUrl is not null && entity.Value.ApiProvider != "amazon").Value.ApiProvider;
+                var streamingEntityWithThumbnailUrl = musicEntityItem.EntitiesByUniqueId!.FirstOrDefault(entity => entity.Value.ThumbnailUrl is not null && entity.Value.ApiProvider != "amazon").Value.ApiProvider;
 
-                    if (!string.IsNullOrEmpty(streamingEntityWithThumbnailUrl))
-                    {
-                        platformEntityLink = musicEntityItem.LinksByPlatform![streamingEntityWithThumbnailUrl];
-                    }
-                    else
-                    {
-                        _logger.LogError("Couldn't get all of the necessary data for '{url}'.", url);
-                        stringBuilder.AppendLine($"{i + 1}. Couldn't get all of the necessary data from Odesli for `{url}`.");
-                        continue;
-                    }
+                if (!string.IsNullOrEmpty(streamingEntityWithThumbnailUrl))
+                {
+                    platformEntityLink = musicEntityItem.LinksByPlatform![streamingEntityWithThumbnailUrl];
                 }
+                else
+                {
+                    _logger.LogError(ex, "Could get all of the necessary data for '{url}'.", url);
 
-                StreamingEntityItem streamingEntityItem = musicEntityItem.EntitiesByUniqueId![platformEntityLink.EntityUniqueId!];
-                using var albumArtStream = await GetAlbumArtStreamAsync(streamingEntityItem);
+                    await FollowupAsync(
+                        embed: GenerateErrorEmbed("I was unable to get the necessary information from Odesli. 😥").Build(),
+                        components: GenerateRemoveComponent().Build()
+                    );
 
-                var linksComponentBuilder = GenerateMusicShareComponent(musicEntityItem);
+                    activity?.SetStatus(ActivityStatusCode.Error);
 
-                var messageEmbed = GenerateEmbedBuilder(streamingEntityItem);
-
-                await Context.Channel.SendFileAsync(
-                    embed: messageEmbed.Build(),
-                    stream: albumArtStream,
-                    filename: $"{streamingEntityItem.Id}.jpg",
-                    components: linksComponentBuilder.Build(),
-                    messageReference: new(message.Id),
-                    allowedMentions: AllowedMentions.None
-                );
-
-                stringBuilder.AppendLine($"{i + 1}. Successfully got links for `{url}`.");
+                    throw;
+                }
             }
 
-            await FollowupAsync(
-                text: stringBuilder.ToString(),
-                ephemeral: true
+            StreamingEntityItem streamingEntityItem = musicEntityItem.EntitiesByUniqueId![platformEntityLink.EntityUniqueId!];
+
+            Stream albumArtStream;
+            try
+            {
+                albumArtStream = await GetAlbumArtStreamAsync(streamingEntityItem);
+            }
+            catch (Exception)
+            {
+                await FollowupAsync(
+                    embed: GenerateErrorEmbed("I ran into an issue while retrieving the album artwork. 😥").Build(),
+                    components: GenerateRemoveComponent().Build()
+                );
+
+                activity?.SetStatus(ActivityStatusCode.Error);
+
+                throw;
+            }
+
+            var linksComponentBuilder = GenerateMusicShareComponent(musicEntityItem);
+
+            var messageEmbed = GenerateEmbedBuilder(streamingEntityItem);
+
+            StringBuilder messageBuilder = new();
+
+            if (hasMultipleLinks)
+            {
+                messageBuilder.AppendLine("> ⚠️ **Warning:**");
+                messageBuilder.AppendLine("> There were multiple links found. Only showing the first one. 😰");
+            }
+
+            await FollowupWithFileAsync(
+                text: messageBuilder.ToString(),
+                embed: messageEmbed.Build(),
+                fileStream: albumArtStream,
+                fileName: $"{streamingEntityItem.Id}.jpg",
+                components: linksComponentBuilder.Build()
             );
+
+            albumArtStream.Dispose();
         }
         finally
         {
