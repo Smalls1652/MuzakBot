@@ -32,7 +32,7 @@ builder.Logging.ClearProviders();
 builder.Logging
     .AddSimpleConsole(options =>
     {
-        options.IncludeScopes = true;
+        options.IncludeScopes = false;
         options.UseUtcTimestamp = true;
     })
     .AddOpenTelemetryLogging(
