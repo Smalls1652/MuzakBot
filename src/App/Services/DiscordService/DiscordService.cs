@@ -73,15 +73,16 @@ public class DiscordService : IDiscordService, IHostedService
 
         // Add logging to the DiscordSocketClient and InteractionService
         _discordSocketClient.Log += HandleLog;
+        _interactionService.Log += HandleLog;
 
         // Add interaction handler
         _discordSocketClient.InteractionCreated += HandleInteraction;
 
         // Add slash command handler
-        _discordSocketClient.InteractionCreated += HandleSlashCommand;
+        //_discordSocketClient.InteractionCreated += HandleSlashCommand;
 
         // Add autocomplete handler
-        _discordSocketClient.InteractionCreated += HandleAutocomplete;
+        //_discordSocketClient.InteractionCreated += HandleAutocomplete;
 
         // Add ready handler
         _discordSocketClient.Ready += OnClientReadyAsync;
