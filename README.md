@@ -1,6 +1,6 @@
 # MuzakBot [![Build status](https://github.com/Smalls1652/MuzakBot/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/Smalls1652/MuzakBot/actions/workflows/build.yml) [![MIT license](https://badgen.net/static/License/MIT/blue)](./LICENSE)
 
-[![Add to your Discord server!](https://badgen.net/static/Discord%20Bot/Add%20to%20your%20server!/purple?icon=discord&scale=2)](https://discord.com/api/oauth2/authorize?client_id=1131341120924831866&permissions=274877958144&scope=bot+applications.commands)
+[![Add to your Discord server or as an user app!](https://badgen.net/static/Discord%20Bot/Add%20to%20your%20server%20or%20as%20an%20user%20app!/purple?icon=discord&scale=2)](https://discord.com/oauth2/authorize?client_id=1131341120924831866)
 
 ![MuzakBot logo](./.github/images/logo_wide_social.png)
 
