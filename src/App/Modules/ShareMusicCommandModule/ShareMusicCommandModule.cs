@@ -13,7 +13,7 @@ namespace MuzakBot.App.Modules;
 /// </summary>
 [CommandContextType(InteractionContextType.Guild, InteractionContextType.PrivateChannel, InteractionContextType.BotDm)]
 [IntegrationType(ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall)]
-public partial class ShareMusicCommandModule : InteractionModuleBase, IDisposable
+public partial class ShareMusicCommandModule : InteractionModuleBase<SocketInteractionContext>, IDisposable
 {
     private bool _isDisposed;
     private readonly ActivitySource _activitySource = new("MuzakBot.App.Modules.ShareMusicCommandModule");
