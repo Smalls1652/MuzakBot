@@ -1,10 +1,10 @@
+using System.Diagnostics;
 using Discord;
 using Discord.Interactions;
-using MuzakBot.App.Extensions;
-using MuzakBot.Lib.Models.Odesli;
-using MuzakBot.App.Services;
 using Microsoft.Extensions.Logging;
-using System.Diagnostics;
+using MuzakBot.App.Extensions;
+using MuzakBot.App.Services;
+using MuzakBot.Lib.Models.Odesli;
 
 namespace MuzakBot.App.Modules;
 
@@ -15,8 +15,8 @@ public partial class ShareMusicCommandModule
     /// </summary>
     /// <param name="url">The URL to a song/album on a streaming service.</param>
     /// <exception cref="Exception"></exception>
-    [CommandContextType(InteractionContextType.Guild, InteractionContextType.PrivateChannel, InteractionContextType.BotDm)]
-    [IntegrationType(ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall)]
+    [CommandContextType(InteractionContextType.BotDm, InteractionContextType.PrivateChannel, InteractionContextType.Guild)]
+    [IntegrationType(ApplicationIntegrationType.UserInstall, ApplicationIntegrationType.GuildInstall)]
     [SlashCommand(
         name: "sharemusic",
         description: "Get share links to a song or album on various streaming platforms."

@@ -12,8 +12,8 @@ namespace MuzakBot.App.Modules;
 /// <summary>
 /// Command module for hosting the lyrics analyzer commands.
 /// </summary>
-[CommandContextType(InteractionContextType.Guild, InteractionContextType.PrivateChannel, InteractionContextType.BotDm)]
-[IntegrationType(ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall)]
+[CommandContextType(InteractionContextType.BotDm, InteractionContextType.PrivateChannel, InteractionContextType.Guild)]
+[IntegrationType(ApplicationIntegrationType.UserInstall, ApplicationIntegrationType.GuildInstall)]
 public partial class LyricsAnalyzerCommandModule : InteractionModuleBase<SocketInteractionContext>, IDisposable
 {
     private bool _isDisposed;

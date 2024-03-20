@@ -14,8 +14,8 @@ namespace MuzakBot.App.Modules;
 
 public partial class ShareMusicCommandModule
 {
-    [CommandContextType(InteractionContextType.Guild, InteractionContextType.PrivateChannel, InteractionContextType.BotDm)]
-    [IntegrationType(ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall)]
+    [CommandContextType(InteractionContextType.BotDm, InteractionContextType.PrivateChannel, InteractionContextType.Guild)]
+    [IntegrationType(ApplicationIntegrationType.UserInstall, ApplicationIntegrationType.GuildInstall)]
     [SlashCommand(
         name: "findalbum",
         description: "Find an album from an artist"
@@ -32,7 +32,7 @@ public partial class ShareMusicCommandModule
     )
     {
         using var activity = _activitySource.StartHandleFindAlbumAsyncActivity(artistId, albumId, Context);
-        
+
         try
         {
             await DeferAsync();

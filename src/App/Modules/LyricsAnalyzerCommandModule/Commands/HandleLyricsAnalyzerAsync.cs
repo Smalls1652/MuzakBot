@@ -6,11 +6,11 @@ using Microsoft.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using MuzakBot.App.Extensions;
 using MuzakBot.App.Handlers;
+using MuzakBot.App.Services;
 using MuzakBot.Lib.Models.Database.LyricsAnalyzer;
 using MuzakBot.Lib.Models.Genius;
 using MuzakBot.Lib.Models.MusicBrainz;
 using MuzakBot.Lib.Models.OpenAi;
-using MuzakBot.App.Services;
 
 namespace MuzakBot.App.Modules;
 
@@ -25,8 +25,8 @@ public partial class LyricsAnalyzerCommandModule
     /// <param name="isPrivateResponse">Whether or not to send the response privately.</param>
     /// <returns></returns>
     /// <exception cref="NullReferenceException"></exception>
-    [CommandContextType(InteractionContextType.Guild, InteractionContextType.PrivateChannel, InteractionContextType.BotDm)]
-    [IntegrationType(ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall)]
+    [CommandContextType(InteractionContextType.BotDm, InteractionContextType.PrivateChannel, InteractionContextType.Guild)]
+    [IntegrationType(ApplicationIntegrationType.UserInstall, ApplicationIntegrationType.GuildInstall)]
     [SlashCommand(
         name: "lyricsanalyzer",
         description: "Get an analysis of the lyrics of a song"

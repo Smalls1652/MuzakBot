@@ -11,8 +11,8 @@ namespace MuzakBot.App.Modules;
 /// <summary>
 /// Command module for housing the music sharing commands.
 /// </summary>
-[CommandContextType(InteractionContextType.Guild, InteractionContextType.PrivateChannel, InteractionContextType.BotDm)]
-[IntegrationType(ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall)]
+[CommandContextType(InteractionContextType.BotDm, InteractionContextType.PrivateChannel, InteractionContextType.Guild)]
+[IntegrationType(ApplicationIntegrationType.UserInstall, ApplicationIntegrationType.GuildInstall)]
 public partial class ShareMusicCommandModule : InteractionModuleBase<SocketInteractionContext>, IDisposable
 {
     private bool _isDisposed;

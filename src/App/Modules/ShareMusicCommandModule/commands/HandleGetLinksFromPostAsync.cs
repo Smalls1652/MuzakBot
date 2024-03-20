@@ -1,12 +1,12 @@
-﻿using System.Text;
+﻿using System.Diagnostics;
+using System.Text;
 using System.Text.RegularExpressions;
 using Discord;
 using Discord.Interactions;
-using MuzakBot.App.Extensions;
-using MuzakBot.Lib.Models.Odesli;
-using MuzakBot.App.Services;
 using Microsoft.Extensions.Logging;
-using System.Diagnostics;
+using MuzakBot.App.Extensions;
+using MuzakBot.App.Services;
+using MuzakBot.Lib.Models.Odesli;
 
 namespace MuzakBot.App.Modules;
 
@@ -17,8 +17,8 @@ public partial class ShareMusicCommandModule
     /// </summary>
     /// <param name="message">The message selected by the client.</param>
     /// <exception cref="Exception"></exception>
-    [CommandContextType(InteractionContextType.Guild, InteractionContextType.PrivateChannel, InteractionContextType.BotDm)]
-    [IntegrationType(ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall)]
+    [CommandContextType(InteractionContextType.BotDm, InteractionContextType.PrivateChannel, InteractionContextType.Guild)]
+    [IntegrationType(ApplicationIntegrationType.UserInstall, ApplicationIntegrationType.GuildInstall)]
     [MessageCommand(
         name: "Get music share links"
     )]
