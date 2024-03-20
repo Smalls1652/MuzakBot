@@ -53,11 +53,7 @@ internal static class ShareMusicCommandModuleActivityExtensions
                 { "command_Type", "SlashCommand"},
                 { "command_Name", "findsong" },
                 { "artist_Id", artistId },
-                { "song_Id", songId },
-                { "guild_Id", context.Guild.Id },
-                { "guild_Name", context.Guild.Name },
-                { "channel_Id", context.Channel.Id },
-                { "channel_Name", context.Channel.Name }
+                { "song_Id", songId }
             }
         );
     }
@@ -77,12 +73,7 @@ internal static class ShareMusicCommandModuleActivityExtensions
             tags: new ActivityTagsCollection
             {
                 { "command_Type", "MessageCommand"},
-                { "command_Name", "Get music share links" },
-                { "message_Id", message.Id },
-                { "guild_Id", context.Guild.Id },
-                { "guild_Name", context.Guild.Name },
-                { "channel_Id", context.Channel.Id },
-                { "channel_Name", context.Channel.Name }
+                { "command_Name", "Get music share links" }
             }
         );
     }
@@ -103,11 +94,7 @@ internal static class ShareMusicCommandModuleActivityExtensions
             {
                 { "command_Type", "SlashCommand"},
                 { "command_Name", "sharemusic" },
-                { "url", inputUrl },
-                { "guild_Id", context.Guild.Id },
-                { "guild_Name", context.Guild.Name },
-                { "channel_Id", context.Channel.Id },
-                { "channel_Name", context.Channel.Name }
+                { "url", inputUrl }
             }
         );
     }
@@ -129,11 +116,7 @@ internal static class ShareMusicCommandModuleActivityExtensions
                 { "command_Type", "ComponentInteraction"},
                 { "command_Name", "Refresh music share links" },
                 { "url", url },
-                { "interaction_Id", context.Interaction.Id },
-                { "guild_Id", context.Guild.Id },
-                { "guild_Name", context.Guild.Name },
-                { "channel_Id", context.Channel.Id },
-                { "channel_Name", context.Channel.Name }
+                { "interaction_Id", context.Interaction.Id }
             }
         );
     }
@@ -153,11 +136,7 @@ internal static class ShareMusicCommandModuleActivityExtensions
             {
                 { "command_Type", "ComponentInteraction"},
                 { "command_Name", "Remove music share message" },
-                { "interaction_Id", context.Interaction.Id },
-                { "guild_Id", context.Guild.Id },
-                { "guild_Name", context.Guild.Name },
-                { "channel_Id", context.Channel.Id },
-                { "channel_Name", context.Channel.Name }
+                { "interaction_Id", context.Interaction.Id }
             }
         );
     }
