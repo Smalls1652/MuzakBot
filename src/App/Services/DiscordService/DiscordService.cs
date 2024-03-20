@@ -109,8 +109,6 @@ public class DiscordService : IDiscordService, IHostedService
     /// </summary>
     private async Task OnClientReadyAsync()
     {
-        await _interactionService!.RegisterCommandsGloballyAsync();
-        
 #if DEBUG
         _logger.LogRegisterCommandsDebugMode(_testGuildId);
 
