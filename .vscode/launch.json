@@ -16,7 +16,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "Build: MuzakBot.App",
-            "program": "${workspaceFolder}/src/App/bin/Debug/net8.0/MuzakBot.App.dll",
+            "program": "${workspaceFolder}/artifacts/bin/App/debug/MuzakBot.dll",
             "args": [],
             "cwd": "${workspaceFolder}/src/App",
             "stopAtEntry": false,
