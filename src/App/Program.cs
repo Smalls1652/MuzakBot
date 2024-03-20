@@ -30,6 +30,11 @@ builder.Configuration
 builder.Logging.ClearProviders();
 
 builder.Logging
+    .AddSimpleConsole(options =>
+    {
+        options.IncludeScopes = true;
+        options.UseUtcTimestamp = true;
+    })
     .AddOpenTelemetryLogging(
         azureAppInsightsConnectionString: builder.Configuration.GetValue<string>("APPLICATIONINSIGHTS_CONNECTION_STRING")
     );

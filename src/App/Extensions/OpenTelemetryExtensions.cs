@@ -42,7 +42,6 @@ internal static class OpenTelemetryExtensions
 
             logging
                 .SetResourceBuilder(resourceBuilder)
-                .AddConsoleExporter()
                 .AddOtlpExporter();
 
             if (azureAppInsightsConnectionString is not null)
