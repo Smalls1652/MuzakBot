@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using MuzakBot.Lib.Models.Json;
 
 namespace MuzakBot.Lib.Models.Odesli;
 
@@ -9,6 +10,7 @@ public class StreamingEntityItem : IStreamingEntityItem
 {
     /// <inheritdoc cref="IStreamingEntityItem.Id" />
     [JsonPropertyName("id")]
+    [JsonConverter(typeof(JsonNumberToStringConverter))]
     public string? Id { get; set; }
 
     /// <inheritdoc cref="IStreamingEntityItem.Title" />
