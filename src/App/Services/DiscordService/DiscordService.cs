@@ -21,6 +21,9 @@ namespace MuzakBot.App.Services;
 public class DiscordService : IDiscordService, IHostedService
 {
     private bool _isDisposed;
+    private CancellationTokenSource? _cts;
+    private Task? _runTask;
+
     private readonly ActivitySource _activitySource = new("MuzakBot.App.Services.DiscordService");
     private readonly DiscordSocketClient _discordSocketClient;
     private readonly InteractionService _interactionService;
@@ -46,7 +49,7 @@ public class DiscordService : IDiscordService, IHostedService
     }
 
     /// <inheritdoc cref="IDiscordService.ConnectAsync"/>
-    public async Task ConnectAsync()
+    public async Task ConnectAsync(CancellationToken cancellationToken = default)
     {
         // Log into Discord
         _logger.LogDiscordStartConnecting();
@@ -232,9 +235,13 @@ public class DiscordService : IDiscordService, IHostedService
     /// </summary>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns></returns>
-    public async Task StartAsync(CancellationToken cancellationToken)
+    public Task StartAsync(CancellationToken cancellationToken)
     {
-        await ConnectAsync();
+        _cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+
+        _runTask = ConnectAsync(_cts.Token);
+
+        return Task.CompletedTask;
     }
 
     /// <summary>
@@ -249,6 +256,20 @@ public class DiscordService : IDiscordService, IHostedService
         await _discordSocketClient.LogoutAsync();
 
         _logger.LogDiscordBotDisconnected();
+
+        if (_runTask is not null)
+        {
+            try
+            {
+                _cts?.Cancel();
+            }
+            finally
+            {
+                await _runTask
+                    .WaitAsync(cancellationToken)
+                    .ConfigureAwait(ConfigureAwaitOptions.SuppressThrowing);
+            }
+        }
     }
 
     /// <inheritdoc cref="IAsyncDisposable.DisposeAsync"/>
@@ -268,6 +289,7 @@ public class DiscordService : IDiscordService, IHostedService
         await _discordSocketClient.DisposeAsync();
 
         _activitySource.Dispose();
+        _cts?.Dispose();
 
         _isDisposed = true;
 

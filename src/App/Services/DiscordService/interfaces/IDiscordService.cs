@@ -11,5 +11,5 @@ public interface IDiscordService : IAsyncDisposable
     /// Connects the bot to Discord.
     /// </summary>
     /// <returns></returns>
-    Task ConnectAsync();
+    Task ConnectAsync(CancellationToken cancellationToken = default);
 }
