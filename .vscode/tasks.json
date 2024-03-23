@@ -201,6 +201,10 @@
         {
           "label": "MuzakBot: Lib.Services",
           "value": "src/Lib.Services/"
+        },
+        {
+          "label": "Database",
+          "value": "src/Database/Database/"
         }
       ]
     },
