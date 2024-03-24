@@ -1,7 +1,9 @@
 using Discord;
 using Discord.Interactions;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using MuzakBot.Database;
 using MuzakBot.Lib.Models.Database.LyricsAnalyzer;
 using MuzakBot.Lib.Models.Itunes;
 using MuzakBot.Lib.Models.MusicBrainz;
@@ -12,19 +14,21 @@ namespace MuzakBot.App.Handlers;
 public class LyricsAnalyzerPromptStyleAutoCompleteHandler : AutocompleteHandler
 {
     private readonly ILogger<LyricsAnalyzerPromptStyleAutoCompleteHandler> _logger;
-    private readonly ICosmosDbService _cosmosDbService;
+    private readonly IDbContextFactory<LyricsAnalyzerContext> _lyricsAnalyzerContextFactory;
 
-    public LyricsAnalyzerPromptStyleAutoCompleteHandler(ILogger<LyricsAnalyzerPromptStyleAutoCompleteHandler> logger, ICosmosDbService cosmosDbService)
+    public LyricsAnalyzerPromptStyleAutoCompleteHandler(ILogger<LyricsAnalyzerPromptStyleAutoCompleteHandler> logger, IDbContextFactory<LyricsAnalyzerContext> lyricsAnalyzerContextFactory)
     {
         _logger = logger;
-        _cosmosDbService = cosmosDbService;
+        _lyricsAnalyzerContextFactory = lyricsAnalyzerContextFactory;
     }
 
     public override async Task<AutocompletionResult> GenerateSuggestionsAsync(IInteractionContext context, IAutocompleteInteraction autocompleteInteraction, IParameterInfo parameter, IServiceProvider services)
     {
+        using var lyricsAnalyzerContext = _lyricsAnalyzerContextFactory.CreateDbContext();
+
         List<AutocompleteResult> results = new();
 
-        LyricsAnalyzerPromptStyle[] promptStyles = await _cosmosDbService.GetLyricsAnalyzerPromptStylesAsync();
+        LyricsAnalyzerPromptStyle[] promptStyles = await lyricsAnalyzerContext.PromptStyles.ToArrayAsync();
         Array.Sort(promptStyles, (item1, item2) => item1.Name.CompareTo(item2.Name));
 
         _logger.LogInformation("Returned {Count} prompt styles from the database.", promptStyles.Length);
