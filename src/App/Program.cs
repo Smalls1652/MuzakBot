@@ -5,6 +5,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MuzakBot.App.Extensions;
 using MuzakBot.App.Services;
+using MuzakBot.Database;
+using MuzakBot.Database.Extensions;
+using MuzakBot.Database.Models;
 using MuzakBot.Lib.Services;
 using MuzakBot.Lib.Services.Extensions;
 
@@ -13,6 +16,7 @@ var builder = Host.CreateApplicationBuilder(args);
 builder.Services.AddMemoryCache();
 
 builder.Configuration.Sources.Clear();
+
 builder.Configuration
     .AddEnvironmentVariables()
     .SetBasePath(Directory.GetCurrentDirectory())
@@ -65,6 +69,36 @@ builder.Services
         options.ConnectionString = builder.Configuration.GetValue<string>("COSMOSDB_CONNECTION_STRING") ?? throw new("COSMOSDB_CONNECTION_STRING is not set.");
         options.DatabaseName = builder.Configuration.GetValue<string>("COSMOSDB_DATABASE_NAME") ?? throw new("COSMOSDB_DATABASE_NAME is not set.");
     });
+
+SqliteConfigOptions? sqliteConfigOptions = null;
+if (builder.Configuration.GetSection("SQLITE_DB_DIR_PATH").Exists())
+{
+    sqliteConfigOptions = new()
+    {
+        DbDirPath = builder.Configuration.GetValue<string>("SQLITE_DB_DIR_PATH") ?? throw new("SQLITE_DB_DIR_PATH is not set.")
+    };
+}
+
+CosmosDbConfigOptions? cosmosDbConfigOptions = null;
+if (builder.Configuration.GetSection("COSMOSDB_CONNECTION_STRING").Exists())
+{
+    cosmosDbConfigOptions = new()
+    {
+        ConnectionString = builder.Configuration.GetValue<string>("COSMOSDB_CONNECTION_STRING") ?? throw new("COSMOSDB_CONNECTION_STRING is not set.")
+    };
+}
+
+DatabaseConfigOptions databaseConfigOptions = new()
+{
+    DatabaseType = builder.Configuration.GetSection("DATABASE_TYPE").Get<DatabaseType>(),
+    SqliteConfig = sqliteConfigOptions,
+    CosmosDbConfig = cosmosDbConfigOptions
+};
+
+builder.Services
+    .AddMuzakbotDatabaseContexts(
+        options: databaseConfigOptions
+    );
 
 builder.Services
     .AddOpenAiService(options =>
