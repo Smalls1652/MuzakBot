@@ -1,6 +1,7 @@
 using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MuzakBot.Lib.Models.Database.LyricsAnalyzer;
 
@@ -24,11 +25,13 @@ public partial class AdminCommandModule
             ephemeral: true
         );
 
+        using var lyricsAnalyzerContext = _lyricsAnalyzerContextFactory.CreateDbContext();
+
         _logger.LogInformation("Getting lyrics analyzer config...");
         LyricsAnalyzerConfig lyricsAnalyzerConfig;
         try
         {
-            lyricsAnalyzerConfig = await _cosmosDbService.GetLyricsAnalyzerConfigAsync();
+            lyricsAnalyzerConfig = await lyricsAnalyzerContext.Configs.FirstOrDefaultAsync() ?? throw new InvalidOperationException("Lyrics analyzer config not found.");
         }
         catch (Exception ex)
         {
@@ -44,7 +47,8 @@ public partial class AdminCommandModule
         _logger.LogInformation("Updating lyrics analyzer config...");
         try
         {
-            await _cosmosDbService.AddOrUpdateLyricsAnalyzerConfigAsync(lyricsAnalyzerConfig);
+            lyricsAnalyzerContext.Configs.Update(lyricsAnalyzerConfig);
+            await lyricsAnalyzerContext.SaveChangesAsync();
         }
         catch (Exception ex)
         {

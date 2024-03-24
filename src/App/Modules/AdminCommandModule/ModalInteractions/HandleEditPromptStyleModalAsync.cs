@@ -16,13 +16,15 @@ public partial class AdminCommandModule
             ephemeral: true
         );
 
+        using var lyricsAnalyzerContext = _lyricsAnalyzerContextFactory.CreateDbContext();
+
         EmbedBuilder embed;
 
-        LyricsAnalyzerPromptStyle promptStyle = new(promptStyleModal);
+        LyricsAnalyzerPromptStyle? promptStyle = lyricsAnalyzerContext.PromptStyles.FirstOrDefault(
+            item => item.ShortName == promptStyleModal.ShortName
+        );
 
-        LyricsAnalyzerPromptStyle? existingPromptStyle = await _cosmosDbService.GetLyricsAnalyzerPromptStyleAsync(promptStyle.ShortName);
-
-        if (existingPromptStyle is null)
+        if (promptStyle is null)
         {
             embed = new EmbedBuilder()
                 .WithTitle("Lyrics Analyzer Prompt Style")
@@ -38,15 +40,13 @@ public partial class AdminCommandModule
             return;
         }
 
-        promptStyle.Id = existingPromptStyle.Id;
-        promptStyle.PartitionKey = existingPromptStyle.PartitionKey;
-        promptStyle.UserPrompt = existingPromptStyle.UserPrompt;
-
+        promptStyle.UpdateFromModalInput(promptStyleModal);
         promptStyle.UpdateLastUpdateTime();
 
         try
         {
-            await _cosmosDbService.AddOrUpdateLyricsAnalyzerPromptStyleAsync(promptStyle);
+            lyricsAnalyzerContext.PromptStyles.Update(promptStyle);
+            await lyricsAnalyzerContext.SaveChangesAsync();
         }
         catch (Exception ex)
         {

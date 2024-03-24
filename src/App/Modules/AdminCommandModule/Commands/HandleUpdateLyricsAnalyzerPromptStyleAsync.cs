@@ -21,7 +21,11 @@ public partial class AdminCommandModule
         string configType = "core"
     )
     {
-        LyricsAnalyzerPromptStyle? promptStyle = await _cosmosDbService.GetLyricsAnalyzerPromptStyleAsync(style);
+        using var lyricsAnalyzerContext = _lyricsAnalyzerContextFactory.CreateDbContext();
+
+        LyricsAnalyzerPromptStyle? promptStyle = lyricsAnalyzerContext.PromptStyles.FirstOrDefault(
+            item => item.ShortName == style
+        );
 
         if (promptStyle is null)
         {

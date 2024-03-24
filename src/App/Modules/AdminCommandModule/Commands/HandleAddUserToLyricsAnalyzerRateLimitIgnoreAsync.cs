@@ -1,5 +1,6 @@
 using Discord;
 using Discord.Interactions;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MuzakBot.Lib.Models.CommandModules;
 using MuzakBot.Lib.Models.Database.LyricsAnalyzer;
@@ -22,6 +23,8 @@ public partial class AdminCommandModule
         await DeferAsync(
             ephemeral: true
         );
+
+        using var lyricsAnalyzerContext = _lyricsAnalyzerContextFactory.CreateDbContext();
 
         EmbedBuilder embedBuilder = new();
 
@@ -48,12 +51,12 @@ public partial class AdminCommandModule
             return;
         }
 
-        LyricsAnalyzerConfig lyricsAnalyzerConfig = await _cosmosDbService.GetLyricsAnalyzerConfigAsync();
+        LyricsAnalyzerConfig lyricsAnalyzerConfig = await lyricsAnalyzerContext.Configs.FirstOrDefaultAsync() ?? throw new InvalidOperationException("Lyrics analyzer config not found.");
 
         if (lyricsAnalyzerConfig.RateLimitIgnoredUserIds is null)
         {
             _logger.LogInformation("Rate limit ignored user IDs list is null, initializing to empty list.");
-            lyricsAnalyzerConfig.RateLimitIgnoredUserIds = new();
+            lyricsAnalyzerConfig.RateLimitIgnoredUserIds = [];
         }
 
         if (operation == "add")
@@ -76,7 +79,9 @@ public partial class AdminCommandModule
             }
 
             lyricsAnalyzerConfig.RateLimitIgnoredUserIds.Add(user.Id.ToString());
-            await _cosmosDbService.AddOrUpdateLyricsAnalyzerConfigAsync(lyricsAnalyzerConfig);
+            
+            lyricsAnalyzerContext.Configs.Update(lyricsAnalyzerConfig);
+            await lyricsAnalyzerContext.SaveChangesAsync();
 
             _logger.LogInformation("{Username} has been added to the rate limit ignore list.", user.Username);
 
@@ -113,7 +118,9 @@ public partial class AdminCommandModule
             }
 
             lyricsAnalyzerConfig.RateLimitIgnoredUserIds.Remove(user.Id.ToString());
-            await _cosmosDbService.AddOrUpdateLyricsAnalyzerConfigAsync(lyricsAnalyzerConfig);
+            
+            lyricsAnalyzerContext.Configs.Update(lyricsAnalyzerConfig);
+            await lyricsAnalyzerContext.SaveChangesAsync();
 
             _logger.LogInformation("{Username} has been removed from the rate limit ignore list.", user.Username);
 

@@ -16,9 +16,13 @@ public partial class AdminCommandModule
             ephemeral: true
         );
 
+        using var lyricsAnalyzerContext = _lyricsAnalyzerContextFactory.CreateDbContext();
+
         EmbedBuilder embed;
 
-        LyricsAnalyzerPromptStyle? promptStyle = await _cosmosDbService.GetLyricsAnalyzerPromptStyleAsync(userPromptModal.ShortName);
+        LyricsAnalyzerPromptStyle? promptStyle = lyricsAnalyzerContext.PromptStyles.FirstOrDefault(
+            item => item.ShortName == userPromptModal.ShortName
+        );
 
         if (promptStyle is null)
         {
@@ -42,7 +46,8 @@ public partial class AdminCommandModule
 
         try
         {
-            await _cosmosDbService.AddOrUpdateLyricsAnalyzerPromptStyleAsync(promptStyle);
+            lyricsAnalyzerContext.PromptStyles.Update(promptStyle);
+            await lyricsAnalyzerContext.SaveChangesAsync();
         }
         catch (Exception ex)
         {

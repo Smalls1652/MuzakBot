@@ -1,5 +1,6 @@
 using Discord.Interactions;
 using Discord.WebSocket;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MuzakBot.Lib.Models.Database.LyricsAnalyzer;
 
@@ -33,6 +34,8 @@ public partial class AdminCommandModule
         await DeferAsync(
             ephemeral: false
         );
+
+        using var lyricsAnalyzerContext = _lyricsAnalyzerContextFactory.CreateDbContext();
 
         ulong guildIdUlong;
         try
@@ -74,7 +77,7 @@ public partial class AdminCommandModule
         LyricsAnalyzerConfig lyricsAnalyzerConfig;
         try
         {
-            lyricsAnalyzerConfig = await _cosmosDbService.GetLyricsAnalyzerConfigAsync();
+            lyricsAnalyzerConfig = await lyricsAnalyzerContext.Configs.FirstOrDefaultAsync() ?? throw new InvalidOperationException("Lyrics analyzer config not found.");
         }
         catch (Exception ex)
         {
@@ -95,7 +98,7 @@ public partial class AdminCommandModule
         {
             if (lyricsAnalyzerConfig.CommandEnabledGuildIds is null)
             {
-                lyricsAnalyzerConfig.CommandEnabledGuildIds = new();
+                lyricsAnalyzerConfig.CommandEnabledGuildIds = [];
             }
 
             if (guildIsEnabled)
@@ -119,7 +122,7 @@ public partial class AdminCommandModule
         {
             if (lyricsAnalyzerConfig.CommandDisabledGuildIds is null)
             {
-                lyricsAnalyzerConfig.CommandDisabledGuildIds = new();
+                lyricsAnalyzerConfig.CommandDisabledGuildIds = [];
             }
 
             if (guildIsDisabled)
@@ -142,7 +145,8 @@ public partial class AdminCommandModule
         _logger.LogInformation("Updating lyrics analyzer config...");
         try
         {
-            await _cosmosDbService.AddOrUpdateLyricsAnalyzerConfigAsync(lyricsAnalyzerConfig);
+            lyricsAnalyzerContext.Configs.Update(lyricsAnalyzerConfig);
+            await lyricsAnalyzerContext.SaveChangesAsync();
         }
         catch (Exception ex)
         {
