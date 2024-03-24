@@ -1,37 +1,38 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-  <!-- Core properties -->
-  <PropertyGroup>
-    <RootNamespace>MuzakBot.Database</RootNamespace>
-    <AssemblyName>MuzakBot.Database</AssemblyName>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-  </PropertyGroup>
-  <!-- Package properties -->
-  <PropertyGroup>
-    <PackageId>MuzakBot.Database</PackageId>
-    <Description>
+<Project Sdk="Microsoft.NET.Sdk">
+	<!-- Core properties -->
+	<PropertyGroup>
+		<RootNamespace>MuzakBot.Database</RootNamespace>
+		<AssemblyName>MuzakBot.Database</AssemblyName>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+	</PropertyGroup>
+	<!-- Package properties -->
+	<PropertyGroup>
+		<PackageId>MuzakBot.Database</PackageId>
+		<Description>
       Database class library for MuzakBot.
     </Description>
-    <Authors>Timothy Small</Authors>
-    <Company>Smalls.Online</Company>
-    <Copyright>© Smalls.Online</Copyright>
-    <RepositoryUrl>https://github.com/Smalls1652/MuzakBot</RepositoryUrl>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-  </PropertyGroup>
-  <!-- Dependencies -->
-  <ItemGroup>
-    <ProjectReference Include="..\..\Lib\Lib.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Discord.Net" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Cosmos" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
-  </ItemGroup>
+		<Authors>Timothy Small</Authors>
+		<Company>Smalls.Online</Company>
+		<Copyright>© Smalls.Online</Copyright>
+		<RepositoryUrl>https://github.com/Smalls1652/MuzakBot</RepositoryUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	</PropertyGroup>
+	<!-- Dependencies -->
+	<ItemGroup>
+		<ProjectReference Include="..\..\Lib\Lib.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Discord.Net" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Cosmos" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
+		<PackageReference Include="Microsoft.Extensions.Hosting" PrivateAssets="all" />
+	</ItemGroup>
 </Project>
