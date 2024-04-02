@@ -1,8 +1,11 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 using MuzakBot.GeniusService.Extensions;
+using MuzakBot.GeniusService.Services;
+using MuzakBot.GeniusService.TaskQueues;
 using MuzakBot.Hosting.Extensions;
 using MuzakBot.Lib;
 using MuzakBot.Lib.Services.Extensions;
@@ -35,11 +38,26 @@ builder.Configuration
     .AddCommandLine(args);
 
 builder.Services
+    .AddSingleton<IBackgroundTaskQueue>(_ =>
+    {
+        return new DefaultBackgroundTaskQueue(100);
+    });
+
+builder.Services
+    .AddGeniusApiService(options =>
+    {
+        options.AccessToken = builder.Configuration.GetValue<string>("GENIUS_ACCESS_TOKEN") ?? throw new ConfigValueNotFoundException("GENIUS_ACCESS_TOKEN");
+    });
+
+builder.Services
     .AddQueueClientService(options =>
     {
         options.ConnectionString = builder.Configuration.GetValue<string>("QUEUE_CONNECTION_STRING") ?? throw new ConfigValueNotFoundException("QUEUE_CONNECTION_STRING");
         options.QueueName = builder.Configuration.GetValue<string>("QUEUE_NAME") ?? throw new ConfigValueNotFoundException("QUEUE_NAME");
     });
+
+builder.Services
+    .AddSingleton<IAzureQueueMonitorService, AzureQueueMonitorService>();
 
 builder.Services
     .AddMainService();
