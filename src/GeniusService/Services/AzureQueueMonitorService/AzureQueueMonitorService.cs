@@ -58,7 +58,7 @@ public sealed class AzureQueueMonitorService : IAzureQueueMonitorService
                 }
             }
 
-            await Task.Delay(3000, _cancellationToken);
+            await Task.Delay(500, _cancellationToken);
         }
     }
 
