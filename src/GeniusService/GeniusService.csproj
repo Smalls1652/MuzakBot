@@ -34,6 +34,7 @@
 		<PackageReference Include="Azure.Storage.Queues" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" />
 		<PackageReference Include="Microsoft.Extensions.Hosting" />
+		<PackageReference Include="Microsoft.Extensions.Http" />
 		<PackageReference Include="Microsoft.Extensions.Logging" />
 	</ItemGroup>
 	<ItemGroup>
