@@ -2,6 +2,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
+using MuzakBot.GeniusService.TaskQueues;
 using MuzakBot.Lib.Services;
 
 namespace MuzakBot.GeniusService.Services;
@@ -10,35 +11,48 @@ public sealed class MainService : IHostedService, IDisposable
 {
     private bool _disposed;
     private Task? _task;
+    private Task? _monitorTask;
     private CancellationTokenSource? _cts;
 
-    private readonly IQueueClientService _queueClientService;
+    private readonly IAzureQueueMonitorService _queueMonitorService;
+    private readonly IBackgroundTaskQueue _taskQueue;
     private readonly MainServiceOptions _options;
     private readonly ILogger _logger;
     private readonly IHostApplicationLifetime _appLifetime;
 
-    public MainService(IQueueClientService queueClientService, IOptions<MainServiceOptions> options, ILogger<MainService> logger, IHostApplicationLifetime appLifetime)
+    public MainService(IAzureQueueMonitorService queueMonitorService, IBackgroundTaskQueue taskQueue, IOptions<MainServiceOptions> options, ILogger<MainService> logger, IHostApplicationLifetime appLifetime)
     {
-        _queueClientService = queueClientService;
+        _queueMonitorService = queueMonitorService;
+        _taskQueue = taskQueue;
         _options = options.Value;
         _logger = logger;
         _appLifetime = appLifetime;
     }
 
-    public async Task RunAsync(CancellationToken cancellationToken = default)
+    public Task RunAsync(CancellationToken cancellationToken = default)
     {
-        try
-        {
-            _logger.LogInformation("Running...");
+        _logger.LogInformation("Starting the Azure Queue Task Processor...");
+        return ProcessAzureTaskQueueAsync(cancellationToken);
+    }
 
-            while (!cancellationToken.IsCancellationRequested)
-            {
-                await Task.Delay(1000, cancellationToken);
-            }
-        }
-        finally
+    private async Task ProcessAzureTaskQueueAsync(CancellationToken cancellationToken)
+    {
+        while (!cancellationToken.IsCancellationRequested)
         {
-            _appLifetime.StopApplication();
+            try
+            {
+                Func<CancellationToken, ValueTask>? workItem = await _taskQueue.DequeueAsync(cancellationToken);
+
+                await workItem(cancellationToken);
+            }
+            catch (OperationCanceledException)
+            {
+                // Do nothing.
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while processing the Azure Task Queue.");
+            }
         }
     }
 
@@ -47,26 +61,39 @@ public sealed class MainService : IHostedService, IDisposable
         _cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
         _task = RunAsync(_cts.Token);
+        _monitorTask = Task.Run(() => _queueMonitorService.StartMonitor(), _cts.Token);
 
         return Task.CompletedTask;
     }
 
     public async Task StopAsync(CancellationToken cancellationToken)
     {
-        if (_task is null)
+        if (_task is not null)
         {
-            return;
+            try
+            {
+                _cts?.Cancel();
+            }
+            finally
+            {
+                await _task
+                    .WaitAsync(cancellationToken)
+                    .ConfigureAwait(ConfigureAwaitOptions.SuppressThrowing);
+            }
         }
 
-        try
+        if (_monitorTask is not null)
         {
-            _cts?.Cancel();
-        }
-        finally
-        {
-            await _task
-                .WaitAsync(cancellationToken)
-                .ConfigureAwait(ConfigureAwaitOptions.SuppressThrowing);
+            try
+            {
+                _cts?.Cancel();
+            }
+            finally
+            {
+                await _monitorTask
+                    .WaitAsync(cancellationToken)
+                    .ConfigureAwait(ConfigureAwaitOptions.SuppressThrowing);
+            }
         }
     }
 
@@ -78,6 +105,7 @@ public sealed class MainService : IHostedService, IDisposable
 
         _cts?.Dispose();
         _task?.Dispose();
+        _monitorTask?.Dispose();
 
         GC.SuppressFinalize(this);
     }
