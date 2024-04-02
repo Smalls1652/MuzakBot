@@ -3,7 +3,7 @@
   "tasks": [
     {
       "label": "Watch",
-      "detail": "Run the app for local debugging and watch for changes.",
+      "detail": "Run an app for local debugging and watch for changes.",
       "icon": {
         "id": "eye-watch",
         "color": "terminal.ansiCyan"
@@ -18,6 +18,48 @@
       ],
       "options": {
         "cwd": "${workspaceFolder}/${input:watchProject}",
+        "env": {
+          "DOTNET_ENVIRONMENT": "Development"
+        }
+      },
+      "runOptions": {
+        "instanceLimit": 2
+      },
+      "presentation": {
+        "echo": false,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": true
+      },
+      "isBackground": true,
+      "problemMatcher": [
+        {
+          "base": "$msCompile",
+          "background": {
+            "activeOnStart": true,
+            "beginsPattern": "^info: Microsoft.\\Hosting\\.Lifetime",
+            "endsPattern": "^\\s*Application started\\..+?$"
+          }
+        }
+      ]
+    },
+    {
+      "label": "Run",
+      "detail": "Run an app locally.",
+      "icon": {
+        "id": "play",
+        "color": "terminal.ansiCyan"
+      },
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "run",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/${input:runProject}",
         "env": {
           "DOTNET_ENVIRONMENT": "Development"
         }
@@ -86,6 +128,36 @@
       "problemMatcher": "$msCompile"
     },
     {
+      "label": "Compile project (Native AOT)",
+      "detail": "Compile a project with Native AOT.",
+      "icon": {
+        "id": "package",
+        "color": "terminal.ansiRed"
+      },
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "publish",
+        "${workspaceFolder}/${input:nativeAotCompileProject}",
+        "--configuration",
+        "Release",
+        "--runtime",
+        "${input:runtimeIdentifier}"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": "$msCompile",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": true
+      }
+    },
+    {
       "label": "Restore project",
       "detail": "Restore a project.",
       "icon": {
@@ -102,65 +174,6 @@
         "cwd": "${workspaceFolder}"
       },
       "problemMatcher": "$msCompile"
-    },
-    {
-      "label": "Build: MuzakBot.App",
-      "detail": "Build the MuzakBot.App project.",
-      "hide": true,
-      "type": "process",
-      "command": "dotnet",
-      "args": [
-        "build",
-        "${workspaceFolder}/src/App",
-        "--configuration",
-        "Debug"
-      ],
-      "options": {
-        "cwd": "${workspaceFolder}"
-      },
-      "problemMatcher": "$msCompile"
-    },
-    {
-      "label": "Watch: MuzakBot.App",
-      "detail": "Run the app for local debugging and watch for changes.",
-      "hide": true,
-      "type": "process",
-      "command": "dotnet",
-      "args": [
-        "watch",
-        "--",
-        "run",
-        "/property:GenerateFullPaths=true",
-        "/consoleloggerparameters:NoSummary"
-      ],
-      "options": {
-        "cwd": "${workspaceFolder}/src/App",
-        "env": {
-          "DOTNET_ENVIRONMENT": "Development"
-        }
-      },
-      "runOptions": {
-        "instanceLimit": 2
-      },
-      "presentation": {
-        "echo": false,
-        "reveal": "always",
-        "focus": false,
-        "panel": "shared",
-        "showReuseMessage": true,
-        "clear": true
-      },
-      "isBackground": true,
-      "problemMatcher": [
-        {
-          "base": "$msCompile",
-          "background": {
-            "activeOnStart": true,
-            "beginsPattern": "^info: Microsoft.\\Hosting\\.Lifetime",
-            "endsPattern": "^\\s*Application started\\..+?$"
-          }
-        }
-      ]
     }
   ],
   "inputs": [
@@ -192,15 +205,19 @@
         },
         {
           "label": "MuzakBot: App",
-          "value": "src/App"
+          "value": "src/App/"
         },
         {
           "label": "MuzakBot: Lib",
-          "value": "src/Lib"
+          "value": "src/Lib/"
         },
         {
           "label": "MuzakBot: Lib.Services",
           "value": "src/Lib.Services/"
+        },
+        {
+          "label": "MuzakBot: GeniusService",
+          "value": "src/GeniusService/"
         }
       ]
     },
@@ -215,14 +232,66 @@
       ]
     },
     {
+      "id": "runtimeIdentifier",
+      "description": "Select a runtime identifier for the build.",
+      "type": "pickString",
+      "default": "osx-arm64",
+      "options": [
+        {
+          "label": "macOS (arm64)",
+          "value": "osx-arm64"
+        },
+        {
+          "label": "macOS (x64)",
+          "value": "osx-x64"
+        },
+        {
+          "label": "Linux (arm64)",
+          "value": "linux-arm64"
+        },
+        {
+          "label": "Linux (x64)",
+          "value": "linux-x64"
+        },
+        {
+          "label": "Windows (x64)",
+          "value": "win-x64"
+        },
+        {
+          "label": "Windows (x86)",
+          "value": "win-x86"
+        }
+      ]
+    },
+    {
       "id": "watchProject",
       "description": "Select a project to run 'dotnet watch' on.",
       "type": "pickString",
-      "default": "src/App",
+      "default": "src/App/",
       "options": [
         {
           "label": "MuzakBot: App",
-          "value": "src/App"
+          "value": "src/App/"
+        },
+        {
+          "label": "MuzakBot: GeniusService",
+          "value": "src/GeniusService/"
+        }
+      ]
+    },
+    {
+      "id": "runProject",
+      "description": "Select a project to run 'dotnet run' on.",
+      "type": "pickString",
+      "default": "src/App/",
+      "options": [
+        {
+          "label": "MuzakBot: App",
+          "value": "src/App/"
+        },
+        {
+          "label": "MuzakBot: GeniusService",
+          "value": "src/GeniusService/"
         }
       ]
     }

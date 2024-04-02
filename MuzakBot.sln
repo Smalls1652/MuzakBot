@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lib", "src\Lib\Lib.csproj",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lib.Services", "src\Lib.Services\Lib.Services.csproj", "{0995AF96-384F-4AC4-A6CB-B6E7515373D6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeniusService", "src\GeniusService\GeniusService.csproj", "{9BF04232-A24D-45F4-924F-EEDFFE54A64C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,6 +32,10 @@ Global
 		{0995AF96-384F-4AC4-A6CB-B6E7515373D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0995AF96-384F-4AC4-A6CB-B6E7515373D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0995AF96-384F-4AC4-A6CB-B6E7515373D6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9BF04232-A24D-45F4-924F-EEDFFE54A64C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9BF04232-A24D-45F4-924F-EEDFFE54A64C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9BF04232-A24D-45F4-924F-EEDFFE54A64C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9BF04232-A24D-45F4-924F-EEDFFE54A64C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection
