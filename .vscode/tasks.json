@@ -1,4 +1,4 @@
-﻿{
+{
   "version": "2.0.0",
   "tasks": [
     {
@@ -128,8 +128,8 @@
       "problemMatcher": "$msCompile"
     },
     {
-      "label": "Compile project (Native AOT)",
-      "detail": "Compile a project with Native AOT.",
+      "label": "Compile project",
+      "detail": "Compile a project.",
       "icon": {
         "id": "package",
         "color": "terminal.ansiRed"
@@ -138,7 +138,7 @@
       "command": "dotnet",
       "args": [
         "publish",
-        "${workspaceFolder}/${input:nativeAotCompileProject}",
+        "${workspaceFolder}/${input:publishProject}",
         "--configuration",
         "Release",
         "--runtime",
@@ -286,6 +286,22 @@
     {
       "id": "runProject",
       "description": "Select a project to run 'dotnet run' on.",
+      "type": "pickString",
+      "default": "src/App/",
+      "options": [
+        {
+          "label": "MuzakBot: App",
+          "value": "src/App/"
+        },
+        {
+          "label": "MuzakBot: GeniusService",
+          "value": "src/GeniusService/"
+        }
+      ]
+    },
+    {
+      "id": "publishProject",
+      "description": "Select a project to run 'dotnet publish' on.",
       "type": "pickString",
       "default": "src/App/",
       "options": [
