@@ -1,0 +1,39 @@
+using Azure.Identity;
+using Azure.Storage.Queues;
+
+using Microsoft.Extensions.Options;
+
+namespace MuzakBot.Lib.Services;
+
+public sealed class QueueClientService : IQueueClientService
+{
+    private readonly QueueClientServiceOptions _options;
+
+    public QueueClientService(IOptions<QueueClientServiceOptions> options)
+    {
+        _options = options.Value;
+
+        if (_options.ConnectionString is not null)
+        {
+            QueueClient = new(
+                connectionString: _options.ConnectionString,
+                queueName: _options.QueueName
+            );
+        }
+        else
+        {
+            QueueClient = new(
+                queueUri: _options.EndpointUri,
+                credential: new ChainedTokenCredential([
+                    new AzureCliCredential(),
+                    new AzurePowerShellCredential(),
+                    new ManagedIdentityCredential()
+                ])
+            );
+        }
+
+        QueueClient.CreateIfNotExists();
+    }
+
+    public QueueClient QueueClient { get; }
+}

@@ -3,7 +3,10 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
+    <PackageVersion Include="Azure.Core" Version="1.38.0" />
+    <PackageVersion Include="Azure.Identity" Version="1.10.4" />
     <PackageVersion Include="Azure.Monitor.OpenTelemetry.Exporter" Version="1.2.0" />
+    <PackageVersion Include="Azure.Storage.Queues" Version="12.17.1" />
     <PackageVersion Include="Discord.Net" Version="3.14.1" />
     <PackageVersion Include="Microsoft.Azure.Cosmos" Version="3.38.1" />
     <PackageVersion Include="Microsoft.Extensions.Caching.Memory" Version="8.0.0" />
