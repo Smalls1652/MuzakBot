@@ -5,10 +5,17 @@ using Microsoft.Extensions.Options;
 
 namespace MuzakBot.Lib.Services;
 
+/// <summary>
+/// Service that provides a <see cref="QueueClient"/>.
+/// </summary>
 public sealed class QueueClientService : IQueueClientService
 {
     private readonly QueueClientServiceOptions _options;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="QueueClientService"/> class.
+    /// </summary>
+    /// <param name="options">The <see cref="QueueClientServiceOptions"/>.</param>
     public QueueClientService(IOptions<QueueClientServiceOptions> options)
     {
         _options = options.Value;
@@ -35,5 +42,6 @@ public sealed class QueueClientService : IQueueClientService
         QueueClient.CreateIfNotExists();
     }
 
+    /// <inheritdoc />
     public QueueClient QueueClient { get; }
 }

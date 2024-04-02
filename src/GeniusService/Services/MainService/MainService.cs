@@ -7,6 +7,9 @@ using MuzakBot.Lib.Services;
 
 namespace MuzakBot.GeniusService.Services;
 
+/// <summary>
+/// The main hosted service for the app.
+/// </summary>
 public sealed class MainService : IHostedService, IDisposable
 {
     private bool _disposed;
@@ -20,6 +23,14 @@ public sealed class MainService : IHostedService, IDisposable
     private readonly ILogger _logger;
     private readonly IHostApplicationLifetime _appLifetime;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MainService"/> class.
+    /// </summary>
+    /// <param name="queueMonitorService">The <see cref="IAzureQueueMonitorService"/>.</param>
+    /// <param name="taskQueue">The <see cref="IBackgroundTaskQueue"/>.</param>
+    /// <param name="options">The <see cref="MainServiceOptions"/>.</param>
+    /// <param name="logger">The <see cref="ILogger"/>.</param>
+    /// <param name="appLifetime">The <see cref="IHostApplicationLifetime"/>.</param>
     public MainService(IAzureQueueMonitorService queueMonitorService, IBackgroundTaskQueue taskQueue, IOptions<MainServiceOptions> options, ILogger<MainService> logger, IHostApplicationLifetime appLifetime)
     {
         _queueMonitorService = queueMonitorService;
@@ -29,12 +40,22 @@ public sealed class MainService : IHostedService, IDisposable
         _appLifetime = appLifetime;
     }
 
+    /// <summary>
+    /// The primary method ran when the service is started.
+    /// </summary>
+    /// <param name="cancellationToken">The <see cref="CancellationToken"/>.</param>
+    /// <returns></returns>
     public Task RunAsync(CancellationToken cancellationToken = default)
     {
         _logger.LogInformation("Starting the Azure Queue Task Processor...");
         return ProcessAzureTaskQueueAsync(cancellationToken);
     }
 
+    /// <summary>
+    /// Dequeues and processes tasks from the Azure Task Queue.
+    /// </summary>
+    /// <param name="cancellationToken">The <see cref="CancellationToken"/>.</param>
+    /// <returns></returns>
     private async Task ProcessAzureTaskQueueAsync(CancellationToken cancellationToken)
     {
         while (!cancellationToken.IsCancellationRequested)
@@ -56,6 +77,7 @@ public sealed class MainService : IHostedService, IDisposable
         }
     }
 
+    /// <inheritdoc />
     public Task StartAsync(CancellationToken cancellationToken)
     {
         _cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
@@ -66,6 +88,7 @@ public sealed class MainService : IHostedService, IDisposable
         return Task.CompletedTask;
     }
 
+    /// <inheritdoc />
     public async Task StopAsync(CancellationToken cancellationToken)
     {
         if (_task is not null)
@@ -97,6 +120,7 @@ public sealed class MainService : IHostedService, IDisposable
         }
     }
 
+    /// <inheritdoc />
     public void Dispose()
     {
         ObjectDisposedException.ThrowIf(_disposed, this);

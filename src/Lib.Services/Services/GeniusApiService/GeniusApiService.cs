@@ -92,8 +92,25 @@ public partial class GeniusApiService : IGeniusApiService
         return searchResult;
     }
 
+    /// <summary>
+    /// Retrieves the lyrics of a song from a given URL.
+    /// </summary>
+    /// <remarks>
+    /// This scrapes the webpage directly to retrieve the lyrics.
+    /// </remarks>
+    /// <param name="url">The URL of the song lyrics.</param>
+    /// <returns>The lyrics of the song as a string.</returns>
     public async Task<string> GetLyricsDirectlyAsync(string url) => await GetLyricsDirectlyAsync(url, null);
 
+    /// <summary>
+    /// Retrieves the lyrics of a song from a given URL.
+    /// </summary>
+    /// <remarks>
+    /// This scrapes the webpage directly to retrieve the lyrics.
+    /// </remarks>
+    /// <param name="url">The URL of the song lyrics.</param>
+    /// <param name="parentActvitityId">The ID of the parent activity.</param>
+    /// <returns>The lyrics of the song as a string.</returns>
     public async Task<string> GetLyricsDirectlyAsync(string url, string? parentActvitityId)
     {
         using var activity = _activitySource.StartActivity(
@@ -144,7 +161,7 @@ public partial class GeniusApiService : IGeniusApiService
     /// Retrieves the lyrics of a song from a given URL.
     /// </summary>
     /// <remarks>
-    /// This scrapes the webpage to retrieve the lyrics.
+    /// This scrapes the webpage to retrieve the lyrics. This is best used as a fallback method if <see cref="GetLyricsDirectlyAsync"/> fails.
     /// </remarks>
     /// <param name="url">The URL of the song lyrics.</param>
     /// <returns>The lyrics of the song as a string.</returns>
@@ -154,7 +171,7 @@ public partial class GeniusApiService : IGeniusApiService
     /// Retrieves the lyrics of a song from a given URL.
     /// </summary>
     /// <remarks>
-    /// This scrapes the webpage to retrieve the lyrics.
+    /// This scrapes the webpage to retrieve the lyrics. This is best used as a fallback method if <see cref="GetLyricsDirectlyAsync"/> fails.
     /// </remarks>
     /// <param name="url">The URL of the song lyrics.</param>
     /// <param name="parentActvitityId">The ID of the parent activity.</param>

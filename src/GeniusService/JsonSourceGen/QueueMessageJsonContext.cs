@@ -4,6 +4,9 @@ using MuzakBot.Lib.Models.QueueMessages;
 
 namespace MuzakBot.GeniusService;
 
+/// <summary>
+/// JSON source generation context for Azure Queue messages.
+/// </summary>
 [JsonSourceGenerationOptions(
     WriteIndented = false,
     PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,

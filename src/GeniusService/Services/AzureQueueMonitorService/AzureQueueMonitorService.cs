@@ -13,15 +13,25 @@ using MuzakBot.Lib.Services;
 
 namespace MuzakBot.GeniusService.Services;
 
+/// <summary>
+/// Service that monitors an Azure Queue for messages.
+/// </summary>
 public sealed class AzureQueueMonitorService : IAzureQueueMonitorService
 {
-    private IGeniusApiService _geniusApiService;
-    private IQueueClientService _queueClientService;
-    private IBackgroundTaskQueue _taskQueue;
+    private readonly IGeniusApiService _geniusApiService;
+    private readonly IQueueClientService _queueClientService;
+    private readonly IBackgroundTaskQueue _taskQueue;
     private readonly ILogger _logger;
-
     private readonly CancellationToken _cancellationToken;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AzureQueueMonitorService"/> class.
+    /// </summary>
+    /// <param name="geniusApiService">The <see cref="IGeniusApiService"/>.</param>
+    /// <param name="queueClientService">The <see cref="IQueueClientService"/>.</param>
+    /// <param name="taskQueue">The <see cref="IBackgroundTaskQueue"/>.</param>
+    /// <param name="logger">The <see cref="ILogger"/>.</param>
+    /// <param name="appLifetime">The <see cref="IHostApplicationLifetime"/>.</param>
     public AzureQueueMonitorService(IGeniusApiService geniusApiService, IQueueClientService queueClientService, IBackgroundTaskQueue taskQueue, ILogger<AzureQueueMonitorService> logger, IHostApplicationLifetime appLifetime)
     {
         _geniusApiService = geniusApiService;
@@ -32,11 +42,16 @@ public sealed class AzureQueueMonitorService : IAzureQueueMonitorService
         _cancellationToken = appLifetime.ApplicationStopping;
     }
 
+    /// <inheritdoc />
     public void StartMonitor()
     {
         Task.Run(async () => await MonitorAzureMonitorQueueAsync());
     }
 
+    /// <summary>
+    /// Monitors the Azure Queue for messages.
+    /// </summary>
+    /// <returns></returns>
     private async ValueTask MonitorAzureMonitorQueueAsync()
     {
         while (!_cancellationToken.IsCancellationRequested)
@@ -62,6 +77,12 @@ public sealed class AzureQueueMonitorService : IAzureQueueMonitorService
         }
     }
 
+    /// <summary>
+    /// Processes a queue message.
+    /// </summary>
+    /// <param name="message">The <see cref="QueueMessage"/>.</param>
+    /// <param name="cancellationToken">The <see cref="CancellationToken"/>.</param>
+    /// <returns></returns>
     private async ValueTask ProcessQueueMessageAsync(QueueMessage message, CancellationToken cancellationToken)
     {
         string messageBody = Encoding.UTF8.GetString(Convert.FromBase64String(message.Body.ToString()));
