@@ -2,12 +2,14 @@ using System.Diagnostics;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
+
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using MuzakBot.Lib.Services.Extensions.Telemetry;
-using MuzakBot.Lib.Services.Logging.Genius;
+
 using MuzakBot.Lib.Models.Genius;
 using MuzakBot.Lib.Models.Wayback;
+using MuzakBot.Lib.Services.Extensions.Telemetry;
+using MuzakBot.Lib.Services.Logging.Genius;
 
 namespace MuzakBot.Lib.Services;
 
@@ -88,6 +90,54 @@ public partial class GeniusApiService : IGeniusApiService
         );
 
         return searchResult;
+    }
+
+    public async Task<string> GetLyricsDirectlyAsync(string url) => await GetLyricsDirectlyAsync(url, null);
+
+    public async Task<string> GetLyricsDirectlyAsync(string url, string? parentActvitityId)
+    {
+        using var activity = _activitySource.StartActivity(
+            name: "GetLyricsDirectlyAsync",
+            kind: ActivityKind.Client,
+            tags: new ActivityTagsCollection
+            {
+                { "url", url }
+            },
+            parentId: parentActvitityId
+        );
+
+        using var client = _httpClientFactory.CreateClient("GeniusClient");
+
+        using HttpRequestMessage requestMessage = new(
+            method: HttpMethod.Get,
+            requestUri: url
+        );
+
+        requestMessage.Headers.Add("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36");
+
+        using HttpResponseMessage responseMessage = await client.SendAsync(requestMessage);
+
+        try
+        {
+            responseMessage.EnsureSuccessStatusCode();
+        }
+        catch (Exception)
+        {
+            activity?.SetStatus(ActivityStatusCode.Error);
+            throw;
+        }
+
+        string webpageContent = await responseMessage.Content.ReadAsStringAsync();
+
+        string? lyrics = ParseLyricsHtml(webpageContent);
+
+        if (lyrics is null)
+        {
+            activity?.SetStatus(ActivityStatusCode.Error);
+            throw new InvalidOperationException("Could not parse lyrics from HTML.");
+        }
+
+        return lyrics;
     }
 
     /// <summary>

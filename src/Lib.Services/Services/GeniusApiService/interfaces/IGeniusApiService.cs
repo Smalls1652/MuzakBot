@@ -12,4 +12,7 @@ public interface IGeniusApiService : IDisposable
 
     Task<string> GetLyricsAsync(string url);
     Task<string> GetLyricsAsync(string url, string? parentActvitityId);
+
+    Task<string> GetLyricsDirectlyAsync(string url);
+    Task<string> GetLyricsDirectlyAsync(string url, string? parentActvitityId);
 }
