@@ -67,6 +67,13 @@ builder.Services
 DatabaseConfig databaseConfig = builder.Configuration.GetDatabaseConfig();
 
 builder.Services
+    .AddQueueClientService(options =>
+    {
+        options.ConnectionString = builder.Configuration.GetValue<string>("QUEUE_CONNECTION_STRING") ?? throw new("QUEUE_CONNECTION_STRING is not set.");
+        options.QueueName = builder.Configuration.GetValue<string>("QUEUE_NAME") ?? throw new("QUEUE_NAME is not set.");
+    });
+
+builder.Services
     .AddSongLyricsDbContextFactory(databaseConfig);
 
 builder.Services
