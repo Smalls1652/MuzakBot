@@ -226,6 +226,10 @@
         {
           "label": "MuzakBot: Database",
           "value": "src/Database/"
+        },
+        {
+          "label": "MuzakBot: DatabaseDesign",
+          "value": "src/DatabaseDesign/"
         }
       ]
     },

@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<!-- Core properties-->
+	<PropertyGroup>
+		<RootNamespace>MuzakBot.DatabaseDesign</RootNamespace>
+		<AssemblyName>MuzakBot.DatabaseDesign</AssemblyName>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+	</PropertyGroup>
+	<!-- Package properties -->
+	<PropertyGroup>
+		<PackageId>MuzakBot.DatabaseDesign</PackageId>
+		<Description>
+			Database service for MuzakBot.
+		</Description>
+		<Authors>Timothy Small</Authors>
+		<Company>Smalls.Online</Company>
+		<Copyright>© 2024 Smalls.Online</Copyright>
+		<RepositoryUrl>https://github.com/Smalls1652/MuzakBot</RepositoryUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	</PropertyGroup>
+	<!-- Dependencies -->
+	<ItemGroup>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design">
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.Extensions.Configuration" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+		<PackageReference Include="Microsoft.Extensions.Hosting" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Database\Database.csproj" />
+	</ItemGroup>
+</Project>

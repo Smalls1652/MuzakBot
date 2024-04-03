@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Database", "src\Database\Da
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{04E50D37-1D09-4981-B987-16F8BF0442BD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseDesign", "src\DatabaseDesign\DatabaseDesign.csproj", "{C36112D0-524F-497C-A00B-A359259E3406}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,8 +52,13 @@ Global
 		{00375D56-0DA9-44D0-9D2F-398F345EF34F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{00375D56-0DA9-44D0-9D2F-398F345EF34F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{00375D56-0DA9-44D0-9D2F-398F345EF34F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C36112D0-524F-497C-A00B-A359259E3406}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C36112D0-524F-497C-A00B-A359259E3406}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C36112D0-524F-497C-A00B-A359259E3406}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C36112D0-524F-497C-A00B-A359259E3406}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{00375D56-0DA9-44D0-9D2F-398F345EF34F} = {04E50D37-1D09-4981-B987-16F8BF0442BD}
+		{C36112D0-524F-497C-A00B-A359259E3406} = {04E50D37-1D09-4981-B987-16F8BF0442BD}
 	EndGlobalSection
 EndGlobal
