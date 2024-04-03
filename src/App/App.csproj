@@ -49,6 +49,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Database\Database.csproj" />
     <ProjectReference Include="..\Lib\Lib.csproj" />
     <ProjectReference Include="..\Lib.Services\Lib.Services.csproj" />
   </ItemGroup>
