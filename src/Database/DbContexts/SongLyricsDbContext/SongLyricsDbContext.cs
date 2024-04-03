@@ -50,6 +50,7 @@ internal static class SongLyricsDbContext_ModelBuilderExtensions
         modelBuilder.Entity<SongLyricsItem>(entity =>
         {
             entity.ToTable("song_lyrics");
+            entity.ToContainer("song_lyrics");
 
             entity.HasKey(e => e.Id);
             entity.HasPartitionKey(e => e.PartitionKey);
@@ -98,6 +99,7 @@ internal static class SongLyricsDbContext_ModelBuilderExtensions
         modelBuilder.Entity<SongLyricsRequestJob>(entity =>
         {
             entity.ToTable("song_lyrics_request_jobs");
+            entity.ToContainer("song_lyrics_request_jobs");
 
             entity.HasKey(e => e.Id);
             entity.HasPartitionKey(e => e.PartitionKey);
