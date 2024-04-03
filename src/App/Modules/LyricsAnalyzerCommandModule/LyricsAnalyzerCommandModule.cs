@@ -2,9 +2,12 @@ using System.Diagnostics;
 using Discord;
 using Discord.Commands;
 using Discord.Interactions;
+
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using MuzakBot.App.Metrics;
+using MuzakBot.Database;
 using MuzakBot.Lib.Services;
 
 namespace MuzakBot.App.Modules;
@@ -22,6 +25,8 @@ public partial class LyricsAnalyzerCommandModule : InteractionModuleBase<SocketI
     private readonly IGeniusApiService _geniusApiService;
     private readonly IOpenAiService _openAiService;
     private readonly ICosmosDbService _cosmosDbService;
+    private readonly IDbContextFactory<SongLyricsDbContext> _songLyricsDbContextFactory;
+    private readonly IQueueClientService _queueClientService;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<LyricsAnalyzerCommandModule> _logger;
 
@@ -33,12 +38,14 @@ public partial class LyricsAnalyzerCommandModule : InteractionModuleBase<SocketI
     /// <param name="openAiService">The <see cref="IOpenAiService"/>.</param>
     /// <param name="httpClientFactory">The <see cref="IHttpClientFactory"/>.</param>
     /// <param name="logger">The logger.</param>
-    public LyricsAnalyzerCommandModule(IMusicBrainzService musicBrainzService, IGeniusApiService geniusApiService, IOpenAiService openAiService, ICosmosDbService cosmosDbService, IHttpClientFactory httpClientFactory, ILogger<LyricsAnalyzerCommandModule> logger)
+    public LyricsAnalyzerCommandModule(IMusicBrainzService musicBrainzService, IGeniusApiService geniusApiService, IOpenAiService openAiService, ICosmosDbService cosmosDbService, IDbContextFactory<SongLyricsDbContext> songLyricsDbContextFactory, IQueueClientService queueClientService, IHttpClientFactory httpClientFactory, ILogger<LyricsAnalyzerCommandModule> logger)
     {
         _musicBrainzService = musicBrainzService;
         _geniusApiService = geniusApiService;
         _openAiService = openAiService;
         _cosmosDbService = cosmosDbService;
+        _songLyricsDbContextFactory = songLyricsDbContextFactory;
+        _queueClientService = queueClientService;
         _httpClientFactory = httpClientFactory;
         _logger = logger;
     }
