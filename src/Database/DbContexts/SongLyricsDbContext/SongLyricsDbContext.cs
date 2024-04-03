@@ -138,6 +138,11 @@ internal static class SongLyricsDbContext_ModelBuilderExtensions
                 .Property(e => e.IsCompleted)
                 .HasColumnName("isCompleted")
                 .ToJsonProperty("isCompleted");
+
+            entity
+                .Property(e => e.SongLyricsItemId)
+                .HasColumnName("songLyricsItemId")
+                .ToJsonProperty("songLyricsItemId");
         });
 
         return modelBuilder;

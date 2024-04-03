@@ -1,5 +1,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
+using MuzakBot.Lib.Models.QueueMessages;
+
 namespace MuzakBot.Lib.Models.Database.LyricsAnalyzer;
 
 /// <summary>
@@ -13,6 +15,18 @@ public class SongLyricsRequestJob : DatabaseItem
     [JsonConstructor()]
     public SongLyricsRequestJob()
     {}
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SongLyricsRequestJob"/> class.
+    /// </summary>
+    /// <param name="requestMessage">The <see cref="SongLyricsRequestMessage"/>.</param>
+    public SongLyricsRequestJob(SongLyricsRequestMessage requestMessage)
+    {
+        Id = requestMessage.JobId;
+        PartitionKey = "song-lyrics-request-job";
+        GeniusUrl = requestMessage.GeniusUrl;
+        CreatedAt = DateTimeOffset.UtcNow;
+    }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SongLyricsRequestJob"/> class.
@@ -60,4 +74,11 @@ public class SongLyricsRequestJob : DatabaseItem
     [Column("isCompleted")]
     [JsonPropertyName("isCompleted")]
     public bool IsCompleted { get; set; }
+
+    /// <summary>
+    /// The ID of the song lyrics item.
+    /// </summary>
+    [Column("songLyricsItemId")]
+    [JsonPropertyName("songLyricsItemId")]
+    public string? SongLyricsItemId { get; set; }
 }
