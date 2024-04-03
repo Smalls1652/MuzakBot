@@ -3,6 +3,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
+using MuzakBot.Database.Extensions;
+using MuzakBot.Database.Models;
 using MuzakBot.GeniusService.Extensions;
 using MuzakBot.GeniusService.Services;
 using MuzakBot.GeniusService.TaskQueues;
@@ -37,6 +39,11 @@ builder.Configuration
     .AddEnvironmentVariables()
     .AddCommandLine(args);
 
+DatabaseConfig databaseConfig = builder.Configuration.GetDatabaseConfig();
+
+builder.Services
+    .AddSongLyricsDbContextFactory(databaseConfig);
+
 builder.Services
     .AddSingleton<IBackgroundTaskQueue>(_ =>
     {
@@ -64,6 +71,8 @@ builder.Services
 
 var app = builder.Build();
 
+await app.ApplySongLyricsDbContextMigrations();
+
 try
 {
     await app.RunAsync();
@@ -76,7 +85,7 @@ catch (ConfigValueNotFoundException ex)
 }
 catch (Exception)
 {
-    return 1;
+    throw;
 }
 
 return 0;

@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace MuzakBot.Lib.Models.Database.LyricsAnalyzer;
 
 /// <summary>
@@ -31,24 +33,28 @@ public class SongLyricsItem : DatabaseItem, ISongLyricsItem
     /// <summary>
     /// The name of the artist.
     /// </summary>
+    [Column("artistName")]
     [JsonPropertyName("artistName")]
     public string ArtistName { get; set; } = null!;
 
     /// <summary>
     /// The name of the song.
     /// </summary>
+    [Column("songName")]
     [JsonPropertyName("songName")]
     public string SongName { get; set; } = null!;
 
     /// <summary>
     /// The lyrics of the song.
     /// </summary>
+    [Column("lyrics")]
     [JsonPropertyName("lyrics")]
     public string Lyrics { get; set; } = null!;
 
     /// <summary>
     /// The date and time the song lyrics were created in the database.
     /// </summary>
+    [Column("createdAt")]
     [JsonPropertyName("createdAt")]
     public DateTimeOffset CreatedAt { get; set; }
 }

@@ -5,10 +5,14 @@ namespace MuzakBot.Lib.Models.QueueMessages;
 /// </summary>
 public sealed class SongLyricsRequestMessage
 {
-    /*
-    [JsonPropertyName("id")]
-    public string Id { get; set; } = Guid.NewGuid().ToString();
-    */
+    [JsonPropertyName("jobId")]
+    public string JobId { get; set; } = null!;
+
+    [JsonPropertyName("artistName")]
+    public string ArtistName { get; set; } = null!;
+
+    [JsonPropertyName("songTitle")]
+    public string SongTitle { get; set; } = null!;
 
     /// <summary>
     /// The URL of the song lyrics on Genius.

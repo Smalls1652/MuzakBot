@@ -38,6 +38,7 @@
 		<PackageReference Include="Microsoft.Extensions.Logging" />
 	</ItemGroup>
 	<ItemGroup>
+        <ProjectReference Include="..\Database\Database.csproj" />
         <ProjectReference Include="..\Hosting\Hosting.csproj" />
 		<ProjectReference Include="..\Lib\Lib.csproj" />
 		<ProjectReference Include="..\Lib.Services\Lib.Services.csproj" />

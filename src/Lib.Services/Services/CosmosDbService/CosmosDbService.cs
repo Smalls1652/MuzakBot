@@ -42,11 +42,13 @@ public partial class CosmosDbService : ICosmosDbService
             id: "lyrics-analyzer"
         );
 
+        /*
         _logger.LogInitializeEnsureContainerExists("song-lyrics", "lyrics-analyzer");
         await lyricsAnalyzerDb.CreateContainerIfNotExistsAsync(
             id: "song-lyrics",
             partitionKeyPath: "/partitionKey"
         );
+        */
 
         _logger.LogInitializeEnsureContainerExists("command-configs", "lyrics-analyzer");
         await lyricsAnalyzerDb.CreateContainerIfNotExistsAsync(

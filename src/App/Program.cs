@@ -1,10 +1,14 @@
 ﻿using System.Reflection;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+
 using MuzakBot.App.Extensions;
 using MuzakBot.App.Services;
+using MuzakBot.Database.Extensions;
+using MuzakBot.Database.Models;
 using MuzakBot.Lib.Services;
 using MuzakBot.Lib.Services.Extensions;
 
@@ -14,7 +18,6 @@ builder.Services.AddMemoryCache();
 
 builder.Configuration.Sources.Clear();
 builder.Configuration
-    .AddEnvironmentVariables()
     .SetBasePath(Directory.GetCurrentDirectory())
     .AddJsonFile(
         path: "appsettings.json",
@@ -25,7 +28,9 @@ builder.Configuration
         path: $"appsettings.{builder.Environment.EnvironmentName}.json",
         optional: true,
         reloadOnChange: true
-    );
+    )
+    .AddEnvironmentVariables()
+    .AddCommandLine(args);
 
 builder.Logging.ClearProviders();
 
@@ -59,6 +64,18 @@ builder.Services
     .AddItunesApiService()
     .AddMusicBrainzService();
 
+DatabaseConfig databaseConfig = builder.Configuration.GetDatabaseConfig();
+
+builder.Services
+    .AddQueueClientService(options =>
+    {
+        options.ConnectionString = builder.Configuration.GetValue<string>("QUEUE_CONNECTION_STRING") ?? throw new("QUEUE_CONNECTION_STRING is not set.");
+        options.QueueName = builder.Configuration.GetValue<string>("QUEUE_NAME") ?? throw new("QUEUE_NAME is not set.");
+    });
+
+builder.Services
+    .AddSongLyricsDbContextFactory(databaseConfig);
+
 builder.Services
     .AddCosmosDbService(options =>
     {
@@ -88,6 +105,9 @@ builder.Services.AddDiscordService(options =>
 });
 
 using var host = builder.Build();
+
+await host
+    .ApplySongLyricsDbContextMigrations();
 
 // Initialize the database and containers for the Cosmos DB service
 // before running the host.

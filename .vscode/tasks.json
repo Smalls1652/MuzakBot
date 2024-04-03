@@ -1,4 +1,4 @@
-{
+﻿{
   "version": "2.0.0",
   "tasks": [
     {
@@ -222,6 +222,14 @@
         {
           "label": "MuzakBot: Hosting",
           "value": "src/Hosting/"
+        },
+        {
+          "label": "MuzakBot: Database",
+          "value": "src/Database/"
+        },
+        {
+          "label": "MuzakBot: DatabaseDesign",
+          "value": "src/DatabaseDesign/"
         }
       ]
     },
