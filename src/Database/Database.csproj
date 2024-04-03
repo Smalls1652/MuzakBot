@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<!-- Core properties-->
+	<PropertyGroup>
+		<RootNamespace>MuzakBot.Database</RootNamespace>
+		<AssemblyName>MuzakBot.Database</AssemblyName>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+	</PropertyGroup>
+	<!-- Package properties -->
+	<PropertyGroup>
+		<PackageId>MuzakBot.Database</PackageId>
+		<Description>
+			Database service for MuzakBot.
+		</Description>
+		<Authors>Timothy Small</Authors>
+		<Company>Smalls.Online</Company>
+		<Copyright>© 2024 Smalls.Online</Copyright>
+		<RepositoryUrl>https://github.com/Smalls1652/MuzakBot</RepositoryUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	</PropertyGroup>
+	<!-- Dependencies -->
+	<ItemGroup>
+		<PackageReference Include="Microsoft.EntityFrameworkCore" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Analyzers" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Cosmos" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Lib\Lib.csproj" />
+	</ItemGroup>
+</Project>
