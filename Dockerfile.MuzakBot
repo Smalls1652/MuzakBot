@@ -14,7 +14,7 @@ COPY ./Directory.Packages.props ./
 COPY ./nuget.config ./
 COPY ./src ./src
 
-RUN dotnet publish --configuration "Release" --os "${TARGETOS}" --arch "${TARGETARCH}"
+RUN dotnet publish ./src/App --configuration "Release" --os "${TARGETOS}" --arch "${TARGETARCH}"
 
 RUN rm -rf /app/artifacts/publish/App/release/*.pdb; \
     rm -rf /app/artifacts/publish/App/release/*.dbg

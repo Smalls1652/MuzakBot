@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow
-name: MuzakBot / Create container image
+name: GeniusService / Create container image
 on:
   push:
     tags:
@@ -46,7 +46,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ghcr.io/${{ github.actor }}/MuzakBot
+          images: ghcr.io/${{ github.actor }}/MuzakBot-GeniusService
           tags: |
             type=ref,event=tag
             type=ref,event=branch
@@ -58,7 +58,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./
-          file: ./Dockerfile.MuzakBot
+          file: ./Dockerfile.GeniusService
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ steps.meta.outputs.tags }}
