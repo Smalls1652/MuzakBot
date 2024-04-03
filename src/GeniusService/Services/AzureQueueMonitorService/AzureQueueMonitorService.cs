@@ -113,6 +113,16 @@ public sealed class AzureQueueMonitorService : IAzureQueueMonitorService
             return;
         }
 
+        await using SongLyricsDbContext dbContext = _songLyricsDbContextFactory.CreateDbContext();
+
+        SongLyricsRequestJob requestJobInDb = await dbContext.SongLyricsRequestJobs.FirstAsync(item => item.Id == requestMessage.JobId);
+
+        requestJobInDb.StandaloneServiceAcknowledged = true;
+
+        _logger.LogInformation("Acknowledging job ({JobId}).", requestMessage.JobId);
+        dbContext.SongLyricsRequestJobs.Update(requestJobInDb);
+        await dbContext.SaveChangesAsync(cancellationToken);
+
         string? lyrics = null;
         try
         {
@@ -122,21 +132,19 @@ public sealed class AzureQueueMonitorService : IAzureQueueMonitorService
         {
             _logger.LogError(ex, "An error occurred while fetching lyrics from the Genius API.");
 
-            if (message.DequeueCount >= 5)
-            {
-                _logger.LogWarning("Queue message ({MessageId}) has been dequeued 5 times. Deleting message.", message.MessageId);
+            requestJobInDb.FallbackMethodNeeded = true;
+            dbContext.SongLyricsRequestJobs.Update(requestJobInDb);
 
-                await _queueClientService.QueueClient.DeleteMessageAsync(
-                    messageId: message.MessageId,
-                    popReceipt: message.PopReceipt,
-                    cancellationToken: cancellationToken
-                );
-            }
+            await dbContext.SaveChangesAsync(cancellationToken);
+
+            await _queueClientService.QueueClient.DeleteMessageAsync(
+                messageId: message.MessageId,
+                popReceipt: message.PopReceipt,
+                cancellationToken: cancellationToken
+            );
 
             return;
         }
-
-        await using SongLyricsDbContext dbContext = _songLyricsDbContextFactory.CreateDbContext();
 
         SongLyricsItem songLyricsItem = new(
             artistName: requestMessage.ArtistName,
@@ -145,6 +153,11 @@ public sealed class AzureQueueMonitorService : IAzureQueueMonitorService
         );
 
         await dbContext.SongLyricsItems.AddAsync(songLyricsItem, cancellationToken);
+
+        requestJobInDb.IsCompleted = true;
+        requestJobInDb.SongLyricsItemId = songLyricsItem.Id;
+
+        dbContext.SongLyricsRequestJobs.Update(requestJobInDb);
 
         await dbContext.SaveChangesAsync(cancellationToken);
 
