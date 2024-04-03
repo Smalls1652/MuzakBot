@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Core properties -->
+  <PropertyGroup>
+    <RootNamespace>MuzakBot.Hosting</RootNamespace>
+    <AssemblyName>MuzakBot.Hosting</AssemblyName>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+  </PropertyGroup>
+  <!-- Package properties -->
+  <PropertyGroup>
+    <PackageId>MuzakBot.Hosting</PackageId>
+    <Description>
+      Class library for the SlimHostLifetime.
+    </Description>
+    <Authors>Timothy Small</Authors>
+    <Company>Smalls.Online</Company>
+    <Copyright>© 2024 Smalls.Online</Copyright>
+    <RepositoryUrl>https://github.com/Smalls1652/MuzakBot</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+  </PropertyGroup>
+  <!-- Dependencies -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Extensions.Logging" PrivateAssets="all" />
+  </ItemGroup>
+</Project>

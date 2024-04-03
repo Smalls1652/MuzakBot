@@ -1,0 +1,72 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<!-- Core properties-->
+	<PropertyGroup>
+		<RootNamespace>MuzakBot.GeniusService</RootNamespace>
+		<AssemblyName>MuzakBot.GeniusService</AssemblyName>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+		<EnableConfigurationBindingGenerator>true</EnableConfigurationBindingGenerator>
+		<PublishSingleFile>true</PublishSingleFile>
+		<SelfContained>true</SelfContained>
+		<PublishTrimmed>true</PublishTrimmed>
+		<TrimMode>full</TrimMode>
+		<CopyOutputSymbolsToPublishDirectory>false</CopyOutputSymbolsToPublishDirectory>
+	</PropertyGroup>
+	<!-- Package properties -->
+	<PropertyGroup>
+		<PackageId>MuzakBot.GeniusService</PackageId>
+		<Description>
+			Standalone service for fetching lyrics from Genius.
+		</Description>
+		<Authors>Timothy Small</Authors>
+		<Company>Smalls.Online</Company>
+		<Copyright>© 2024 Smalls.Online</Copyright>
+		<RepositoryUrl>https://github.com/Smalls1652/MuzakBot</RepositoryUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	</PropertyGroup>
+	<!-- Dependencies -->
+	<ItemGroup>
+		<PackageReference Include="Azure.Core" />
+		<PackageReference Include="Azure.Identity" />
+		<PackageReference Include="Azure.Storage.Queues" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+		<PackageReference Include="Microsoft.Extensions.Hosting" />
+		<PackageReference Include="Microsoft.Extensions.Http" />
+		<PackageReference Include="Microsoft.Extensions.Logging" />
+	</ItemGroup>
+	<ItemGroup>
+        <ProjectReference Include="..\Hosting\Hosting.csproj" />
+		<ProjectReference Include="..\Lib\Lib.csproj" />
+		<ProjectReference Include="..\Lib.Services\Lib.Services.csproj" />
+	</ItemGroup>
+	<!-- Includable files -->
+    <ItemGroup>
+        <Content Include="appsettings.Development.json" Condition="'$(Configuration)'=='Debug' And Exists('appsettings.Development.json')">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        </Content>
+        <Content Include="appsettings.Development.json" Condition="'$(Configuration)'=='Release'">
+            <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+            <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+        </Content>
+        <Content Include="appsettings.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        </Content>
+    </ItemGroup>
+    <!-- Trimming options -->
+    <ItemGroup>
+        <TrimmerRootAssembly Include="MuzakBot.GeniusService" />
+        <TrimmableAssembly Include="Azure.Core" />
+        <TrimmableAssembly Include="Azure.Identity" />
+        <TrimmableAssembly Include="Microsoft.Extensions.DependencyInjection" />
+        <TrimmableAssembly Include="Microsoft.Extensions.Hosting" />
+        <TrimmableAssembly Include="Microsoft.Extensions.Logging" />
+        <TrimmableAssembly Include="MuzakBot.Hosting" />
+        <TrimmableAssembly Include="MuzakBot.Lib" />
+        <TrimmableAssembly Include="MuzakBot.Lib.Services" />
+    </ItemGroup>
+</Project>
