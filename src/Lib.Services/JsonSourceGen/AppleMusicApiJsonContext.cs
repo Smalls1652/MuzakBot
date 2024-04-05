@@ -23,12 +23,11 @@ namespace MuzakBot.Lib.Services;
 [JsonSerializable(typeof(AppleMusicResponse<Artist>))]
 [JsonSerializable(typeof(AppleMusicResponse<Song>))]
 [JsonSerializable(typeof(AppleMusicResponse<Album>))]
-[JsonSerializable(typeof(SearchResponse<Artist>))]
-[JsonSerializable(typeof(SearchResponse<Song>))]
-[JsonSerializable(typeof(SearchResponse<Album>))]
-[JsonSerializable(typeof(SearchResponseResults<Artist>))]
-[JsonSerializable(typeof(SearchResponseResults<Song>))]
-[JsonSerializable(typeof(SearchResponseResults<Album>))]
+[JsonSerializable(typeof(SearchResponse))]
+[JsonSerializable(typeof(SearchResponseResults))]
+[JsonSerializable(typeof(SearchResponseResultsData<Artist>))]
+[JsonSerializable(typeof(SearchResponseResultsData<Song>))]
+[JsonSerializable(typeof(SearchResponseResultsData<Album>))]
 internal partial class AppleMusicApiJsonContext : JsonSerializerContext
 {
 }
