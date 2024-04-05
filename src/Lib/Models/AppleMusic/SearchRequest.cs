@@ -6,7 +6,7 @@ namespace MuzakBot.Lib.Models.AppleMusic;
 /// <summary>
 /// Data for constructing a search request to the Apple Music API.
 /// </summary>
-public sealed class SearchRequest
+public sealed class SearchRequest : IAppleMusicRequest
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="SearchRequest"/> class.
