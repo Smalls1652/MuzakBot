@@ -19,15 +19,17 @@ public partial class ShareMusicCommandModule : InteractionModuleBase<SocketInter
     private readonly ActivitySource _activitySource = new("MuzakBot.App.Modules.ShareMusicCommandModule");
     private readonly IOdesliService _odesliService;
     private readonly IItunesApiService _itunesApiService;
+    private readonly IAppleMusicApiService _appleMusicApiService;
     private readonly IMusicBrainzService _musicBrainzService;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<ShareMusicCommandModule> _logger;
     private readonly CommandMetrics _commandMetrics;
 
-    public ShareMusicCommandModule(IOdesliService odesliService, IItunesApiService itunesApiService, IMusicBrainzService musicBrainzService, IHttpClientFactory httpClientFactory, ILogger<ShareMusicCommandModule> logger, CommandMetrics commandMetrics)
+    public ShareMusicCommandModule(IOdesliService odesliService, IItunesApiService itunesApiService, IAppleMusicApiService appleMusicApiService, IMusicBrainzService musicBrainzService, IHttpClientFactory httpClientFactory, ILogger<ShareMusicCommandModule> logger, CommandMetrics commandMetrics)
     {
         _odesliService = odesliService;
         _itunesApiService = itunesApiService;
+        _appleMusicApiService = appleMusicApiService;
         _musicBrainzService = musicBrainzService;
         _httpClientFactory = httpClientFactory;
         _logger = logger;

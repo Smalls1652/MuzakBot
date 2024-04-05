@@ -22,6 +22,7 @@ public partial class LyricsAnalyzerCommandModule : InteractionModuleBase<SocketI
     private bool _isDisposed;
     private readonly ActivitySource _activitySource = new("MuzakBot.App.Modules.LyricsAnalyzerCommandModule");
     private readonly IMusicBrainzService _musicBrainzService;
+    private readonly IAppleMusicApiService _appleMusicApiService;
     private readonly IGeniusApiService _geniusApiService;
     private readonly IOpenAiService _openAiService;
     private readonly ICosmosDbService _cosmosDbService;
@@ -38,9 +39,10 @@ public partial class LyricsAnalyzerCommandModule : InteractionModuleBase<SocketI
     /// <param name="openAiService">The <see cref="IOpenAiService"/>.</param>
     /// <param name="httpClientFactory">The <see cref="IHttpClientFactory"/>.</param>
     /// <param name="logger">The logger.</param>
-    public LyricsAnalyzerCommandModule(IMusicBrainzService musicBrainzService, IGeniusApiService geniusApiService, IOpenAiService openAiService, ICosmosDbService cosmosDbService, IDbContextFactory<SongLyricsDbContext> songLyricsDbContextFactory, IQueueClientService queueClientService, IHttpClientFactory httpClientFactory, ILogger<LyricsAnalyzerCommandModule> logger)
+    public LyricsAnalyzerCommandModule(IMusicBrainzService musicBrainzService, IAppleMusicApiService appleMusicApiService, IGeniusApiService geniusApiService, IOpenAiService openAiService, ICosmosDbService cosmosDbService, IDbContextFactory<SongLyricsDbContext> songLyricsDbContextFactory, IQueueClientService queueClientService, IHttpClientFactory httpClientFactory, ILogger<LyricsAnalyzerCommandModule> logger)
     {
         _musicBrainzService = musicBrainzService;
+        _appleMusicApiService = appleMusicApiService;
         _geniusApiService = geniusApiService;
         _openAiService = openAiService;
         _cosmosDbService = cosmosDbService;
