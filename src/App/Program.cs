@@ -64,6 +64,15 @@ builder.Services
     .AddItunesApiService()
     .AddMusicBrainzService();
 
+builder.Services
+    .AddAppleMusicApiService(options =>
+    {
+        options.AppleTeamId = builder.Configuration.GetValue<string>("APPLE_TEAM_ID") ?? throw new("APPLE_TEAM_ID is not set.");
+        options.AppleAppId = builder.Configuration.GetValue<string>("APPLE_APP_ID") ?? throw new("APPLE_APP_ID is not set.");
+        options.AppleAppKeyId = builder.Configuration.GetValue<string>("APPLE_APP_KEY_ID") ?? throw new("APPLE_APP_KEY_ID is not set");
+        options.AppleAppKey = builder.Configuration.GetValue<string>("APPLE_APP_KEY") ?? throw new("APPLE_APP_KEY is not set.");
+    });
+
 DatabaseConfig databaseConfig = builder.Configuration.GetDatabaseConfig();
 
 builder.Services
