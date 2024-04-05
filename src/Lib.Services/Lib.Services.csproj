@@ -1,41 +1,35 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <RootNamespace>MuzakBot.Lib.Services</RootNamespace>
-    <AssemblyName>MuzakBot.Lib.Services</AssemblyName>
-    <PackageId>MuzakBot.Lib.Services</PackageId>
-
-    <Description>
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+	</PropertyGroup>
+	<PropertyGroup>
+		<RootNamespace>MuzakBot.Lib.Services</RootNamespace>
+		<AssemblyName>MuzakBot.Lib.Services</AssemblyName>
+		<PackageId>MuzakBot.Lib.Services</PackageId>
+		<Description>
       Class library for MuzakBot services.
     </Description>
-
-    <Authors>Timothy Small</Authors>
-    <Company>Smalls.Online</Company>
-    <Copyright>© Smalls.Online</Copyright>
-
-    <RepositoryUrl>https://github.com/Smalls1652/MuzakBot</RepositoryUrl>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Azure.Identity" PrivateAssets="all"/>
-    <PackageReference Include="Azure.Storage.Queues" PrivateAssets="all"/>
-    <PackageReference Include="Microsoft.Azure.Cosmos" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.Extensions.Logging" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.Extensions.Http" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" PrivateAssets="all" />
-    <PackageReference Include="OpenTelemetry" PrivateAssets="all" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Lib\Lib.csproj" />
-  </ItemGroup>
-
+		<Authors>Timothy Small</Authors>
+		<Company>Smalls.Online</Company>
+		<Copyright>© Smalls.Online</Copyright>
+		<RepositoryUrl>https://github.com/Smalls1652/MuzakBot</RepositoryUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Azure.Identity" PrivateAssets="all" />
+		<PackageReference Include="Azure.Storage.Queues" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.Azure.Cosmos" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.Extensions.Logging" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.Extensions.Configuration" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.Extensions.Http" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" PrivateAssets="all" />
+		<PackageReference Include="OpenTelemetry" PrivateAssets="all" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Lib\Lib.csproj" />
+	</ItemGroup>
 </Project>

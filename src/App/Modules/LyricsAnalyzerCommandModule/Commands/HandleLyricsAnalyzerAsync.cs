@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using MuzakBot.App.Extensions;
 using MuzakBot.App.Handlers;
 using MuzakBot.App.Services;
+using MuzakBot.Lib.Models.AppleMusic;
 using MuzakBot.Lib.Models.Database.LyricsAnalyzer;
 using MuzakBot.Lib.Models.Genius;
 using MuzakBot.Lib.Models.MusicBrainz;
@@ -38,13 +39,13 @@ public partial class LyricsAnalyzerCommandModule
     )]
     private async Task HandleLyricsAnalyzerAsync(
         [Summary("artistName", "The name of an artist"),
-         Autocomplete(typeof(ArtistNameSearchAutoCompleteHandler))
+         Autocomplete(typeof(AppleMusicArtistAutoCompleteHandler))
         ]
-        string artistName,
+        string artistId,
         [Summary(name: "songName", description: "The name of a song"),
-         Autocomplete(typeof(ArtistSongNameSearchAutoCompleteHandler))
+         Autocomplete(typeof(AppleMusicArtistSongAutocompleteHandler))
         ]
-        string songName,
+        string songId,
         [Summary(name: "style", description: "The style of the response"),
         Autocomplete(typeof(LyricsAnalyzerPromptStyleAutoCompleteHandler))]
         string promptMode = "normal",
@@ -52,7 +53,7 @@ public partial class LyricsAnalyzerCommandModule
         bool isPrivateResponse = false
     )
     {
-        using var activity = _activitySource.StartHandleLyricsAnalyzerAsyncActivity(artistName, songName, Context);
+        using var activity = _activitySource.StartHandleLyricsAnalyzerAsyncActivity(artistId, songId, Context);
 
         await DeferAsync(
             ephemeral: isPrivateResponse
@@ -163,6 +164,47 @@ public partial class LyricsAnalyzerCommandModule
 
             return;
         }
+
+        Artist artist;
+        try
+        {
+            artist = await _appleMusicApiService.GetArtistFromCatalogAsync(artistId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting artist '{artistId}'.", artistId);
+            await FollowupAsync(
+                embed: GenerateErrorEmbed("An error occurred while getting the artist. 😥").Build(),
+                components: GenerateRemoveComponent().Build(),
+                ephemeral: isPrivateResponse
+            );
+
+            activity?.SetStatus(ActivityStatusCode.Error);
+
+            return;
+        }
+
+        Song song;
+        try
+        {
+            song = await _appleMusicApiService.GetSongFromCatalogAsync(songId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting song '{songId}'.", songId);
+            await FollowupAsync(
+                embed: GenerateErrorEmbed("An error occurred while getting the song. 😥").Build(),
+                components: GenerateRemoveComponent().Build(),
+                ephemeral: isPrivateResponse
+            );
+
+            activity?.SetStatus(ActivityStatusCode.Error);
+
+            return;
+        }
+
+        string artistName = artist.Attributes!.Name;
+        string songName = song.Attributes!.Name;
 
         string lyrics = string.Empty;
         bool isSongLyricsItemInDb = false;

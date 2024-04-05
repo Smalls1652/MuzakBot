@@ -6,6 +6,7 @@ using Discord.Interactions;
 using Microsoft.Extensions.Logging;
 using MuzakBot.App.Extensions;
 using MuzakBot.App.Handlers;
+using MuzakBot.Lib.Models.AppleMusic;
 using MuzakBot.Lib.Models.Itunes;
 using MuzakBot.Lib.Models.MusicBrainz;
 using MuzakBot.Lib.Models.Odesli;
@@ -22,11 +23,11 @@ public partial class ShareMusicCommandModule
     )]
     private async Task HandleFindSongAsync(
         [Summary("artistName", "The name of an artist"),
-         Autocomplete(typeof(ArtistSearchAutoCompleteHandler))
+         Autocomplete(typeof(AppleMusicArtistAutoCompleteHandler))
         ]
         string artistId,
         [Summary(name: "songName", description: "The name of a song"),
-         Autocomplete(typeof(ArtistSongSearchAutoCompleteHandler))
+         Autocomplete(typeof(AppleMusicArtistSongAutocompleteHandler))
         ]
         string songId
     )
@@ -37,10 +38,10 @@ public partial class ShareMusicCommandModule
         {
             await DeferAsync();
 
-            MusicBrainzArtistItem? artistItem = null;
+            Artist? artistItem = null;
             try
             {
-                artistItem = await _musicBrainzService.LookupArtistAsync(artistId, activity?.Id);
+                artistItem = await _appleMusicApiService.GetArtistFromCatalogAsync(artistId);
             }
             catch (Exception ex)
             {
@@ -55,11 +56,11 @@ public partial class ShareMusicCommandModule
                 return;
             }
 
-            MusicBrainzRecordingItem? recordingItem = null;
+            Song? songItem = null;
 
             try
             {
-                recordingItem = await _musicBrainzService.LookupRecordingAsync(songId, activity?.Id);
+                songItem = await _appleMusicApiService.GetSongFromCatalogAsync(songId);
             }
             catch (Exception ex)
             {
@@ -74,7 +75,7 @@ public partial class ShareMusicCommandModule
                 return;
             }
 
-            if (artistItem is null || recordingItem is null)
+            if (artistItem is null || songItem is null)
             {
                 await FollowupAsync(
                     embed: GenerateErrorEmbed("No results found for that artist and song. 😥").Build(),
@@ -86,32 +87,15 @@ public partial class ShareMusicCommandModule
                 return;
             }
 
-            ApiSearchResult<SongItem>? apiSearchResult = await _itunesApiService.GetSongsByArtistResultAsync(artistItem!.Name, recordingItem!.Title, activity?.Id);
-
-            if (apiSearchResult is null || apiSearchResult.Results is null || apiSearchResult.Results.Length == 0)
-            {
-                await FollowupAsync(
-                    embed: GenerateErrorEmbed("No results were found.").Build(),
-                    components: GenerateRemoveComponent().Build()
-                );
-
-                activity?.SetStatus(ActivityStatusCode.Error);
-
-                return;
-            }
-
-
-            SongItem songItem = apiSearchResult.Results[0];
-
             MusicEntityItem? musicEntityItem = null;
             try
             {
-                if (songItem.TrackViewUrl is null)
+                if (songItem.Attributes!.Url is null)
                 {
                     throw new Exception("No song item or track view url found.");
                 }
 
-                musicEntityItem = await _odesliService.GetShareLinksAsync(songItem.TrackViewUrl);
+                musicEntityItem = await _odesliService.GetShareLinksAsync(songItem.Attributes!.Url);
 
                 if (musicEntityItem is null)
                 {
@@ -120,7 +104,7 @@ public partial class ShareMusicCommandModule
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "No share links found for '{url}'.", songItem.TrackViewUrl);
+                _logger.LogError(e, "No share links found for '{url}'.", songItem.Attributes!.Url);
                 await FollowupAsync(
                     embed: GenerateErrorEmbed("No share links were found. 😥").Build(),
                     components: GenerateRemoveComponent().Build()
@@ -153,7 +137,7 @@ public partial class ShareMusicCommandModule
                 }
                 else
                 {
-                    _logger.LogError("Could get all of the necessary data for '{url}'.", songItem.TrackViewUrl);
+                    _logger.LogError("Could get all of the necessary data for '{url}'.", songItem.Attributes.Url);
                     await FollowupAsync(
                         embed: GenerateErrorEmbed("I was unable to get the necessary information from Odesli. 😥").Build(),
                         components: GenerateRemoveComponent().Build()
