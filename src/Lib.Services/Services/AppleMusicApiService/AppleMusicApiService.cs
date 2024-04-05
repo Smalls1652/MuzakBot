@@ -55,14 +55,19 @@ public partial class AppleMusicApiService : IAppleMusicApiService
 
         try
         {
-            using HttpResponseMessage response = await SendRequestAsync(searchRequest);
+            string responseContent = await SendRequestAsync(searchRequest);
 
-            SearchResponse<Artist> searchResponse = await JsonSerializer.DeserializeAsync(
-                utf8Json: await response.Content.ReadAsStreamAsync(),
-                jsonTypeInfo: AppleMusicApiJsonContext.Default.SearchResponseArtist
+            SearchResponse searchResponse = JsonSerializer.Deserialize(
+                json: responseContent,
+                jsonTypeInfo: AppleMusicApiJsonContext.Default.SearchResponse
             ) ?? throw new InvalidOperationException("Error deserializing search response.");
 
-            return searchResponse.Results.Data;
+            if (searchResponse.Results.Artists is null)
+            {
+                throw new NullReferenceException("No artists found in search response.");
+            }
+
+            return searchResponse.Results.Artists.Data;
         }
         catch (Exception ex)
         {
@@ -77,14 +82,14 @@ public partial class AppleMusicApiService : IAppleMusicApiService
     /// <param name="searchRequest">The search request to send.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>The response from the Apple Music API.</returns>
-    private async Task<HttpResponseMessage> SendRequestAsync(SearchRequest searchRequest, CancellationToken cancellationToken = default)
+    private async Task<string> SendRequestAsync(SearchRequest searchRequest)
     {
         if (_tokenIsBeingRefreshed)
         {
             _logger.LogWarning("Token is being refreshed. Waiting for refresh to complete.");
             while (_tokenIsBeingRefreshed)
             {
-                await Task.Delay(1000, cancellationToken);
+                await Task.Delay(1000);
             }
         }
 
@@ -92,6 +97,8 @@ public partial class AppleMusicApiService : IAppleMusicApiService
         {
             GenerateBearerToken();
         }
+
+        _logger.LogInformation("Sending request to: {url}", searchRequest.CreateUrlPath());
 
         using HttpClient client = _httpClientFactory.CreateClient("AppleMusicApiClient");
 
@@ -102,11 +109,11 @@ public partial class AppleMusicApiService : IAppleMusicApiService
 
         requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _bearerToken);
 
-        HttpResponseMessage response = await client.SendAsync(requestMessage, cancellationToken);
+        using HttpResponseMessage response = await client.SendAsync(requestMessage);
 
         response.EnsureSuccessStatusCode();
 
-        return response;
+        return await response.Content.ReadAsStringAsync();
     }
 
     /// <summary>
@@ -124,15 +131,8 @@ public partial class AppleMusicApiService : IAppleMusicApiService
         _logger.LogInformation("Generating bearer token.");
         try
         {
-            using CngKey privateKey = CngKey.Import(
-                keyBlob: _options.ConvertAppKeyToByteArray(),
-                format: CngKeyBlobFormat.Pkcs8PrivateBlob
-            );
-
-            using ECDsaCng appKey = new(privateKey)
-            {
-                HashAlgorithm = CngAlgorithm.Sha256
-            };
+            using ECDsa appKey = ECDsa.Create(ECCurve.NamedCurves.nistP256);
+            appKey.ImportPkcs8PrivateKey(_options.ConvertAppKeyToByteArray(), out _);
 
             ECDsaSecurityKey securityKey = new(appKey)
             {
