@@ -76,13 +76,44 @@ public partial class AppleMusicApiService : IAppleMusicApiService
         }
     }
 
+    public async Task<Artist> GetArtistFromCatalogAsync(string artistId)
+    {
+        CatalogRequest catalogRequest = new(
+            storefront: "us",
+            id: artistId,
+            itemType: CatalogItemType.Artists
+        );
+
+        try
+        {
+            string responseContent = await SendRequestAsync(catalogRequest);
+
+            AppleMusicResponse<Artist> artistResponse = JsonSerializer.Deserialize(
+                json: responseContent,
+                jsonTypeInfo: AppleMusicApiJsonContext.Default.AppleMusicResponseArtist
+            ) ?? throw new InvalidOperationException("Error deserializing artist response.");
+
+            if (artistResponse.Data is null || artistResponse.Data.Length == 0)
+            {
+                throw new NullReferenceException("No artist found in catalog response.");
+            }
+
+            return artistResponse.Data[0];
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting artist from catalog.");
+            throw;
+        }
+    }
+
     /// <summary>
     /// Send a request to the Apple Music API.
     /// </summary>
     /// <param name="searchRequest">The search request to send.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>The response from the Apple Music API.</returns>
-    private async Task<string> SendRequestAsync(SearchRequest searchRequest)
+    private async Task<string> SendRequestAsync(IAppleMusicRequest request)
     {
         if (_tokenIsBeingRefreshed)
         {
@@ -98,13 +129,13 @@ public partial class AppleMusicApiService : IAppleMusicApiService
             GenerateBearerToken();
         }
 
-        _logger.LogInformation("Sending request to: {url}", searchRequest.CreateUrlPath());
+        _logger.LogInformation("Sending request to: {url}", request.CreateUrlPath());
 
         using HttpClient client = _httpClientFactory.CreateClient("AppleMusicApiClient");
 
         using HttpRequestMessage requestMessage = new(
             method: HttpMethod.Get,
-            requestUri: searchRequest.CreateUrlPath()
+            requestUri: request.CreateUrlPath()
         );
 
         requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _bearerToken);
