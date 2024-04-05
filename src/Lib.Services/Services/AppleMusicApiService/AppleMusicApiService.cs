@@ -50,7 +50,7 @@ public partial class AppleMusicApiService : IAppleMusicApiService
             searchTypes: [
                 SearchType.Artists
             ],
-            limit: 10
+            limit: 5
         );
 
         try
