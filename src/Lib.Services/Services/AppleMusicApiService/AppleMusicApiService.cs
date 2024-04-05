@@ -76,11 +76,100 @@ public partial class AppleMusicApiService : IAppleMusicApiService
         }
     }
 
-    public async Task<Artist> GetArtistFromCatalogAsync(string artistId)
+    /// <summary>
+    /// Search for albums on Apple Music.
+    /// </summary>
+    /// <param name="searchTerm">The search term.</param>
+    /// <returns>An array of albums.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when an error occurs deserializing the search response.</exception>
+    public async Task<Album[]> SearchAlbumsAsync(string searchTerm)
+    {
+        SearchRequest searchRequest = new(
+            storefront: "us",
+            term: searchTerm,
+            searchTypes: [
+                SearchType.Albums
+            ],
+            limit: 5
+        );
+
+        try
+        {
+            string responseContent = await SendRequestAsync(searchRequest);
+
+            SearchResponse searchResponse = JsonSerializer.Deserialize(
+                json: responseContent,
+                jsonTypeInfo: AppleMusicApiJsonContext.Default.SearchResponse
+            ) ?? throw new InvalidOperationException("Error deserializing search response.");
+
+            if (searchResponse.Results.Albums is null)
+            {
+                throw new NullReferenceException("No albums found in search response.");
+            }
+
+            return searchResponse.Results.Albums.Data;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error searching for albums.");
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Search for songs on Apple Music.
+    /// </summary>
+    /// <param name="searchTerm">The search term.</param>
+    /// <returns>An array of songs.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when an error occurs deserializing the search response.</exception>
+    public async Task<Song[]> SearchSongsAsync(string searchTerm)
+    {
+        SearchRequest searchRequest = new(
+            storefront: "us",
+            term: searchTerm,
+            searchTypes: [
+                SearchType.Songs
+            ],
+            limit: 5
+        );
+
+        try
+        {
+            string responseContent = await SendRequestAsync(searchRequest);
+
+            SearchResponse searchResponse = JsonSerializer.Deserialize(
+                json: responseContent,
+                jsonTypeInfo: AppleMusicApiJsonContext.Default.SearchResponse
+            ) ?? throw new InvalidOperationException("Error deserializing search response.");
+
+            if (searchResponse.Results.Songs is null)
+            {
+                throw new NullReferenceException("No songs found in search response.");
+            }
+
+            _logger.LogInformation("{response}", responseContent);
+
+            return searchResponse.Results.Songs.Data;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error searching for songs.");
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Get an artist from the Apple Music catalog.
+    /// </summary>
+    /// <param name="id">The ID of the artist.</param>
+    /// <returns>The artist.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when an error occurs deserializing the artist response.</exception>
+    /// <exception cref="NullReferenceException">Thrown when no artist is found in the catalog response.</exception>
+    public async Task<Artist> GetArtistFromCatalogAsync(string id)
     {
         CatalogRequest catalogRequest = new(
             storefront: "us",
-            id: artistId,
+            id: id,
             itemType: CatalogItemType.Artists
         );
 
@@ -103,6 +192,82 @@ public partial class AppleMusicApiService : IAppleMusicApiService
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error getting artist from catalog.");
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Get an album from the Apple Music catalog.
+    /// </summary>
+    /// <param name="id">The ID of the album.</param>
+    /// <returns>The album.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when an error occurs deserializing the album response.</exception>
+    /// <exception cref="NullReferenceException">Thrown when no album is found in the catalog response.</exception>
+    public async Task<Album> GetAlbumFromCatalogAsync(string id)
+    {
+        CatalogRequest catalogRequest = new(
+            storefront: "us",
+            id: id,
+            itemType: CatalogItemType.Albums
+        );
+
+        try
+        {
+            string responseContent = await SendRequestAsync(catalogRequest);
+
+            AppleMusicResponse<Album> artistResponse = JsonSerializer.Deserialize(
+                json: responseContent,
+                jsonTypeInfo: AppleMusicApiJsonContext.Default.AppleMusicResponseAlbum
+            ) ?? throw new InvalidOperationException("Error deserializing artist response.");
+
+            if (artistResponse.Data is null || artistResponse.Data.Length == 0)
+            {
+                throw new NullReferenceException("No album found in catalog response.");
+            }
+
+            return artistResponse.Data[0];
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting album from catalog.");
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Get a song from the Apple Music catalog.
+    /// </summary>
+    /// <param name="id">The ID of the song.</param>
+    /// <returns>The song.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when an error occurs deserializing the song response.</exception>
+    /// <exception cref="NullReferenceException">Thrown when no song is found in the catalog response.</exception>
+    public async Task<Song> GetSongFromCatalogAsync(string id)
+    {
+        CatalogRequest catalogRequest = new(
+            storefront: "us",
+            id: id,
+            itemType: CatalogItemType.Songs
+        );
+
+        try
+        {
+            string responseContent = await SendRequestAsync(catalogRequest);
+
+            AppleMusicResponse<Song> artistResponse = JsonSerializer.Deserialize(
+                json: responseContent,
+                jsonTypeInfo: AppleMusicApiJsonContext.Default.AppleMusicResponseSong
+            ) ?? throw new InvalidOperationException("Error deserializing artist response.");
+
+            if (artistResponse.Data is null || artistResponse.Data.Length == 0)
+            {
+                throw new NullReferenceException("No song found in catalog response.");
+            }
+
+            return artistResponse.Data[0];
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting song from catalog.");
             throw;
         }
     }

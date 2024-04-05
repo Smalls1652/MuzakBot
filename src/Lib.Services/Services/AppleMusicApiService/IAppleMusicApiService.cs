@@ -8,6 +8,10 @@ namespace MuzakBot.Lib.Services;
 public interface IAppleMusicApiService
 {
     Task<Artist[]> SearchArtistsAsync(string searchTerm);
+    Task<Album[]> SearchAlbumsAsync(string searchTerm);
+    Task<Song[]> SearchSongsAsync(string searchTerm);
 
     Task<Artist> GetArtistFromCatalogAsync(string id);
+    Task<Album> GetAlbumFromCatalogAsync(string id);
+    Task<Song> GetSongFromCatalogAsync(string id);
 }
