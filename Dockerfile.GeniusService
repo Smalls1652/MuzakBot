@@ -19,7 +19,7 @@ RUN dotnet publish ./src/GeniusService --configuration "Release" --os "${TARGETO
 RUN rm -rf /app/artifacts/publish/GeniusService/release/*.pdb; \
     rm -rf /app/artifacts/publish/GeniusService/release/*.dbg
 
-FROM --platform=$TARGETPLATFORM mcr.microsoft.com/dotnet/runtime-deps:8.0-jammy-chiseled
+FROM --platform=$TARGETPLATFORM mcr.microsoft.com/dotnet/runtime:8.0-jammy-chiseled
 
 ARG TARGETOS
 ARG TARGETARCH
@@ -27,4 +27,4 @@ ARG TARGETARCH
 COPY --from=build-env /app/artifacts/publish/GeniusService/release /app
 
 WORKDIR /app
-ENTRYPOINT ["/app/MuzakBot.GeniusService"]
+ENTRYPOINT ["dotnet", "MuzakBot.GeniusService.dll"]
