@@ -27,4 +27,4 @@ ARG TARGETARCH
 COPY --from=build-env /app/artifacts/publish/GeniusService/release /app
 
 WORKDIR /app
-ENTRYPOINT ["/app/MuzakBot.GeniusService"]
+ENTRYPOINT ["dotnet", "MuzakBot.GeniusService.dll"]
