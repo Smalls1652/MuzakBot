@@ -30,7 +30,9 @@ public partial class ShareMusicCommandModule
         {
             Regex linkRegex = new(@"(?'musicLink'(?>https|http):\/\/(?>[A-Za-z0-9\.]+)(?>\/\S*[^\.\s]|))(?> |)", RegexOptions.Multiline);
 
-            await DeferAsync();
+            await DeferAsync(
+                ephemeral: true
+            );
 
             _logger.LogInformation("Message content: {messageContent}", message.CleanContent);
 
@@ -147,7 +149,8 @@ public partial class ShareMusicCommandModule
                 embed: messageEmbed.Build(),
                 fileStream: albumArtStream,
                 fileName: $"{streamingEntityItem.Id}.jpg",
-                components: linksComponentBuilder.Build()
+                components: linksComponentBuilder.Build(),
+                ephemeral: true
             );
 
             albumArtStream.Dispose();
