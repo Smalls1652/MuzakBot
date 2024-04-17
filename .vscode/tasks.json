@@ -1,4 +1,4 @@
-﻿{
+{
   "version": "2.0.0",
   "tasks": [
     {
@@ -14,12 +14,17 @@
         "watch",
         "--",
         "run",
+        "--configuration",
+        "Debug",
+        "--environment",
+        "Development",
         "/consoleloggerparameters:NoSummary"
       ],
       "options": {
         "cwd": "${workspaceFolder}/${input:watchProject}",
         "env": {
-          "DOTNET_ENVIRONMENT": "Development"
+          "DOTNET_ENVIRONMENT": "Development",
+          "GITVERSION_LOCAL_BUILD": "true"
         }
       },
       "runOptions": {
@@ -61,7 +66,8 @@
       "options": {
         "cwd": "${workspaceFolder}/${input:runProject}",
         "env": {
-          "DOTNET_ENVIRONMENT": "Development"
+          "DOTNET_ENVIRONMENT": "Development",
+          "GITVERSION_LOCAL_BUILD": "true"
         }
       },
       "runOptions": {
