@@ -77,7 +77,7 @@ jobs:
           $repoOwner = "${{ github.repository_owner }}".ToLower()
           $imageDigest = "${{ steps.image_build.outputs.digest }}"
           "image=ghcr.io/$($repoOwner)/muzakbot@$($imageDigest)" >> $env:GITHUB_OUTPUT
-          Write-Information -InformationAction "Continue" -MessageData $env:GITHUB_OUTPUT
+          Write-Verbose "Output: $($env:GITHUB_OUTPUT)"
 
   deploy-to-azure:
     name: Deploy to Azure
