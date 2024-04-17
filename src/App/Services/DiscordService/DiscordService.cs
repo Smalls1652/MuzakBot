@@ -1,15 +1,18 @@
 using System.Diagnostics;
 using System.Reflection;
 using System.Text;
+
 using Discord;
 using Discord.Commands;
 using Discord.Interactions;
 using Discord.Net;
 using Discord.WebSocket;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+
 using MuzakBot.App.Logging.Discord;
 using MuzakBot.App.Modules;
 
@@ -74,6 +77,9 @@ public class DiscordService : IDiscordService, IHostedService
         _logger.LogAddModuleToInteractionService("LyricsAnalyzerCommandModule");
         await _interactionService.AddModuleAsync<LyricsAnalyzerCommandModule>(_serviceProvider);
 
+        _logger.LogAddModuleToInteractionService("CoreCommandModule");
+        await _interactionService.AddModuleAsync<CoreCommandModule>(_serviceProvider);
+
         // Add logging to the DiscordSocketClient and InteractionService
         _discordSocketClient.Log += HandleLog;
         _interactionService.Log += HandleLog;
@@ -126,7 +132,8 @@ public class DiscordService : IDiscordService, IHostedService
             deleteMissing: true,
             modules: [
                 _interactionService.GetModuleInfo<ShareMusicCommandModule>(),
-                _interactionService.GetModuleInfo<LyricsAnalyzerCommandModule>()
+                _interactionService.GetModuleInfo<LyricsAnalyzerCommandModule>(),
+                _interactionService.GetModuleInfo<CoreCommandModule>()
             ]
         );
 
@@ -164,7 +171,7 @@ public class DiscordService : IDiscordService, IHostedService
     private async Task HandleSlashCommand(SocketInteraction interaction)
     {
         SocketInteractionContext interactionContext = new(_discordSocketClient, interaction);
-        
+
         var result = await _interactionService!.ExecuteCommandAsync(interactionContext, _serviceProvider);
 
         if (!result.IsSuccess)
