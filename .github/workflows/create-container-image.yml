@@ -15,7 +15,7 @@ jobs:
     name: Create container image
     runs-on: ubuntu-latest
     outputs:
-      image: ${{ steps.output_image.outputs.image_tag }}
+      image: ${{ steps.output_image.outputs.image }}
 
     steps:
       - name: "Checkout GitHub Action"
