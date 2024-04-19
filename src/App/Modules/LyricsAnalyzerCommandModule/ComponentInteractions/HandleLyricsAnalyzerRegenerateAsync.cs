@@ -35,7 +35,9 @@ public partial class LyricsAnalyzerCommandModule
             }
         );
 
-        await Context.Interaction.DeferAsync();
+        var componentInteraction = (Context.Interaction as IComponentInteraction)!;
+
+        await componentInteraction.DeferLoadingAsync();
 
         _logger.LogInformation("Regenerating lyrics analyzer response for {responseId}", responseId);
 
@@ -49,7 +51,7 @@ public partial class LyricsAnalyzerCommandModule
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error getting lyrics analyzer config from database.");
-            await Context.Interaction.FollowupAsync(
+            await componentInteraction.FollowupAsync(
                 embed: GenerateErrorEmbed("An error occurred. 😥").Build(),
                 components: GenerateRemoveComponent().Build()
             );
@@ -82,7 +84,7 @@ public partial class LyricsAnalyzerCommandModule
 
                 rateLimitMessageBuilder.AppendLine($"Rate limit will reset <t:{resetTime.ToUnixTimeSeconds()}:R>.");
 
-                await Context.Interaction.FollowupAsync(
+                await componentInteraction.FollowupAsync(
                     embed: GenerateErrorEmbed(rateLimitMessageBuilder.ToString()).Build(),
                     components: GenerateRemoveComponent().Build()
                 );
@@ -109,7 +111,7 @@ public partial class LyricsAnalyzerCommandModule
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error getting lyrics analyzer item from database.");
-            await Context.Interaction.FollowupAsync(
+            await componentInteraction.FollowupAsync(
                 embed: GenerateErrorEmbed("An error occurred. 😥").Build(),
                 components: GenerateRemoveComponent().Build()
             );
@@ -129,7 +131,7 @@ public partial class LyricsAnalyzerCommandModule
         {
             _logger.LogError(ex, "Error getting prompt style '{PromptMode}' from database.", lyricsAnalyzerItem.PromptStyle);
 
-            await Context.Interaction.FollowupAsync(
+            await componentInteraction.FollowupAsync(
                 embed: GenerateErrorEmbed("The requested prompt style does not exist. 😥").Build(),
                 components: GenerateRemoveComponent().Build()
             );
@@ -162,7 +164,7 @@ public partial class LyricsAnalyzerCommandModule
         {
             _logger.LogError(ex, "Error getting song lyrics for '{SongName}' by '{ArtistName}' from the database.", lyricsAnalyzerItem.SongName, lyricsAnalyzerItem.ArtistName);
 
-            await Context.Interaction.FollowupAsync(
+            await componentInteraction.FollowupAsync(
                 embed: GenerateErrorEmbed("An error occurred while getting the lyrics. 😥").Build(),
                 components: GenerateRemoveComponent().Build()
             );
@@ -175,7 +177,7 @@ public partial class LyricsAnalyzerCommandModule
         {
             _logger.LogError(ex, "Error getting song lyrics for '{SongName}' by '{ArtistName}' from Genius.", lyricsAnalyzerItem.SongName, lyricsAnalyzerItem.ArtistName);
 
-            await Context.Interaction.FollowupAsync(
+            await componentInteraction.FollowupAsync(
                 embed: GenerateErrorEmbed("Could not find lyrics for the song on Genius. 😥").Build(),
                 components: GenerateRemoveComponent().Build()
             );
@@ -188,7 +190,7 @@ public partial class LyricsAnalyzerCommandModule
         {
             _logger.LogError(ex, "Error getting song lyrics for '{SongName}' by '{ArtistName}'.", lyricsAnalyzerItem.SongName, lyricsAnalyzerItem.ArtistName);
 
-            await Context.Interaction.FollowupAsync(
+            await componentInteraction.FollowupAsync(
                 embed: GenerateErrorEmbed("An error occurred while getting the lyrics. 😥").Build(),
                 components: GenerateRemoveComponent().Build()
             );
@@ -201,7 +203,7 @@ public partial class LyricsAnalyzerCommandModule
         {
             _logger.LogError(ex, "An unknown error occurred while getting song lyrics for '{SongName}' by '{ArtistName}'.", lyricsAnalyzerItem.SongName, lyricsAnalyzerItem.ArtistName);
 
-            await Context.Interaction.FollowupAsync(
+            await componentInteraction.FollowupAsync(
                 embed: GenerateErrorEmbed("An unknown error occurred while getting the lyrics. 😥").Build(),
                 components: GenerateRemoveComponent().Build()
             );
@@ -222,7 +224,7 @@ public partial class LyricsAnalyzerCommandModule
         {
             _logger.LogError(ex, "Error getting lyric analysis for song '{songId}'.", lyricsAnalyzerItem.SongName);
 
-            await Context.Interaction.FollowupAsync(
+            await componentInteraction.FollowupAsync(
                 embed: GenerateErrorEmbed("An unknown error occurred while analyzing the lyrics. 😥").Build(),
                 components: GenerateRemoveComponent().Build()
             );
@@ -245,7 +247,7 @@ public partial class LyricsAnalyzerCommandModule
         _logger.LogInformation("Sending response to Discord.");
         try
         {
-            await Context.Interaction.FollowupAsync(
+            await componentInteraction.FollowupAsync(
                 text: lyricsAnalyzerResponse.GenerateText(),
                 embed: lyricsAnalyzerResponse.GenerateEmbed().Build(),
                 components : lyricsAnalyzerResponse.GenerateComponent().Build()
@@ -263,7 +265,7 @@ public partial class LyricsAnalyzerCommandModule
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error sending response to Discord.");
-            await Context.Interaction.FollowupAsync(
+            await componentInteraction.FollowupAsync(
                 embed: GenerateErrorEmbed("An error occurred while sending the response. 😥").Build(),
                 components: GenerateRemoveComponent().Build()
             );
