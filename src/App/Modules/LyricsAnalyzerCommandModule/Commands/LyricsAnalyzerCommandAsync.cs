@@ -133,17 +133,17 @@ public partial class LyricsAnalyzerCommandModule
             }
         }
 
-        LyricsAnalyzerPromptStyle? promptStyle;
-
+        LyricsAnalyzerPromptStyle promptStyle;
         try
         {
-            promptStyle = await _cosmosDbService.GetLyricsAnalyzerPromptStyleAsync(promptMode, activity?.Id);
+            promptStyle = await GetPromptStyleAsync(promptMode, activity?.Id);
         }
-        catch (Exception ex)
+        catch (NullReferenceException ex)
         {
-            _logger.LogError(ex, "Error getting prompt style from database.");
+            _logger.LogError(ex, "Error getting prompt style '{PromptMode}' from database.", promptMode);
+
             await FollowupAsync(
-                embed: GenerateErrorEmbed("An error occurred while getting the prompt style. 😥").Build(),
+                embed: GenerateErrorEmbed("The requested prompt style does not exist. 😥").Build(),
                 components: GenerateRemoveComponent().Build(),
                 ephemeral: isPrivateResponse
             );
@@ -152,11 +152,12 @@ public partial class LyricsAnalyzerCommandModule
 
             return;
         }
-
-        if (promptStyle is null)
+        catch (Exception ex)
         {
+            _logger.LogError(ex, "Error getting prompt style '{PromptMode}' from database.", promptMode);
+
             await FollowupAsync(
-                embed: GenerateErrorEmbed("An error occurred while getting the prompt style. 😥").Build(),
+                embed: GenerateErrorEmbed("An unknown error occurred while getting the prompt style. 😥").Build(),
                 components: GenerateRemoveComponent().Build(),
                 ephemeral: isPrivateResponse
             );
