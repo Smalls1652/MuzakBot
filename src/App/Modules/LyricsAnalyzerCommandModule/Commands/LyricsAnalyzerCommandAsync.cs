@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 
 using MuzakBot.App.Extensions;
 using MuzakBot.App.Handlers;
+using MuzakBot.App.Models.Responses;
 using MuzakBot.App.Services;
 using MuzakBot.Lib;
 using MuzakBot.Lib.Models.AppleMusic;
@@ -302,21 +303,12 @@ public partial class LyricsAnalyzerCommandModule
         }
 
         // Build the response.
-        StringBuilder lyricsResponseBuilder = new($"# \"{songName}\" by _{artistName}_\n\n");
-
-        lyricsResponseBuilder.AppendLine($"## {promptStyle.AnalysisType}\n\n");
-
-        string[] analysisLines = openAiChatCompletion.Choices[0].Message.Content.Split(Environment.NewLine);
-
-        for (int i = 0; i < analysisLines.Length; i++)
-        {
-            if (i == analysisLines.Length - 1 && string.IsNullOrEmpty(analysisLines[i]))
-            {
-                break;
-            }
-
-            lyricsResponseBuilder.AppendLine($"> {analysisLines[i]}");
-        }
+        LyricsAnalyzerResponse lyricsAnalyzerResponse = new(
+            artistName: artistName,
+            songName: songName,
+            openAiChatCompletion: openAiChatCompletion,
+            promptStyle: promptStyle
+        );
 
         EmbedBuilder embedBuilder = new EmbedBuilder()
             .WithTitle("⚠️ Note")
@@ -329,8 +321,8 @@ public partial class LyricsAnalyzerCommandModule
         try
         {
             await FollowupAsync(
-                text: lyricsResponseBuilder.ToString(),
-                embed: embedBuilder.Build(),
+                text: lyricsAnalyzerResponse.GenerateText(),
+                embed: lyricsAnalyzerResponse.GenerateEmbed().Build(),
                 ephemeral: isPrivateResponse
             );
 
