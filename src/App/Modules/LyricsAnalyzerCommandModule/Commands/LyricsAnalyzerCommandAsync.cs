@@ -60,6 +60,7 @@ public partial class LyricsAnalyzerCommandModule
             ephemeral: isPrivateResponse
         );
 
+        // Get the lyrics analyzer config from the database.
         _logger.LogInformation("Getting lyrics analyzer config from database.");
         LyricsAnalyzerConfig lyricsAnalyzerConfig;
         try
@@ -80,7 +81,7 @@ public partial class LyricsAnalyzerCommandModule
             return;
         }
 
-
+        // Check if the command is enabled for the current server.
         if (!Context.Interaction.IsDMInteraction && lyricsAnalyzerConfig.CommandIsEnabledToSpecificGuilds && lyricsAnalyzerConfig.CommandEnabledGuildIds is not null && !lyricsAnalyzerConfig.CommandEnabledGuildIds.Contains(Context.Guild.Id))
         {
             await FollowupAsync(
@@ -92,6 +93,7 @@ public partial class LyricsAnalyzerCommandModule
             return;
         }
 
+        // Check if the command is disabled for the current server.
         if (!Context.Interaction.IsDMInteraction && !lyricsAnalyzerConfig.CommandIsEnabledToSpecificGuilds && lyricsAnalyzerConfig.CommandDisabledGuildIds is not null && lyricsAnalyzerConfig.CommandDisabledGuildIds.Contains(Context.Guild.Id))
         {
             await FollowupAsync(
@@ -103,8 +105,10 @@ public partial class LyricsAnalyzerCommandModule
             return;
         }
 
+        // Check if the current user is on the rate limit ignore list.
         bool userIsOnRateLimitIgnoreList = lyricsAnalyzerConfig.RateLimitIgnoredUserIds is not null && lyricsAnalyzerConfig.RateLimitIgnoredUserIds.Contains(Context.User.Id.ToString());
 
+        // Get the current rate limit for the user.
         LyricsAnalyzerUserRateLimit? lyricsAnalyzerUserRateLimit = null;
         if (lyricsAnalyzerConfig.RateLimitEnabled && !userIsOnRateLimitIgnoreList)
         {
@@ -113,6 +117,7 @@ public partial class LyricsAnalyzerCommandModule
 
             _logger.LogInformation("Current rate limit for user '{UserId}' is {CurrentRequestCount}/{MaxRequests}.", Context.User.Id, lyricsAnalyzerUserRateLimit.CurrentRequestCount, lyricsAnalyzerConfig.RateLimitMaxRequests);
 
+            // If the user has reached the rate limit, send a message and return.
             if (!lyricsAnalyzerUserRateLimit.EvaluateRequest(lyricsAnalyzerConfig.RateLimitMaxRequests))
             {
                 _logger.LogInformation("User '{UserId}' has reached the rate limit.", Context.User.Id);
@@ -133,6 +138,7 @@ public partial class LyricsAnalyzerCommandModule
             }
         }
 
+        // Get the prompt style from the database.
         LyricsAnalyzerPromptStyle promptStyle;
         try
         {
@@ -167,6 +173,7 @@ public partial class LyricsAnalyzerCommandModule
             return;
         }
 
+        // Get data about the artist from the Apple Music API.
         Artist artist;
         try
         {
@@ -186,6 +193,7 @@ public partial class LyricsAnalyzerCommandModule
             return;
         }
 
+        // Get data about the song from the Apple Music API.
         Song song;
         try
         {
@@ -208,6 +216,7 @@ public partial class LyricsAnalyzerCommandModule
         string artistName = artist.Attributes!.Name;
         string songName = song.Attributes!.Name;
 
+        // Get the song lyrics.
         string lyrics;
         try
         {
@@ -270,6 +279,7 @@ public partial class LyricsAnalyzerCommandModule
             return;
         }
 
+        // Analyze the lyrics with OpenAI.
         _logger.LogInformation("Analyzing lyrics for '{SongName}' by '{ArtistName}' with OpenAI.", songName, artistName);
         OpenAiChatCompletion openAiChatCompletion;
         try
@@ -291,6 +301,7 @@ public partial class LyricsAnalyzerCommandModule
             return;
         }
 
+        // Build the response.
         StringBuilder lyricsResponseBuilder = new($"# \"{songName}\" by _{artistName}_\n\n");
 
         lyricsResponseBuilder.AppendLine($"## {promptStyle.AnalysisType}\n\n");
@@ -313,6 +324,7 @@ public partial class LyricsAnalyzerCommandModule
             .WithColor(Color.DarkTeal)
             .WithFooter("(Powered by OpenAI's GPT-4)");
 
+        // Send the response to Discord.
         _logger.LogInformation("Sending response to Discord.");
         try
         {
