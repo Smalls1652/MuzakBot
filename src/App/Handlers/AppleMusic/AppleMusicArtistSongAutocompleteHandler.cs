@@ -75,7 +75,7 @@ public class AppleMusicArtistSongAutocompleteHandler : AutocompleteHandler
 
         Song[] filteredSongs = Array.FindAll(
             array: songSearchResults,
-            match: song => song.Attributes!.ArtistName == artist.Attributes!.Name
+            match: song => song.Attributes!.ArtistName == artist.Attributes!.Name || song.Attributes!.ArtistName.Contains(artist.Attributes!.Name)
         );
 
         if (filteredSongs.Length == 0)
