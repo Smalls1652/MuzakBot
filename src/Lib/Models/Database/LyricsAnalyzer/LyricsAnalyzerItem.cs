@@ -56,7 +56,6 @@ public class LyricsAnalyzerItem : DatabaseItem
     /// The date and time the lyrics analyzer job was created.
     /// </summary>
     [Column("createdAt")]
-    [Timestamp]
     [JsonPropertyName("createdAt")]
     public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
 }
