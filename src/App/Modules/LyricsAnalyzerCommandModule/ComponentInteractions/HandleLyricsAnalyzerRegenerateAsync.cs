@@ -36,8 +36,13 @@ public partial class LyricsAnalyzerCommandModule
         );
 
         var componentInteraction = (Context.Interaction as IComponentInteraction)!;
+        bool isEphemeral = false;
+        if (componentInteraction.Message.Flags is not null)
+        {
+            isEphemeral = ((int)componentInteraction.Message.Flags.Value & (int)MessageFlags.Ephemeral) == (int)MessageFlags.Ephemeral;
+        }
 
-        await componentInteraction.DeferLoadingAsync();
+        await componentInteraction.DeferLoadingAsync(isEphemeral);
 
         _logger.LogInformation("Regenerating lyrics analyzer response for {responseId}", responseId);
 
@@ -53,7 +58,8 @@ public partial class LyricsAnalyzerCommandModule
             _logger.LogError(ex, "Error getting lyrics analyzer config from database.");
             await componentInteraction.FollowupAsync(
                 embed: GenerateErrorEmbed("An error occurred. 😥").Build(),
-                components: GenerateRemoveComponent().Build()
+                components: GenerateRemoveComponent().Build(),
+                ephemeral: isEphemeral
             );
 
             activity?.SetStatus(ActivityStatusCode.Error);
@@ -86,7 +92,8 @@ public partial class LyricsAnalyzerCommandModule
 
                 await componentInteraction.FollowupAsync(
                     embed: GenerateErrorEmbed(rateLimitMessageBuilder.ToString()).Build(),
-                    components: GenerateRemoveComponent().Build()
+                    components: GenerateRemoveComponent().Build(),
+                    ephemeral: isEphemeral
                 );
 
                 return;
@@ -113,7 +120,8 @@ public partial class LyricsAnalyzerCommandModule
             _logger.LogError(ex, "Error getting lyrics analyzer item from database.");
             await componentInteraction.FollowupAsync(
                 embed: GenerateErrorEmbed("An error occurred. 😥").Build(),
-                components: GenerateRemoveComponent().Build()
+                components: GenerateRemoveComponent().Build(),
+                ephemeral: isEphemeral
             );
 
             activity?.SetStatus(ActivityStatusCode.Error);
@@ -133,7 +141,8 @@ public partial class LyricsAnalyzerCommandModule
 
             await componentInteraction.FollowupAsync(
                 embed: GenerateErrorEmbed("The requested prompt style does not exist. 😥").Build(),
-                components: GenerateRemoveComponent().Build()
+                components: GenerateRemoveComponent().Build(),
+                ephemeral: isEphemeral
             );
 
             activity?.SetStatus(ActivityStatusCode.Error);
@@ -146,7 +155,8 @@ public partial class LyricsAnalyzerCommandModule
 
             await FollowupAsync(
                 embed: GenerateErrorEmbed("An unknown error occurred while getting the prompt style. 😥").Build(),
-                components: GenerateRemoveComponent().Build()
+                components: GenerateRemoveComponent().Build(),
+                ephemeral: isEphemeral
             );
 
             activity?.SetStatus(ActivityStatusCode.Error);
@@ -166,7 +176,8 @@ public partial class LyricsAnalyzerCommandModule
 
             await componentInteraction.FollowupAsync(
                 embed: GenerateErrorEmbed("An error occurred while getting the lyrics. 😥").Build(),
-                components: GenerateRemoveComponent().Build()
+                components: GenerateRemoveComponent().Build(),
+                ephemeral: isEphemeral
             );
 
             activity?.SetStatus(ActivityStatusCode.Error);
@@ -179,7 +190,8 @@ public partial class LyricsAnalyzerCommandModule
 
             await componentInteraction.FollowupAsync(
                 embed: GenerateErrorEmbed("Could not find lyrics for the song on Genius. 😥").Build(),
-                components: GenerateRemoveComponent().Build()
+                components: GenerateRemoveComponent().Build(),
+                ephemeral: isEphemeral
             );
 
             activity?.SetStatus(ActivityStatusCode.Error);
@@ -192,7 +204,8 @@ public partial class LyricsAnalyzerCommandModule
 
             await componentInteraction.FollowupAsync(
                 embed: GenerateErrorEmbed("An error occurred while getting the lyrics. 😥").Build(),
-                components: GenerateRemoveComponent().Build()
+                components: GenerateRemoveComponent().Build(),
+                ephemeral: isEphemeral
             );
 
             activity?.SetStatus(ActivityStatusCode.Error);
@@ -205,7 +218,8 @@ public partial class LyricsAnalyzerCommandModule
 
             await componentInteraction.FollowupAsync(
                 embed: GenerateErrorEmbed("An unknown error occurred while getting the lyrics. 😥").Build(),
-                components: GenerateRemoveComponent().Build()
+                components: GenerateRemoveComponent().Build(),
+                ephemeral: isEphemeral
             );
 
             activity?.SetStatus(ActivityStatusCode.Error);
@@ -226,7 +240,8 @@ public partial class LyricsAnalyzerCommandModule
 
             await componentInteraction.FollowupAsync(
                 embed: GenerateErrorEmbed("An unknown error occurred while analyzing the lyrics. 😥").Build(),
-                components: GenerateRemoveComponent().Build()
+                components: GenerateRemoveComponent().Build(),
+                ephemeral: isEphemeral
             );
 
             activity?.SetStatus(ActivityStatusCode.Error);
@@ -250,7 +265,8 @@ public partial class LyricsAnalyzerCommandModule
             await componentInteraction.FollowupAsync(
                 text: lyricsAnalyzerResponse.GenerateText(),
                 embed: lyricsAnalyzerResponse.GenerateEmbed().Build(),
-                components : lyricsAnalyzerResponse.GenerateComponent().Build()
+                components : lyricsAnalyzerResponse.GenerateComponent().Build(),
+                ephemeral: isEphemeral
             );
 
             if (lyricsAnalyzerConfig.RateLimitEnabled && !userIsOnRateLimitIgnoreList)
@@ -267,7 +283,8 @@ public partial class LyricsAnalyzerCommandModule
             _logger.LogError(ex, "Error sending response to Discord.");
             await componentInteraction.FollowupAsync(
                 embed: GenerateErrorEmbed("An error occurred while sending the response. 😥").Build(),
-                components: GenerateRemoveComponent().Build()
+                components: GenerateRemoveComponent().Build(),
+                ephemeral: isEphemeral
             );
 
             activity?.SetStatus(ActivityStatusCode.Error);
