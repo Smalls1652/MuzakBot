@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 
 using MuzakBot.App.Extensions;
 using MuzakBot.App.Handlers;
+using MuzakBot.App.Models.Responses;
 using MuzakBot.App.Services;
 using MuzakBot.Lib;
 using MuzakBot.Lib.Models.AppleMusic;
@@ -301,36 +302,37 @@ public partial class LyricsAnalyzerCommandModule
             return;
         }
 
-        // Build the response.
-        StringBuilder lyricsResponseBuilder = new($"# \"{songName}\" by _{artistName}_\n\n");
+        LyricsAnalyzerItem lyricsAnalyzerItem = new(
+            artistName: artistName,
+            songName: songName,
+            promptStyle: promptStyle.ShortName
+        );
 
-        lyricsResponseBuilder.AppendLine($"## {promptStyle.AnalysisType}\n\n");
-
-        string[] analysisLines = openAiChatCompletion.Choices[0].Message.Content.Split(Environment.NewLine);
-
-        for (int i = 0; i < analysisLines.Length; i++)
+        // Save the lyrics analyzer item to the database.
+        using (var dbContext = _songLyricsDbContextFactory.CreateDbContext())
         {
-            if (i == analysisLines.Length - 1 && string.IsNullOrEmpty(analysisLines[i]))
-            {
-                break;
-            }
+            dbContext.LyricsAnalyzerItems.Add(lyricsAnalyzerItem);
 
-            lyricsResponseBuilder.AppendLine($"> {analysisLines[i]}");
+            await dbContext.SaveChangesAsync();
         }
 
-        EmbedBuilder embedBuilder = new EmbedBuilder()
-            .WithTitle("⚠️ Note")
-            .WithDescription(promptStyle.NoticeText)
-            .WithColor(Color.DarkTeal)
-            .WithFooter("(Powered by OpenAI's GPT-4)");
+        // Build the response.
+        LyricsAnalyzerResponse lyricsAnalyzerResponse = new(
+            artistName: artistName,
+            songName: songName,
+            openAiChatCompletion: openAiChatCompletion,
+            promptStyle: promptStyle,
+            responseId: lyricsAnalyzerItem.Id
+        );
 
         // Send the response to Discord.
         _logger.LogInformation("Sending response to Discord.");
         try
         {
             await FollowupAsync(
-                text: lyricsResponseBuilder.ToString(),
-                embed: embedBuilder.Build(),
+                text: lyricsAnalyzerResponse.GenerateText(),
+                embed: lyricsAnalyzerResponse.GenerateEmbed().Build(),
+                components : lyricsAnalyzerResponse.GenerateComponent().Build(),
                 ephemeral: isPrivateResponse
             );
 

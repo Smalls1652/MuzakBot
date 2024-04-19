@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MuzakBot.Database;
 
@@ -10,9 +11,11 @@ using MuzakBot.Database;
 namespace MuzakBot.Database.Migrations
 {
     [DbContext(typeof(SongLyricsDbContext))]
-    partial class SongLyricsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240419011819_AddLyricsAnalyzerItems")]
+    partial class AddLyricsAnalyzerItems
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.4");
@@ -33,6 +36,8 @@ namespace MuzakBot.Database.Migrations
                         .HasAnnotation("Relational:JsonPropertyName", "artistName");
 
                     b.Property<DateTimeOffset>("CreatedAt")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("TEXT")
                         .HasColumnName("createdAt")
                         .HasAnnotation("Cosmos:PropertyName", "createdAt")

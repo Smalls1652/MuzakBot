@@ -26,12 +26,18 @@ public class SongLyricsDbContext : DbContext
     /// </summary>
     public DbSet<SongLyricsRequestJob> SongLyricsRequestJobs { get; set; } = null!;
 
+    /// <summary>
+    /// <see cref="LyricsAnalyzerItem"/> items in the database.
+    /// </summary>
+    public DbSet<LyricsAnalyzerItem> LyricsAnalyzerItems { get; set; } = null!;
+
     /// <inheritdoc/>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
             .CreateSongLyricsItemModel()
-            .CreateSongLyricsRequestJobModel();
+            .CreateSongLyricsRequestJobModel()
+            .CreateLyricsAnalyzerItemModel();
     }    
 }
 
@@ -143,6 +149,50 @@ internal static class SongLyricsDbContext_ModelBuilderExtensions
                 .Property(e => e.SongLyricsItemId)
                 .HasColumnName("songLyricsItemId")
                 .ToJsonProperty("songLyricsItemId");
+        });
+
+        return modelBuilder;
+    }
+
+    public static ModelBuilder CreateLyricsAnalyzerItemModel(this ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<LyricsAnalyzerItem>(entity =>
+        {
+            entity.ToTable("lyrics_analyzer_items");
+            entity.ToContainer("lyrics_analyzer_items");
+
+            entity.HasKey(e => e.Id);
+            entity.HasPartitionKey(e => e.PartitionKey);
+
+            entity
+                .Property(e => e.Id)
+                .HasColumnName("id")
+                .ToJsonProperty("id");
+
+            entity
+                .Property(e => e.PartitionKey)
+                .HasColumnName("partitionKey")
+                .ToJsonProperty("partitionKey");
+
+            entity
+                .Property(e => e.ArtistName)
+                .HasColumnName("artistName")
+                .ToJsonProperty("artistName");
+
+            entity
+                .Property(e => e.SongName)
+                .HasColumnName("songName")
+                .ToJsonProperty("songName");
+
+            entity
+                .Property(e => e.PromptStyle)
+                .HasColumnName("promptStyle")
+                .ToJsonProperty("promptStyle");
+
+            entity
+                .Property(e => e.CreatedAt)
+                .HasColumnName("createdAt")
+                .ToJsonProperty("createdAt");
         });
 
         return modelBuilder;
