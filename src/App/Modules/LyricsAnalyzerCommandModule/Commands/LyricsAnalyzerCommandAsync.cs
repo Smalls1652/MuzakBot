@@ -270,27 +270,17 @@ public partial class LyricsAnalyzerCommandModule
         }
 
         _logger.LogInformation("Analyzing lyrics for '{SongName}' by '{ArtistName}' with OpenAI.", songName, artistName);
-        OpenAiChatCompletion? openAiChatCompletion;
+        OpenAiChatCompletion openAiChatCompletion;
         try
         {
-            openAiChatCompletion = await _openAiService.GetLyricAnalysisAsync(
-                artistName: artistName,
-                songName: songName,
-                lyrics: lyrics,
-                promptStyle: promptStyle,
-                parentActivityId: activity?.Id
-            );
-
-            if (openAiChatCompletion is null || openAiChatCompletion.Choices is null || openAiChatCompletion.Choices.Length == 0)
-            {
-                throw new NullReferenceException("The response from the OpenAI API was null.");
-            }
+            openAiChatCompletion = await RunLyricsAnalysisAsync(artistName, songName, lyrics, promptStyle, activity?.Id);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error getting lyric analysis for song '{songId}'.", songName);
+
             await FollowupAsync(
-                embed: GenerateErrorEmbed("An error occurred while analyzing the lyrics. 😥").Build(),
+                embed: GenerateErrorEmbed("An unknown error occurred while analyzing the lyrics. 😥").Build(),
                 components: GenerateRemoveComponent().Build(),
                 ephemeral: isPrivateResponse
             );
