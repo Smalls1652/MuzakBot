@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using MuzakBot.App.Extensions;
 using MuzakBot.App.Handlers;
 using MuzakBot.App.Services;
+using MuzakBot.Lib;
 using MuzakBot.Lib.Models.AppleMusic;
 using MuzakBot.Lib.Models.Database.LyricsAnalyzer;
 using MuzakBot.Lib.Models.Genius;
@@ -206,33 +207,17 @@ public partial class LyricsAnalyzerCommandModule
         string artistName = artist.Attributes!.Name;
         string songName = song.Attributes!.Name;
 
-        string lyrics = string.Empty;
-        bool isSongLyricsItemInDb = false;
+        string lyrics;
         try
         {
-            _logger.LogInformation("Attempting to get song lyrics for '{SongName}' by '{ArtistName}' from the database.", songName, artistName);
-
-            using (var songLyricsDbContext = _songLyricsDbContextFactory.CreateDbContext())
-            {
-                SongLyricsItem dbResponse = await songLyricsDbContext.SongLyricsItems
-                    .FirstOrDefaultAsync(item => item.ArtistName == artistName && item.SongName == songName)
-                    ?? throw new NullReferenceException("Song lyrics item not found in database.");
-
-                lyrics = dbResponse.Lyrics;
-
-                isSongLyricsItemInDb = true;
-            }
+            lyrics = await GetSongLyricsAsync(artistName, songName, activity?.Id);
         }
-        catch (NullReferenceException)
+        catch (LyricsAnalyzerDbException ex)
         {
-            _logger.LogInformation("Song lyrics for '{SongName}' by '{ArtistName}' not found in database. Will attempt to get them from the internet.", songName, artistName);
-            isSongLyricsItemInDb = false;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error getting song lyrics item from Cosmos DB.");
+            _logger.LogError(ex, "Error getting song lyrics for '{SongName}' by '{ArtistName}' from the database.", songName, artistName);
+
             await FollowupAsync(
-                embed: GenerateErrorEmbed("An error occurred while getting the song lyrics. 😥").Build(),
+                embed: GenerateErrorEmbed("An error occurred while getting the lyrics. 😥").Build(),
                 components: GenerateRemoveComponent().Build(),
                 ephemeral: isPrivateResponse
             );
@@ -241,151 +226,47 @@ public partial class LyricsAnalyzerCommandModule
 
             return;
         }
-
-        if (!isSongLyricsItemInDb)
+        catch (GeniusApiException ex)
         {
-            _logger.LogInformation("Searching for '{SongName}' by '{ArtistName}' on Genius.", songName, artistName);
-            GeniusApiResponse<GeniusSearchResult>? geniusSearchResult = await _geniusApiService.SearchAsync(artistName, songName, activity?.Id);
+            _logger.LogError(ex, "Error getting song lyrics for '{SongName}' by '{ArtistName}' from Genius.", songName, artistName);
 
-            if (geniusSearchResult is null || geniusSearchResult.Response is null || geniusSearchResult.Response.Hits is null || geniusSearchResult.Response.Hits.Length == 0)
-            {
-                await FollowupAsync(
-                    embed: GenerateErrorEmbed("An error occurred while searching for the song. 😥").Build(),
-                    components: GenerateRemoveComponent().Build(),
-                    ephemeral: isPrivateResponse
-                );
-
-                activity?.SetStatus(ActivityStatusCode.Error);
-
-                return;
-            }
-
-            GeniusSearchResultHitItem? songResultItem = geniusSearchResult.Response.Hits.FirstOrDefault(item => item.Type == "song" && item.Result is not null && item.Result.LyricsState == "complete");
-
-            if (songResultItem is null)
-            {
-                await FollowupAsync(
-                    embed: GenerateErrorEmbed("No results were found.").Build(),
-                    components: GenerateRemoveComponent().Build(),
-                    ephemeral: isPrivateResponse
-                );
-
-                activity?.SetStatus(ActivityStatusCode.Error);
-
-                return;
-            }
-
-            _logger.LogInformation("Getting lyrics for '{SongName}' by '{ArtistName}' from Genius.", songName, artistName);
-
-            SongLyricsRequestMessage songLyricsRequestMessage = new()
-            {
-                JobId = Guid.NewGuid().ToString(),
-                ArtistName = artistName,
-                SongTitle = songName,
-                GeniusUrl = songResultItem.Result!.Url!
-            };
-
-            SongLyricsRequestJob songLyricsRequestJob;
-            using (var songLyricsDbContext = _songLyricsDbContextFactory.CreateDbContext())
-            {
-                songLyricsRequestJob = new(songLyricsRequestMessage);
-
-                await songLyricsDbContext.SongLyricsRequestJobs.AddAsync(songLyricsRequestJob);
-                await songLyricsDbContext.SaveChangesAsync();
-            }
-
-            string songLyricsRequestJson = JsonSerializer.Serialize(
-                value: songLyricsRequestMessage,
-                jsonTypeInfo: QueueMessageJsonContext.Default.SongLyricsRequestMessage
+            await FollowupAsync(
+                embed: GenerateErrorEmbed("Could not find lyrics for the song on Genius. 😥").Build(),
+                components: GenerateRemoveComponent().Build(),
+                ephemeral: isPrivateResponse
             );
 
-            string songLyricsRequestJsonBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(songLyricsRequestJson));
+            activity?.SetStatus(ActivityStatusCode.Error);
 
-            var requestJobQueueResponse = await _queueClientService.QueueClient.SendMessageAsync(songLyricsRequestJsonBase64);
+            return;
+        }
+        catch (SongRequestJobException ex)
+        {
+            _logger.LogError(ex, "Error getting song lyrics for '{SongName}' by '{ArtistName}'.", songName, artistName);
 
-            await Task.Delay(5000);
-            bool isSongLyricsJobFinished = false;
-            bool fallbackMethodNeeded = false;
+            await FollowupAsync(
+                embed: GenerateErrorEmbed("An error occurred while getting the lyrics. 😥").Build(),
+                components: GenerateRemoveComponent().Build(),
+                ephemeral: isPrivateResponse
+            );
 
-            while (!isSongLyricsJobFinished)
-            {
-                using (var songLyricsDbContext = _songLyricsDbContextFactory.CreateDbContext())
-                {
-                    SongLyricsRequestJob songLyricsRequestJobStatus = await songLyricsDbContext.SongLyricsRequestJobs.FirstAsync(item => item.Id == songLyricsRequestJob.Id);
+            activity?.SetStatus(ActivityStatusCode.Error);
 
-                    if (!songLyricsRequestJobStatus.StandaloneServiceAcknowledged)
-                    {
-                        _logger.LogWarning("Standalone service has not acknowledged the request. Continuing with the fallback method instead.");
+            return;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An unknown error occurred while getting song lyrics for '{SongName}' by '{ArtistName}'.", songName, artistName);
 
-                        await _queueClientService.QueueClient.DeleteMessageAsync(
-                            messageId: requestJobQueueResponse.Value.MessageId,
-                            popReceipt: requestJobQueueResponse.Value.PopReceipt
-                        );
+            await FollowupAsync(
+                embed: GenerateErrorEmbed("An unknown error occurred while getting the lyrics. 😥").Build(),
+                components: GenerateRemoveComponent().Build(),
+                ephemeral: isPrivateResponse
+            );
 
-                        fallbackMethodNeeded = true;
-                        isSongLyricsJobFinished = true;
-                    }
+            activity?.SetStatus(ActivityStatusCode.Error);
 
-                    if (songLyricsRequestJobStatus.FallbackMethodNeeded)
-                    {
-                        _logger.LogWarning("Fallback method is needed. Continuing with the fallback method instead.");
-                        fallbackMethodNeeded = true;
-                        isSongLyricsJobFinished = true;
-                    }
-
-                    if (songLyricsRequestJobStatus.IsCompleted)
-                    {
-                        SongLyricsItem songLyricsItemByJob = await songLyricsDbContext.SongLyricsItems.FirstAsync(item => item.Id == songLyricsRequestJobStatus.SongLyricsItemId!);
-
-                        lyrics = songLyricsItemByJob.Lyrics;
-                        isSongLyricsJobFinished = true;
-                    }
-                }
-            }
-
-            using (var songLyricsDbContext = _songLyricsDbContextFactory.CreateDbContext())
-            {
-                songLyricsDbContext.SongLyricsRequestJobs.Remove(songLyricsRequestJob);
-                await songLyricsDbContext.SaveChangesAsync();
-            }
-
-            if (fallbackMethodNeeded)
-            {
-                try
-                {
-                    lyrics = await _geniusApiService.GetLyricsAsync(songResultItem.Result!.Url!, activity?.Id);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Error getting lyrics for song '{songId}'.", songName);
-                    await FollowupAsync(
-                        embed: GenerateErrorEmbed("An error occurred while getting the lyrics. 😥").Build(),
-                        components: GenerateRemoveComponent().Build(),
-                        ephemeral: isPrivateResponse
-                    );
-
-                    activity?.SetStatus(ActivityStatusCode.Error);
-
-                    return;
-                }
-
-                using (var songLyricsDbContext = _songLyricsDbContextFactory.CreateDbContext())
-                {
-                    await songLyricsDbContext.SongLyricsItems.AddAsync(
-                        new(
-                            artistName: artistName,
-                            songName: songName,
-                            lyrics: lyrics
-                        )
-                    );
-
-                    _logger.LogInformation("Adding lyrics for '{SongName}' by '{ArtistName}' to database.", songName, artistName);
-                    await songLyricsDbContext.SaveChangesAsync();
-                }
-            }
-
-            
-            //await _cosmosDbService.AddOrUpdateSongLyricsItemAsync(new(artistName, songName, lyrics), activity?.Id);
+            return;
         }
 
         _logger.LogInformation("Analyzing lyrics for '{SongName}' by '{ArtistName}' with OpenAI.", songName, artistName);
