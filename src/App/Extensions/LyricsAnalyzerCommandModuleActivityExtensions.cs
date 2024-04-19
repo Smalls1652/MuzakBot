@@ -16,12 +16,12 @@ internal static class LyricsAnalyzerCommandModuleActivityExtensions
     /// <param name="songName">The name of the song.</param>
     /// <param name="context">The <see cref="IInteractionContext"/> for the request.</param>
     /// <returns>The started activity.</returns>
-    public static Activity? StartHandleLyricsAnalyzerAsyncActivity(this ActivitySource activitySource, string artistName, string songName, IInteractionContext context)
+    public static Activity? StartLyricsAnalyzerCommandAsyncActivity(this ActivitySource activitySource, string artistName, string songName, IInteractionContext context)
     {
         if (context.Interaction.IsDMInteraction)
         {
             return activitySource.StartActivity(
-                name: "HandleLyricsAnalyzerAsync",
+                name: "LyricsAnalyzerCommandAsync",
                 kind: ActivityKind.Server,
                 tags: new ActivityTagsCollection
                 {
@@ -37,7 +37,7 @@ internal static class LyricsAnalyzerCommandModuleActivityExtensions
         else
         {
             return activitySource.StartActivity(
-                name: "HandleLyricsAnalyzerAsync",
+                name: "LyricsAnalyzerCommandAsync",
                 kind: ActivityKind.Server,
                 tags: new ActivityTagsCollection
                 {

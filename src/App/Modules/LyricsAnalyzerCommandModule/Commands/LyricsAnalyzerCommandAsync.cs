@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using MuzakBot.App.Extensions;
 using MuzakBot.App.Handlers;
 using MuzakBot.App.Services;
+using MuzakBot.Lib;
 using MuzakBot.Lib.Models.AppleMusic;
 using MuzakBot.Lib.Models.Database.LyricsAnalyzer;
 using MuzakBot.Lib.Models.Genius;
@@ -37,7 +38,7 @@ public partial class LyricsAnalyzerCommandModule
         name: "lyricsanalyzer",
         description: "Get an analysis of the lyrics of a song"
     )]
-    private async Task HandleLyricsAnalyzerAsync(
+    private async Task LyricsAnalyzerCommandAsync(
         [Summary("artistName", "The name of an artist"),
          Autocomplete(typeof(AppleMusicArtistAutoCompleteHandler))
         ]
@@ -53,12 +54,13 @@ public partial class LyricsAnalyzerCommandModule
         bool isPrivateResponse = false
     )
     {
-        using var activity = _activitySource.StartHandleLyricsAnalyzerAsyncActivity(artistId, songId, Context);
+        using var activity = _activitySource.StartLyricsAnalyzerCommandAsyncActivity(artistId, songId, Context);
 
         await DeferAsync(
             ephemeral: isPrivateResponse
         );
 
+        // Get the lyrics analyzer config from the database.
         _logger.LogInformation("Getting lyrics analyzer config from database.");
         LyricsAnalyzerConfig lyricsAnalyzerConfig;
         try
@@ -79,7 +81,7 @@ public partial class LyricsAnalyzerCommandModule
             return;
         }
 
-
+        // Check if the command is enabled for the current server.
         if (!Context.Interaction.IsDMInteraction && lyricsAnalyzerConfig.CommandIsEnabledToSpecificGuilds && lyricsAnalyzerConfig.CommandEnabledGuildIds is not null && !lyricsAnalyzerConfig.CommandEnabledGuildIds.Contains(Context.Guild.Id))
         {
             await FollowupAsync(
@@ -91,6 +93,7 @@ public partial class LyricsAnalyzerCommandModule
             return;
         }
 
+        // Check if the command is disabled for the current server.
         if (!Context.Interaction.IsDMInteraction && !lyricsAnalyzerConfig.CommandIsEnabledToSpecificGuilds && lyricsAnalyzerConfig.CommandDisabledGuildIds is not null && lyricsAnalyzerConfig.CommandDisabledGuildIds.Contains(Context.Guild.Id))
         {
             await FollowupAsync(
@@ -102,8 +105,10 @@ public partial class LyricsAnalyzerCommandModule
             return;
         }
 
+        // Check if the current user is on the rate limit ignore list.
         bool userIsOnRateLimitIgnoreList = lyricsAnalyzerConfig.RateLimitIgnoredUserIds is not null && lyricsAnalyzerConfig.RateLimitIgnoredUserIds.Contains(Context.User.Id.ToString());
 
+        // Get the current rate limit for the user.
         LyricsAnalyzerUserRateLimit? lyricsAnalyzerUserRateLimit = null;
         if (lyricsAnalyzerConfig.RateLimitEnabled && !userIsOnRateLimitIgnoreList)
         {
@@ -112,6 +117,7 @@ public partial class LyricsAnalyzerCommandModule
 
             _logger.LogInformation("Current rate limit for user '{UserId}' is {CurrentRequestCount}/{MaxRequests}.", Context.User.Id, lyricsAnalyzerUserRateLimit.CurrentRequestCount, lyricsAnalyzerConfig.RateLimitMaxRequests);
 
+            // If the user has reached the rate limit, send a message and return.
             if (!lyricsAnalyzerUserRateLimit.EvaluateRequest(lyricsAnalyzerConfig.RateLimitMaxRequests))
             {
                 _logger.LogInformation("User '{UserId}' has reached the rate limit.", Context.User.Id);
@@ -132,17 +138,32 @@ public partial class LyricsAnalyzerCommandModule
             }
         }
 
-        LyricsAnalyzerPromptStyle? promptStyle;
-
+        // Get the prompt style from the database.
+        LyricsAnalyzerPromptStyle promptStyle;
         try
         {
-            promptStyle = await _cosmosDbService.GetLyricsAnalyzerPromptStyleAsync(promptMode, activity?.Id);
+            promptStyle = await GetPromptStyleAsync(promptMode, activity?.Id);
+        }
+        catch (NullReferenceException ex)
+        {
+            _logger.LogError(ex, "Error getting prompt style '{PromptMode}' from database.", promptMode);
+
+            await FollowupAsync(
+                embed: GenerateErrorEmbed("The requested prompt style does not exist. 😥").Build(),
+                components: GenerateRemoveComponent().Build(),
+                ephemeral: isPrivateResponse
+            );
+
+            activity?.SetStatus(ActivityStatusCode.Error);
+
+            return;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error getting prompt style from database.");
+            _logger.LogError(ex, "Error getting prompt style '{PromptMode}' from database.", promptMode);
+
             await FollowupAsync(
-                embed: GenerateErrorEmbed("An error occurred while getting the prompt style. 😥").Build(),
+                embed: GenerateErrorEmbed("An unknown error occurred while getting the prompt style. 😥").Build(),
                 components: GenerateRemoveComponent().Build(),
                 ephemeral: isPrivateResponse
             );
@@ -152,19 +173,7 @@ public partial class LyricsAnalyzerCommandModule
             return;
         }
 
-        if (promptStyle is null)
-        {
-            await FollowupAsync(
-                embed: GenerateErrorEmbed("An error occurred while getting the prompt style. 😥").Build(),
-                components: GenerateRemoveComponent().Build(),
-                ephemeral: isPrivateResponse
-            );
-
-            activity?.SetStatus(ActivityStatusCode.Error);
-
-            return;
-        }
-
+        // Get data about the artist from the Apple Music API.
         Artist artist;
         try
         {
@@ -184,6 +193,7 @@ public partial class LyricsAnalyzerCommandModule
             return;
         }
 
+        // Get data about the song from the Apple Music API.
         Song song;
         try
         {
@@ -206,33 +216,60 @@ public partial class LyricsAnalyzerCommandModule
         string artistName = artist.Attributes!.Name;
         string songName = song.Attributes!.Name;
 
-        string lyrics = string.Empty;
-        bool isSongLyricsItemInDb = false;
+        // Get the song lyrics.
+        string lyrics;
         try
         {
-            _logger.LogInformation("Attempting to get song lyrics for '{SongName}' by '{ArtistName}' from the database.", songName, artistName);
-
-            using (var songLyricsDbContext = _songLyricsDbContextFactory.CreateDbContext())
-            {
-                SongLyricsItem dbResponse = await songLyricsDbContext.SongLyricsItems
-                    .FirstOrDefaultAsync(item => item.ArtistName == artistName && item.SongName == songName)
-                    ?? throw new NullReferenceException("Song lyrics item not found in database.");
-
-                lyrics = dbResponse.Lyrics;
-
-                isSongLyricsItemInDb = true;
-            }
+            lyrics = await GetSongLyricsAsync(artistName, songName, activity?.Id);
         }
-        catch (NullReferenceException)
+        catch (LyricsAnalyzerDbException ex)
         {
-            _logger.LogInformation("Song lyrics for '{SongName}' by '{ArtistName}' not found in database. Will attempt to get them from the internet.", songName, artistName);
-            isSongLyricsItemInDb = false;
+            _logger.LogError(ex, "Error getting song lyrics for '{SongName}' by '{ArtistName}' from the database.", songName, artistName);
+
+            await FollowupAsync(
+                embed: GenerateErrorEmbed("An error occurred while getting the lyrics. 😥").Build(),
+                components: GenerateRemoveComponent().Build(),
+                ephemeral: isPrivateResponse
+            );
+
+            activity?.SetStatus(ActivityStatusCode.Error);
+
+            return;
+        }
+        catch (GeniusApiException ex)
+        {
+            _logger.LogError(ex, "Error getting song lyrics for '{SongName}' by '{ArtistName}' from Genius.", songName, artistName);
+
+            await FollowupAsync(
+                embed: GenerateErrorEmbed("Could not find lyrics for the song on Genius. 😥").Build(),
+                components: GenerateRemoveComponent().Build(),
+                ephemeral: isPrivateResponse
+            );
+
+            activity?.SetStatus(ActivityStatusCode.Error);
+
+            return;
+        }
+        catch (SongRequestJobException ex)
+        {
+            _logger.LogError(ex, "Error getting song lyrics for '{SongName}' by '{ArtistName}'.", songName, artistName);
+
+            await FollowupAsync(
+                embed: GenerateErrorEmbed("An error occurred while getting the lyrics. 😥").Build(),
+                components: GenerateRemoveComponent().Build(),
+                ephemeral: isPrivateResponse
+            );
+
+            activity?.SetStatus(ActivityStatusCode.Error);
+
+            return;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error getting song lyrics item from Cosmos DB.");
+            _logger.LogError(ex, "An unknown error occurred while getting song lyrics for '{SongName}' by '{ArtistName}'.", songName, artistName);
+
             await FollowupAsync(
-                embed: GenerateErrorEmbed("An error occurred while getting the song lyrics. 😥").Build(),
+                embed: GenerateErrorEmbed("An unknown error occurred while getting the lyrics. 😥").Build(),
                 components: GenerateRemoveComponent().Build(),
                 ephemeral: isPrivateResponse
             );
@@ -242,174 +279,19 @@ public partial class LyricsAnalyzerCommandModule
             return;
         }
 
-        if (!isSongLyricsItemInDb)
-        {
-            _logger.LogInformation("Searching for '{SongName}' by '{ArtistName}' on Genius.", songName, artistName);
-            GeniusApiResponse<GeniusSearchResult>? geniusSearchResult = await _geniusApiService.SearchAsync(artistName, songName, activity?.Id);
-
-            if (geniusSearchResult is null || geniusSearchResult.Response is null || geniusSearchResult.Response.Hits is null || geniusSearchResult.Response.Hits.Length == 0)
-            {
-                await FollowupAsync(
-                    embed: GenerateErrorEmbed("An error occurred while searching for the song. 😥").Build(),
-                    components: GenerateRemoveComponent().Build(),
-                    ephemeral: isPrivateResponse
-                );
-
-                activity?.SetStatus(ActivityStatusCode.Error);
-
-                return;
-            }
-
-            GeniusSearchResultHitItem? songResultItem = geniusSearchResult.Response.Hits.FirstOrDefault(item => item.Type == "song" && item.Result is not null && item.Result.LyricsState == "complete");
-
-            if (songResultItem is null)
-            {
-                await FollowupAsync(
-                    embed: GenerateErrorEmbed("No results were found.").Build(),
-                    components: GenerateRemoveComponent().Build(),
-                    ephemeral: isPrivateResponse
-                );
-
-                activity?.SetStatus(ActivityStatusCode.Error);
-
-                return;
-            }
-
-            _logger.LogInformation("Getting lyrics for '{SongName}' by '{ArtistName}' from Genius.", songName, artistName);
-
-            SongLyricsRequestMessage songLyricsRequestMessage = new()
-            {
-                JobId = Guid.NewGuid().ToString(),
-                ArtistName = artistName,
-                SongTitle = songName,
-                GeniusUrl = songResultItem.Result!.Url!
-            };
-
-            SongLyricsRequestJob songLyricsRequestJob;
-            using (var songLyricsDbContext = _songLyricsDbContextFactory.CreateDbContext())
-            {
-                songLyricsRequestJob = new(songLyricsRequestMessage);
-
-                await songLyricsDbContext.SongLyricsRequestJobs.AddAsync(songLyricsRequestJob);
-                await songLyricsDbContext.SaveChangesAsync();
-            }
-
-            string songLyricsRequestJson = JsonSerializer.Serialize(
-                value: songLyricsRequestMessage,
-                jsonTypeInfo: QueueMessageJsonContext.Default.SongLyricsRequestMessage
-            );
-
-            string songLyricsRequestJsonBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(songLyricsRequestJson));
-
-            var requestJobQueueResponse = await _queueClientService.QueueClient.SendMessageAsync(songLyricsRequestJsonBase64);
-
-            await Task.Delay(5000);
-            bool isSongLyricsJobFinished = false;
-            bool fallbackMethodNeeded = false;
-
-            while (!isSongLyricsJobFinished)
-            {
-                using (var songLyricsDbContext = _songLyricsDbContextFactory.CreateDbContext())
-                {
-                    SongLyricsRequestJob songLyricsRequestJobStatus = await songLyricsDbContext.SongLyricsRequestJobs.FirstAsync(item => item.Id == songLyricsRequestJob.Id);
-
-                    if (!songLyricsRequestJobStatus.StandaloneServiceAcknowledged)
-                    {
-                        _logger.LogWarning("Standalone service has not acknowledged the request. Continuing with the fallback method instead.");
-
-                        await _queueClientService.QueueClient.DeleteMessageAsync(
-                            messageId: requestJobQueueResponse.Value.MessageId,
-                            popReceipt: requestJobQueueResponse.Value.PopReceipt
-                        );
-
-                        fallbackMethodNeeded = true;
-                        isSongLyricsJobFinished = true;
-                    }
-
-                    if (songLyricsRequestJobStatus.FallbackMethodNeeded)
-                    {
-                        _logger.LogWarning("Fallback method is needed. Continuing with the fallback method instead.");
-                        fallbackMethodNeeded = true;
-                        isSongLyricsJobFinished = true;
-                    }
-
-                    if (songLyricsRequestJobStatus.IsCompleted)
-                    {
-                        SongLyricsItem songLyricsItemByJob = await songLyricsDbContext.SongLyricsItems.FirstAsync(item => item.Id == songLyricsRequestJobStatus.SongLyricsItemId!);
-
-                        lyrics = songLyricsItemByJob.Lyrics;
-                        isSongLyricsJobFinished = true;
-                    }
-                }
-            }
-
-            using (var songLyricsDbContext = _songLyricsDbContextFactory.CreateDbContext())
-            {
-                songLyricsDbContext.SongLyricsRequestJobs.Remove(songLyricsRequestJob);
-                await songLyricsDbContext.SaveChangesAsync();
-            }
-
-            if (fallbackMethodNeeded)
-            {
-                try
-                {
-                    lyrics = await _geniusApiService.GetLyricsAsync(songResultItem.Result!.Url!, activity?.Id);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Error getting lyrics for song '{songId}'.", songName);
-                    await FollowupAsync(
-                        embed: GenerateErrorEmbed("An error occurred while getting the lyrics. 😥").Build(),
-                        components: GenerateRemoveComponent().Build(),
-                        ephemeral: isPrivateResponse
-                    );
-
-                    activity?.SetStatus(ActivityStatusCode.Error);
-
-                    return;
-                }
-
-                using (var songLyricsDbContext = _songLyricsDbContextFactory.CreateDbContext())
-                {
-                    await songLyricsDbContext.SongLyricsItems.AddAsync(
-                        new(
-                            artistName: artistName,
-                            songName: songName,
-                            lyrics: lyrics
-                        )
-                    );
-
-                    _logger.LogInformation("Adding lyrics for '{SongName}' by '{ArtistName}' to database.", songName, artistName);
-                    await songLyricsDbContext.SaveChangesAsync();
-                }
-            }
-
-            
-            //await _cosmosDbService.AddOrUpdateSongLyricsItemAsync(new(artistName, songName, lyrics), activity?.Id);
-        }
-
+        // Analyze the lyrics with OpenAI.
         _logger.LogInformation("Analyzing lyrics for '{SongName}' by '{ArtistName}' with OpenAI.", songName, artistName);
-        OpenAiChatCompletion? openAiChatCompletion;
+        OpenAiChatCompletion openAiChatCompletion;
         try
         {
-            openAiChatCompletion = await _openAiService.GetLyricAnalysisAsync(
-                artistName: artistName,
-                songName: songName,
-                lyrics: lyrics,
-                promptStyle: promptStyle,
-                parentActivityId: activity?.Id
-            );
-
-            if (openAiChatCompletion is null || openAiChatCompletion.Choices is null || openAiChatCompletion.Choices.Length == 0)
-            {
-                throw new NullReferenceException("The response from the OpenAI API was null.");
-            }
+            openAiChatCompletion = await RunLyricsAnalysisAsync(artistName, songName, lyrics, promptStyle, activity?.Id);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error getting lyric analysis for song '{songId}'.", songName);
+
             await FollowupAsync(
-                embed: GenerateErrorEmbed("An error occurred while analyzing the lyrics. 😥").Build(),
+                embed: GenerateErrorEmbed("An unknown error occurred while analyzing the lyrics. 😥").Build(),
                 components: GenerateRemoveComponent().Build(),
                 ephemeral: isPrivateResponse
             );
@@ -419,6 +301,7 @@ public partial class LyricsAnalyzerCommandModule
             return;
         }
 
+        // Build the response.
         StringBuilder lyricsResponseBuilder = new($"# \"{songName}\" by _{artistName}_\n\n");
 
         lyricsResponseBuilder.AppendLine($"## {promptStyle.AnalysisType}\n\n");
@@ -441,6 +324,7 @@ public partial class LyricsAnalyzerCommandModule
             .WithColor(Color.DarkTeal)
             .WithFooter("(Powered by OpenAI's GPT-4)");
 
+        // Send the response to Discord.
         _logger.LogInformation("Sending response to Discord.");
         try
         {
