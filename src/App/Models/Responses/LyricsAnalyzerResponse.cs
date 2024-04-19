@@ -19,12 +19,14 @@ public class LyricsAnalyzerResponse : IResponse
     /// <param name="songName">The name of the song.</param>
     /// <param name="openAiChatCompletion">The completion from OpenAI's chat API.</param>
     /// <param name="promptStyle">The style of the prompt used for the completion.</param>
-    public LyricsAnalyzerResponse(string artistName, string songName, OpenAiChatCompletion openAiChatCompletion, LyricsAnalyzerPromptStyle promptStyle)
+    /// <param name="responseId">The response ID.</param>
+    public LyricsAnalyzerResponse(string artistName, string songName, OpenAiChatCompletion openAiChatCompletion, LyricsAnalyzerPromptStyle promptStyle, string responseId)
     {
         ArtistName = artistName;
         SongName = songName;
         ChatCompletion = openAiChatCompletion;
         PromptStyle = promptStyle;
+        ResponseId = responseId;
     }
 
     /// <summary>
@@ -47,10 +49,24 @@ public class LyricsAnalyzerResponse : IResponse
     /// </summary>
     public LyricsAnalyzerPromptStyle PromptStyle { get; }
 
+    /// <summary>
+    /// The response ID.
+    /// </summary>
+    public string ResponseId { get; }
+
     /// <inheritdoc />
     public ComponentBuilder GenerateComponent()
     {
-        throw new NotImplementedException();
+        ComponentBuilder componentBuilder = new ComponentBuilder()
+            .WithButton(
+                label: "Regenerate",
+                style: ButtonStyle.Primary,
+                emote: new Emoji("🔄"),
+                customId: $"lyrics-analyzer-regenerate-{ResponseId}",
+                row: 0
+            );
+
+        return componentBuilder;
     }
 
     /// <inheritdoc />

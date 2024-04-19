@@ -302,19 +302,28 @@ public partial class LyricsAnalyzerCommandModule
             return;
         }
 
+        LyricsAnalyzerItem lyricsAnalyzerItem = new(
+            artistName: artistName,
+            songName: songName,
+            promptStyle: promptStyle.ShortName
+        );
+
+        // Save the lyrics analyzer item to the database.
+        using (var dbContext = _songLyricsDbContextFactory.CreateDbContext())
+        {
+            dbContext.LyricsAnalyzerItems.Add(lyricsAnalyzerItem);
+
+            await dbContext.SaveChangesAsync();
+        }
+
         // Build the response.
         LyricsAnalyzerResponse lyricsAnalyzerResponse = new(
             artistName: artistName,
             songName: songName,
             openAiChatCompletion: openAiChatCompletion,
-            promptStyle: promptStyle
+            promptStyle: promptStyle,
+            responseId: lyricsAnalyzerItem.Id
         );
-
-        EmbedBuilder embedBuilder = new EmbedBuilder()
-            .WithTitle("⚠️ Note")
-            .WithDescription(promptStyle.NoticeText)
-            .WithColor(Color.DarkTeal)
-            .WithFooter("(Powered by OpenAI's GPT-4)");
 
         // Send the response to Discord.
         _logger.LogInformation("Sending response to Discord.");
@@ -323,6 +332,7 @@ public partial class LyricsAnalyzerCommandModule
             await FollowupAsync(
                 text: lyricsAnalyzerResponse.GenerateText(),
                 embed: lyricsAnalyzerResponse.GenerateEmbed().Build(),
+                components : lyricsAnalyzerResponse.GenerateComponent().Build(),
                 ephemeral: isPrivateResponse
             );
 
