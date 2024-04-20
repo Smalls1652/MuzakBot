@@ -24,7 +24,7 @@ public partial class ShareMusicCommandModule
         name: "findalbum",
         description: "Find an album from an artist"
     )]
-    private async Task HandleFindAlbumAsync(
+    private async Task FindAlbumCommandAsync(
         [Summary("artistName", "The name of an artist"),
          Autocomplete(typeof(AppleMusicArtistAutoCompleteHandler))
         ]
@@ -35,7 +35,7 @@ public partial class ShareMusicCommandModule
         string albumId
     )
     {
-        using var activity = _activitySource.StartHandleFindAlbumAsyncActivity(artistId, albumId, Context);
+        using var activity = _activitySource.StartFindAlbumCommandAsyncActivity(artistId, albumId, Context);
 
         try
         {
