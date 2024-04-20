@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 
 using MuzakBot.App.Extensions;
 using MuzakBot.App.Handlers;
+using MuzakBot.App.Models.Responses;
 using MuzakBot.Lib.Models.AppleMusic;
 using MuzakBot.Lib.Models.Itunes;
 using MuzakBot.Lib.Models.MusicBrainz;
@@ -24,7 +25,7 @@ public partial class ShareMusicCommandModule
         name: "findalbum",
         description: "Find an album from an artist"
     )]
-    private async Task HandleFindAlbumAsync(
+    private async Task FindAlbumCommandAsync(
         [Summary("artistName", "The name of an artist"),
          Autocomplete(typeof(AppleMusicArtistAutoCompleteHandler))
         ]
@@ -35,7 +36,7 @@ public partial class ShareMusicCommandModule
         string albumId
     )
     {
-        using var activity = _activitySource.StartHandleFindAlbumAsyncActivity(artistId, albumId, Context);
+        using var activity = _activitySource.StartFindAlbumCommandAsyncActivity(artistId, albumId, Context);
 
         try
         {
@@ -92,19 +93,14 @@ public partial class ShareMusicCommandModule
 
             _logger.LogInformation("Selected album '{albumName}' by '{artistName}'.", albumItem.Attributes!.Name, albumItem.Attributes!.ArtistName);
 
-            MusicEntityItem? musicEntityItem = null;
+            MusicEntityItem musicEntityItem;
             try
             {
-                musicEntityItem = await _odesliService.GetShareLinksAsync(albumItem.Attributes!.Url);
-
-                if (musicEntityItem is null)
-                {
-                    throw new Exception("No share links found.");
-                }
+                musicEntityItem = await GetMusicEntityItemAsync(albumItem.Attributes!.Url);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                _logger.LogError(e, "No share links found for '{url}'.", albumItem.Attributes!.Url);
+                _logger.LogError(ex, "No share links found for '{url}'.", albumItem.Attributes!.Url);
                 await FollowupAsync(
                     embed: GenerateErrorEmbed("No share links were found. 😥").Build(),
                     components: GenerateRemoveComponent().Build()
@@ -115,59 +111,37 @@ public partial class ShareMusicCommandModule
                 return;
             }
 
-            PlatformEntityLink? platformEntityLink;
+            PlatformEntityLink platformEntityLink;
             try
             {
-                platformEntityLink = musicEntityItem.LinksByPlatform!["itunes"];
+                platformEntityLink = GetPlatformEntityLink(musicEntityItem);
             }
-            catch
+            catch (Exception ex)
             {
-                /*
-                    Temporary fix:
-                    
-                    Amazon is being excluded from the fallback for the time being,
-                    because the "apiProvider" value doesn't cleanly match it's platform
-                    entity link key.
-                */
-                var streamingEntityWithThumbnailUrl = musicEntityItem.EntitiesByUniqueId!.FirstOrDefault(entity => entity.Value.ThumbnailUrl is not null && entity.Value.ApiProvider != "amazon").Value.ApiProvider;
+                _logger.LogError(ex, "Could not get all of the necessary data for '{url}'.", albumItem.Attributes.Url);
+                await FollowupAsync(
+                    embed: GenerateErrorEmbed("I was unable to get the necessary information from Odesli. 😥").Build(),
+                    components: GenerateRemoveComponent().Build()
+                );
 
-                if (!string.IsNullOrEmpty(streamingEntityWithThumbnailUrl))
-                {
-                    platformEntityLink = musicEntityItem.LinksByPlatform![streamingEntityWithThumbnailUrl];
-                }
-                else
-                {
-                    _logger.LogError("Could get all of the necessary data for '{url}'.", albumItem.Attributes.Url);
-                    await FollowupAsync(
-                        embed: GenerateErrorEmbed("I was unable to get the necessary information from Odesli. 😥").Build(),
-                        components: GenerateRemoveComponent().Build()
-                    );
+                activity?.SetStatus(ActivityStatusCode.Error);
 
-                    activity?.SetStatus(ActivityStatusCode.Error);
-
-                    return;
-                }
+                return;
             }
 
             StreamingEntityItem streamingEntityItem = musicEntityItem.EntitiesByUniqueId![platformEntityLink.EntityUniqueId!];
             using var albumArtStream = await GetAlbumArtStreamAsync(streamingEntityItem);
 
-            var linksComponentBuilder = GenerateMusicShareComponent(musicEntityItem);
-
-            string uniqueFileName = Guid.NewGuid().ToString();
-
-            var messageEmbed = new EmbedBuilder()
-                .WithTitle(streamingEntityItem.Title)
-                .WithDescription($"by {streamingEntityItem.ArtistName}")
-                .WithColor(Color.DarkBlue)
-                .WithImageUrl($"attachment://{uniqueFileName}.jpg")
-                .WithFooter("(Powered by Songlink/Odesli)");
+            ShareMusicResponse shareMusicResponse = new(
+                musicEntity: musicEntityItem,
+                streamingEntity: streamingEntityItem
+            );
 
             await FollowupWithFileAsync(
-                embed: messageEmbed.Build(),
+                embed: shareMusicResponse.GenerateEmbed().Build(),
                 fileStream: albumArtStream,
-                fileName: $"{uniqueFileName}.jpg",
-                components: linksComponentBuilder.Build()
+                fileName: $"{shareMusicResponse.Id}.jpg",
+                components: shareMusicResponse.GenerateComponent().Build()
             );
         }
         finally
