@@ -85,10 +85,10 @@ internal static class ShareMusicCommandModuleActivityExtensions
     /// <param name="inputUrl">The input URL.</param>
     /// <param name="context">The interaction context.</param>
     /// <returns>The started activity.</returns>
-    public static Activity? StartHandleMusicShareAsyncActivity(this ActivitySource activitySource, string inputUrl, IInteractionContext context)
+    public static Activity? StartShareMusicCommandAsyncActivity(this ActivitySource activitySource, string inputUrl, IInteractionContext context)
     {
         return activitySource.StartActivity(
-            name: "HandleMusicShareAsync",
+            name: "ShareMusicCommandAsync",
             kind: ActivityKind.Server,
             tags: new ActivityTagsCollection
             {

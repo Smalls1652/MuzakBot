@@ -21,7 +21,7 @@ public partial class ShareMusicCommandModule
         name: "sharemusic",
         description: "Get share links to a song or album on various streaming platforms."
     )]
-    private async Task HandleMusicShareAsync(
+    private async Task ShareMusicCommandAsync(
         [Summary(
             name: "url",
             description: "The URL, from a streaming service, of the song or album you want to share."
@@ -29,7 +29,7 @@ public partial class ShareMusicCommandModule
         string url
     )
     {
-        using var activity = _activitySource.StartHandleMusicShareAsyncActivity(url, Context);
+        using var activity = _activitySource.StartShareMusicCommandAsyncActivity(url, Context);
 
         try
         {
