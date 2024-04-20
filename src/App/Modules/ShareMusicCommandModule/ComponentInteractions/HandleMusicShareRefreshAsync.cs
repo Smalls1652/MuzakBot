@@ -4,6 +4,7 @@ using MuzakBot.App.Extensions;
 using MuzakBot.Lib.Models.Odesli;
 using MuzakBot.App.Services;
 using Microsoft.Extensions.Logging;
+using MuzakBot.App.Models.Responses;
 
 namespace MuzakBot.App.Modules;
 
@@ -32,12 +33,11 @@ public partial class ShareMusicCommandModule
         // Get the music entity item from Odesli.
         MusicEntityItem? musicEntityItem = await _odesliService.GetShareLinksAsync(url, activity?.Id);
 
-        // Generate the music share components.
-        ComponentBuilder linksComponentBuilder = GenerateMusicShareComponent(musicEntityItem!);
+        ShareMusicResponse shareMusicResponse = new(musicEntityItem!);
 
         // Modify the message with the updated components.
         await Context.Interaction.ModifyOriginalResponseAsync(
-            messageProps => messageProps.Components = linksComponentBuilder.Build()
+            messageProps => messageProps.Components = shareMusicResponse.GenerateComponent().Build()
         );
 
         _logger.LogInformation("Refreshed music share links for {url}", url);

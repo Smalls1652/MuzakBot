@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 
 using MuzakBot.App.Extensions;
 using MuzakBot.App.Handlers;
+using MuzakBot.App.Models.Responses;
 using MuzakBot.Lib.Models.AppleMusic;
 using MuzakBot.Lib.Models.Itunes;
 using MuzakBot.Lib.Models.MusicBrainz;
@@ -131,22 +132,16 @@ public partial class ShareMusicCommandModule
             StreamingEntityItem streamingEntityItem = musicEntityItem.EntitiesByUniqueId![platformEntityLink.EntityUniqueId!];
             using var albumArtStream = await GetAlbumArtStreamAsync(streamingEntityItem);
 
-            var linksComponentBuilder = GenerateMusicShareComponent(musicEntityItem);
-
-            string uniqueFileName = Guid.NewGuid().ToString();
-
-            var messageEmbed = new EmbedBuilder()
-                .WithTitle(streamingEntityItem.Title)
-                .WithDescription($"by {streamingEntityItem.ArtistName}")
-                .WithColor(Color.DarkBlue)
-                .WithImageUrl($"attachment://{uniqueFileName}.jpg")
-                .WithFooter("(Powered by Songlink/Odesli)");
+            ShareMusicResponse shareMusicResponse = new(
+                musicEntity: musicEntityItem,
+                streamingEntity: streamingEntityItem
+            );
 
             await FollowupWithFileAsync(
-                embed: messageEmbed.Build(),
+                embed: shareMusicResponse.GenerateEmbed().Build(),
                 fileStream: albumArtStream,
-                fileName: $"{uniqueFileName}.jpg",
-                components: linksComponentBuilder.Build()
+                fileName: $"{shareMusicResponse.Id}.jpg",
+                components: shareMusicResponse.GenerateComponent().Build()
             );
         }
         finally

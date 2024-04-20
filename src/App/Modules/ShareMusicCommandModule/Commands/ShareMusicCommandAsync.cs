@@ -3,6 +3,7 @@ using Discord;
 using Discord.Interactions;
 using Microsoft.Extensions.Logging;
 using MuzakBot.App.Extensions;
+using MuzakBot.App.Models.Responses;
 using MuzakBot.App.Services;
 using MuzakBot.Lib.Models.Odesli;
 
@@ -90,15 +91,16 @@ public partial class ShareMusicCommandModule
                 throw;
             }
 
-            var linksComponentBuilder = GenerateMusicShareComponent(musicEntityItem);
-
-            var messageEmbed = GenerateEmbedBuilder(streamingEntityItem);
+            ShareMusicResponse shareMusicResponse = new(
+                musicEntity: musicEntityItem,
+                streamingEntity: streamingEntityItem
+            );
 
             await FollowupWithFileAsync(
-                embed: messageEmbed.Build(),
+                embed: shareMusicResponse.GenerateEmbed().Build(),
                 fileStream: albumArtStream,
-                fileName: $"{streamingEntityItem.Id}.jpg",
-                components: linksComponentBuilder.Build()
+                fileName: $"{shareMusicResponse.Id}.jpg",
+                components: shareMusicResponse.GenerateComponent().Build()
             );
 
             await albumArtStream.DisposeAsync();
