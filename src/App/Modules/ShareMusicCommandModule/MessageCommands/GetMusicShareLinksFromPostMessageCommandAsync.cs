@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Text;
 using System.Text.RegularExpressions;
 using Discord;
@@ -22,9 +22,9 @@ public partial class ShareMusicCommandModule
     [MessageCommand(
         name: "Get music share links"
     )]
-    private async Task HandleGetLinksFromPostAsync(IMessage message)
+    private async Task GetMusicShareLinksFromPostMessageCommandAsync(IMessage message)
     {
-        using var activity = _activitySource.StartHandleGetLinksFromPostAsyncActivity(message, Context);
+        using var activity = _activitySource.StartGetMusicShareLinksFromPostMessageCommandAsyncActivity(message, Context);
 
         try
         {

@@ -65,10 +65,10 @@ internal static class ShareMusicCommandModuleActivityExtensions
     /// <param name="message">The message containing the post.</param>
     /// <param name="context">The interaction context.</param>
     /// <returns>The started activity.</returns>
-    public static Activity? StartHandleGetLinksFromPostAsyncActivity(this ActivitySource activitySource, IMessage message, IInteractionContext context)
+    public static Activity? StartGetMusicShareLinksFromPostMessageCommandAsyncActivity(this ActivitySource activitySource, IMessage message, IInteractionContext context)
     {
         return activitySource.StartActivity(
-            name: "HandleGetLinksFromPostAsync",
+            name: "GetMusicShareLinksFromPostMessageCommandAsync",
             kind: ActivityKind.Server,
             tags: new ActivityTagsCollection
             {
