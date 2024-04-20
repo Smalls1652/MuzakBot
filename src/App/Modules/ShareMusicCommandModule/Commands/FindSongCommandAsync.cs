@@ -21,7 +21,7 @@ public partial class ShareMusicCommandModule
         name: "findsong",
         description: "Find music from an artist"
     )]
-    private async Task HandleFindSongAsync(
+    private async Task FindSongCommandAsync(
         [Summary("artistName", "The name of an artist"),
          Autocomplete(typeof(AppleMusicArtistAutoCompleteHandler))
         ]
@@ -32,7 +32,7 @@ public partial class ShareMusicCommandModule
         string songId
     )
     {
-        using var activity = _activitySource.StartHandleFindSongAsyncActivity(artistId, songId, Context);
+        using var activity = _activitySource.StartFindSongCommandAsyncActivity(artistId, songId, Context);
 
         try
         {

@@ -43,10 +43,10 @@ internal static class ShareMusicCommandModuleActivityExtensions
     /// <param name="songId">The ID of the song.</param>
     /// <param name="context">The interaction context.</param>
     /// <returns>The started activity.</returns>
-    public static Activity? StartHandleFindSongAsyncActivity(this ActivitySource activitySource, string artistId, string songId, IInteractionContext context)
+    public static Activity? StartFindSongCommandAsyncActivity(this ActivitySource activitySource, string artistId, string songId, IInteractionContext context)
     {
         return activitySource.StartActivity(
-            name: "HandleFindSongAsync",
+            name: "FindSongCommandAsync",
             kind: ActivityKind.Server,
             tags: new ActivityTagsCollection
             {
