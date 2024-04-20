@@ -5,6 +5,7 @@ using Discord;
 using Discord.Interactions;
 using Microsoft.Extensions.Logging;
 using MuzakBot.App.Extensions;
+using MuzakBot.App.Models.Responses;
 using MuzakBot.App.Services;
 using MuzakBot.Lib.Models.Odesli;
 
@@ -109,10 +110,6 @@ public partial class ShareMusicCommandModule
                 throw;
             }
 
-            var linksComponentBuilder = GenerateMusicShareComponent(musicEntityItem);
-
-            var messageEmbed = GenerateEmbedBuilder(streamingEntityItem);
-
             StringBuilder messageBuilder = new();
 
             if (hasMultipleLinks)
@@ -121,13 +118,17 @@ public partial class ShareMusicCommandModule
                 messageBuilder.AppendLine("> There were multiple links found. Only showing the first one. 😰");
             }
 
+            ShareMusicResponse shareMusicResponse = new(
+                musicEntity: musicEntityItem,
+                streamingEntity: streamingEntityItem
+            );
+
             await FollowupWithFileAsync(
                 text: messageBuilder.ToString(),
-                embed: messageEmbed.Build(),
+                embed: shareMusicResponse.GenerateEmbed().Build(),
                 fileStream: albumArtStream,
-                fileName: $"{streamingEntityItem.Id}.jpg",
-                components: linksComponentBuilder.Build(),
-                ephemeral: true
+                fileName: $"{shareMusicResponse.Id}.jpg",
+                components: shareMusicResponse.GenerateComponent().Build()
             );
 
             albumArtStream.Dispose();
