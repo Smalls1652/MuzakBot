@@ -9,6 +9,7 @@ using MuzakBot.App.Extensions;
 using MuzakBot.App.Services;
 using MuzakBot.Database.Extensions;
 using MuzakBot.Database.Models;
+using MuzakBot.Hosting.Extensions;
 using MuzakBot.Lib.Services;
 using MuzakBot.Lib.Services.Extensions;
 
@@ -16,6 +17,9 @@ DateTimeOffset startTime = DateTimeOffset.UtcNow;
 Environment.SetEnvironmentVariable("APP_START_TIME", startTime.ToUnixTimeSeconds().ToString());
 
 var builder = Host.CreateApplicationBuilder(args);
+
+builder.Services
+    .AddSlimHostLifetime();
 
 builder.Services.AddMemoryCache();
 
