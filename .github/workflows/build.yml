@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        project: ["./src/App/", "./src/Database/", "./src/GeniusService/", "./src/Hosting/", "./src/Lib/", "./src/Lib.Services/" ]
+        project: ["./src/App/", "./src/GeniusService/" ]
     env:
       DOTNET_NOLOGO: true
     steps:
