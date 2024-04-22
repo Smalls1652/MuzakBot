@@ -24,7 +24,7 @@ builder.Configuration
 DatabaseConfig databaseConfig = builder.Configuration.GetDatabaseConfig();
 
 builder.Services
-    .AddSongLyricsDbContextFactory(databaseConfig);
+    .AddLyricsAnalyzerDbContextFactory(databaseConfig);
 
 var host = builder.Build();
 

@@ -105,7 +105,7 @@ public partial class LyricsAnalyzerCommandModule
         LyricsAnalyzerItem? lyricsAnalyzerItem;
         try
         {
-            using (var dbContext = _songLyricsDbContextFactory.CreateDbContext())
+            using (var dbContext = _lyricsAnalyzerDbContextFactory.CreateDbContext())
             {
                 lyricsAnalyzerItem = await dbContext.LyricsAnalyzerItems.FirstOrDefaultAsync(item => item.Id == responseId);
             }

@@ -42,7 +42,7 @@ builder.Configuration
 DatabaseConfig databaseConfig = builder.Configuration.GetDatabaseConfig();
 
 builder.Services
-    .AddSongLyricsDbContextFactory(databaseConfig);
+    .AddLyricsAnalyzerDbContextFactory(databaseConfig);
 
 builder.Services
     .AddSingleton<IBackgroundTaskQueue>(_ =>
@@ -71,7 +71,7 @@ builder.Services
 
 var app = builder.Build();
 
-await app.ApplySongLyricsDbContextMigrations();
+await app.ApplyLyricsAnalyzerDbContextMigrations();
 
 try
 {

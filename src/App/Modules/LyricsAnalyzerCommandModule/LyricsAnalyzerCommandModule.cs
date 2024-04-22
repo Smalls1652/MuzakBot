@@ -26,7 +26,7 @@ public partial class LyricsAnalyzerCommandModule : InteractionModuleBase<SocketI
     private readonly IGeniusApiService _geniusApiService;
     private readonly IOpenAiService _openAiService;
     private readonly ICosmosDbService _cosmosDbService;
-    private readonly IDbContextFactory<SongLyricsDbContext> _songLyricsDbContextFactory;
+    private readonly IDbContextFactory<LyricsAnalyzerDbContext> _lyricsAnalyzerDbContextFactory;
     private readonly IQueueClientService _queueClientService;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<LyricsAnalyzerCommandModule> _logger;
@@ -39,14 +39,14 @@ public partial class LyricsAnalyzerCommandModule : InteractionModuleBase<SocketI
     /// <param name="openAiService">The <see cref="IOpenAiService"/>.</param>
     /// <param name="httpClientFactory">The <see cref="IHttpClientFactory"/>.</param>
     /// <param name="logger">The logger.</param>
-    public LyricsAnalyzerCommandModule(IMusicBrainzService musicBrainzService, IAppleMusicApiService appleMusicApiService, IGeniusApiService geniusApiService, IOpenAiService openAiService, ICosmosDbService cosmosDbService, IDbContextFactory<SongLyricsDbContext> songLyricsDbContextFactory, IQueueClientService queueClientService, IHttpClientFactory httpClientFactory, ILogger<LyricsAnalyzerCommandModule> logger)
+    public LyricsAnalyzerCommandModule(IMusicBrainzService musicBrainzService, IAppleMusicApiService appleMusicApiService, IGeniusApiService geniusApiService, IOpenAiService openAiService, ICosmosDbService cosmosDbService, IDbContextFactory<LyricsAnalyzerDbContext> lyricsAnalyzerContextFactory, IQueueClientService queueClientService, IHttpClientFactory httpClientFactory, ILogger<LyricsAnalyzerCommandModule> logger)
     {
         _musicBrainzService = musicBrainzService;
         _appleMusicApiService = appleMusicApiService;
         _geniusApiService = geniusApiService;
         _openAiService = openAiService;
         _cosmosDbService = cosmosDbService;
-        _songLyricsDbContextFactory = songLyricsDbContextFactory;
+        _lyricsAnalyzerDbContextFactory = lyricsAnalyzerContextFactory;
         _queueClientService = queueClientService;
         _httpClientFactory = httpClientFactory;
         _logger = logger;

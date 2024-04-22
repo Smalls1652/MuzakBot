@@ -309,7 +309,7 @@ public partial class LyricsAnalyzerCommandModule
         );
 
         // Save the lyrics analyzer item to the database.
-        using (var dbContext = _songLyricsDbContextFactory.CreateDbContext())
+        using (var dbContext = _lyricsAnalyzerDbContextFactory.CreateDbContext())
         {
             dbContext.LyricsAnalyzerItems.Add(lyricsAnalyzerItem);
 

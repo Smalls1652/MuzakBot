@@ -90,7 +90,7 @@ builder.Services
     });
 
 builder.Services
-    .AddSongLyricsDbContextFactory(databaseConfig);
+    .AddLyricsAnalyzerDbContextFactory(databaseConfig);
 
 builder.Services
     .AddCosmosDbService(options =>
@@ -123,7 +123,7 @@ builder.Services.AddDiscordService(options =>
 using var host = builder.Build();
 
 await host
-    .ApplySongLyricsDbContextMigrations();
+    .ApplyLyricsAnalyzerDbContextMigrations();
 
 // Initialize the database and containers for the Cosmos DB service
 // before running the host.
