@@ -1,8 +1,11 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace MuzakBot.Lib.Models.Database.LyricsAnalyzer;
 
 /// <summary>
 /// Holds data for a user's rate limit for the lyrics analyzer.
 /// </summary>
+[Table("user_rate_limit")]
 public class LyricsAnalyzerUserRateLimit : DatabaseItem, ILyricsAnalyzerUserRateLimit
 {
     /// <summary>
@@ -46,18 +49,21 @@ public class LyricsAnalyzerUserRateLimit : DatabaseItem, ILyricsAnalyzerUserRate
     /// <summary>
     /// The user's ID.
     /// </summary>
+    [Column("userId")]
     [JsonPropertyName("userId")]
     public string UserId { get; set; } = null!;
 
     /// <summary>
     /// The current request count.
     /// </summary>
+    [Column("currentRequestCount")]
     [JsonPropertyName("currentRequestCount")]
     public int CurrentRequestCount { get; set; }
 
     /// <summary>
     /// The last request time.
     /// </summary>
+    [Column("lastRequestTime")]
     [JsonPropertyName("lastRequestTime")]
     public DateTimeOffset LastRequestTime { get; set; }
 
