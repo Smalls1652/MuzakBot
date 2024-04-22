@@ -34,12 +34,30 @@ public class SongLyricsDbContext : DbContext
     /// </summary>
     public DbSet<LyricsAnalyzerItem> LyricsAnalyzerItems { get; set; } = null!;
 
+    /// <summary>
+    /// <see cref="LyricsAnalyzerConfig"/> items in the database.
+    /// </summary>
+    public DbSet<LyricsAnalyzerConfig> LyricsAnalyzerConfigs { get; set; } = null!;
+
+    /// <summary>
+    /// <see cref="LyricsAnalyzerPromptStyle"/> items in the database.
+    /// </summary>
+    public DbSet<LyricsAnalyzerPromptStyle> LyricsAnalyzerPromptStyles { get; set; } = null!;
+
+    /// <summary>
+    /// <see cref="LyricsAnalyzerUserRateLimit"/> items in the database.
+    /// </summary>
+    public DbSet<LyricsAnalyzerUserRateLimit> LyricsAnalyzerUserRateLimits { get; set; } = null!;
+
     /// <inheritdoc/>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
             .CreateSongLyricsItemModel()
             .CreateSongLyricsRequestJobModel()
-            .CreateLyricsAnalyzerItemModel();
+            .CreateLyricsAnalyzerItemModel()
+            .CreateLyricsAnalyzerConfigModel()
+            .CreateLyricsAnalyzerPromptStyleModel()
+            .CreateLyricsAnalyzerUserRateLimitModel();
     }    
 }
