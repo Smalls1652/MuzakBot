@@ -125,8 +125,4 @@ using var host = builder.Build();
 await host
     .ApplyLyricsAnalyzerDbContextMigrations();
 
-// Initialize the database and containers for the Cosmos DB service
-// before running the host.
-await host.Services.GetRequiredService<ICosmosDbService>().InitializeDatabaseAsync();
-
 await host.RunAsync();
