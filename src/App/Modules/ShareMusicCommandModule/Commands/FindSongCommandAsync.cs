@@ -20,7 +20,7 @@ public partial class ShareMusicCommandModule
     [IntegrationType(ApplicationIntegrationType.UserInstall, ApplicationIntegrationType.GuildInstall)]
     [SlashCommand(
         name: "findsong",
-        description: "Find music from an artist"
+        description: "Get share links by searching for a song by an artist."
     )]
     private async Task FindSongCommandAsync(
         [Summary("artistName", "The name of an artist"),
