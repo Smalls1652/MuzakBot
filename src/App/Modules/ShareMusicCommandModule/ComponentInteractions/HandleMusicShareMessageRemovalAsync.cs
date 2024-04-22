@@ -18,7 +18,7 @@ public partial class ShareMusicCommandModule
     /// invoked by a user clicking the "Remove message" button on
     /// a failed share message.
     /// </remarks>
-    [ComponentInteraction(customId: "remove-sharemusic-post-btn-*")]
+    [ComponentInteraction(customId: "remove-sharemusic-post-btn-*", true)]
     private async Task HandleMusicShareMessageRemovalAsync()
     {
         using var activity = _activitySource.StartHandleMusicShareMessageRemovalAsyncActivity(Context);
