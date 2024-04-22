@@ -10,7 +10,7 @@ using MuzakBot.Database;
 
 namespace MuzakBot.Database.Migrations
 {
-    [DbContext(typeof(SongLyricsDbContext))]
+    [DbContext(typeof(LyricsAnalyzerDbContext))]
     [Migration("20240419013754_RemoveTimestampAnnotation_LyricsAnalyzerItem")]
     partial class RemoveTimestampAnnotation_LyricsAnalyzerItem
     {

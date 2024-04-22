@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 using MuzakBot.Database.Extensions;
 
@@ -10,13 +9,13 @@ namespace MuzakBot.Database;
 /// <summary>
 /// Database context for song lyrics.
 /// </summary>
-public class SongLyricsDbContext : DbContext
+public class LyricsAnalyzerDbContext : DbContext
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="SongLyricsDbContext"/> class.
+    /// Initializes a new instance of the <see cref="LyricsAnalyzerDbContext"/> class.
     /// </summary>
     /// <param name="options">The options for the database context.</param>
-    public SongLyricsDbContext(DbContextOptions<SongLyricsDbContext> options) : base(options)
+    public LyricsAnalyzerDbContext(DbContextOptions<LyricsAnalyzerDbContext> options) : base(options)
     {}
 
     /// <summary>

@@ -4,7 +4,7 @@ using MuzakBot.Lib.Models.Database.LyricsAnalyzer;
 
 namespace MuzakBot.Database.Extensions;
 
-internal static class SongLyricsDbContextModelBuilderExtensions
+internal static class LyricsAnalyzerDbContextModelBuilderExtensions
 {
     /// <summary>
     /// Creates the model for the <see cref="SongLyricsItem"/> class.

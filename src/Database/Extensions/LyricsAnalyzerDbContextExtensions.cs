@@ -7,27 +7,27 @@ using MuzakBot.Database.Models;
 namespace MuzakBot.Database.Extensions;
 
 /// <summary>
-/// Extension methods for the <see cref="SongLyricsDbContext"/> class.
+/// Extension methods for the <see cref="LyricsAnalyzerDbContext"/> class.
 /// </summary>
-public static class SongLyricsDbContextExtensions
+public static class LyricsAnalyzerDbContextExtensions
 {
     /// <summary>
-    /// Adds a <see cref="SongLyricsDbContext"/> factory to the service collection.
+    /// Adds a <see cref="LyricsAnalyzerDbContext"/> factory to the service collection.
     /// </summary>
     /// <param name="services">The service collection.</param>
     /// <param name="databaseConfig">The database configuration.</param>
     /// <returns>The same service collection so that multiple calls can be chained.</returns>
     /// <exception cref="InvalidOperationException">Thrown when an invalid database type is found.</exception>
-    public static IServiceCollection AddSongLyricsDbContextFactory(this IServiceCollection services, DatabaseConfig databaseConfig)
+    public static IServiceCollection AddLyricsAnalyzerDbContextFactory(this IServiceCollection services, DatabaseConfig databaseConfig)
     {
         switch (databaseConfig.DatabaseType)
         {
             case DatabaseType.CosmosDb:
-                services.AddSongLyricsDbContextFactoryForCosmosDb(databaseConfig.CosmosDbConfig!);
+                services.AddLyricsAnalyzerDbContextFactoryForCosmosDb(databaseConfig.CosmosDbConfig!);
                 break;
 
             case DatabaseType.Sqlite:
-                services.AddSongLyricsDbContextFactoryForSqlite(databaseConfig.SqliteDbConfig!);
+                services.AddLyricsAnalyzerDbContextFactoryForSqlite(databaseConfig.SqliteDbConfig!);
                 break;
 
             default:
@@ -38,14 +38,14 @@ public static class SongLyricsDbContextExtensions
     }
 
     /// <summary>
-    /// Adds a <see cref="SongLyricsDbContext"/> factory and configures it for Cosmos DB to the service collection.
+    /// Adds a <see cref="LyricsAnalyzerDbContext"/> factory and configures it for Cosmos DB to the service collection.
     /// </summary>
     /// <param name="services">The service collection.</param>
     /// <param name="cosmosDbConfig">The Cosmos DB configuration.</param>
     /// <returns>The same service collection so that multiple calls can be chained.</returns>
-    private static IServiceCollection AddSongLyricsDbContextFactoryForCosmosDb(this IServiceCollection services, CosmosDbConfigOptions cosmosDbConfig)
+    private static IServiceCollection AddLyricsAnalyzerDbContextFactoryForCosmosDb(this IServiceCollection services, CosmosDbConfigOptions cosmosDbConfig)
     {
-        services.AddDbContextFactory<SongLyricsDbContext>(options =>
+        services.AddDbContextFactory<LyricsAnalyzerDbContext>(options =>
         {
             options.UseCosmos(
                 connectionString: cosmosDbConfig.ConnectionString,
@@ -57,14 +57,14 @@ public static class SongLyricsDbContextExtensions
     }
 
     /// <summary>
-    /// Adds a <see cref="SongLyricsDbContext"/> factory and configures it for SQLite to the service collection.
+    /// Adds a <see cref="LyricsAnalyzerDbContext"/> factory and configures it for SQLite to the service collection.
     /// </summary>
     /// <param name="services">The service collection.</param>
     /// <param name="sqliteDbConfig">The SQLite DB configuration.</param>
     /// <returns>The same service collection so that multiple calls can be chained.</returns>
-    private static IServiceCollection AddSongLyricsDbContextFactoryForSqlite(this IServiceCollection services, SqliteDbConfigOptions sqliteDbConfig)
+    private static IServiceCollection AddLyricsAnalyzerDbContextFactoryForSqlite(this IServiceCollection services, SqliteDbConfigOptions sqliteDbConfig)
     {
-        services.AddDbContextFactory<SongLyricsDbContext>(options =>
+        services.AddDbContextFactory<LyricsAnalyzerDbContext>(options =>
         {
             options.UseSqlite($"Data Source={sqliteDbConfig.DbPath}");
         });
@@ -80,11 +80,11 @@ public static class SongLyricsDbContextExtensions
     /// </remarks>
     /// <param name="host">The host.</param>
     /// <returns></returns>
-    public static async Task ApplySongLyricsDbContextMigrations(this IHost host)
+    public static async Task ApplyLyricsAnalyzerDbContextMigrations(this IHost host)
     {
         using var scope = host.Services.CreateScope();
 
-        var db = scope.ServiceProvider.GetRequiredService<IDbContextFactory<SongLyricsDbContext>>();
+        var db = scope.ServiceProvider.GetRequiredService<IDbContextFactory<LyricsAnalyzerDbContext>>();
 
         using var context = db.CreateDbContext();
 
