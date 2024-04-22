@@ -1,11 +1,46 @@
 using Microsoft.EntityFrameworkCore;
 
+using MuzakBot.Lib.Models.Database;
 using MuzakBot.Lib.Models.Database.LyricsAnalyzer;
 
 namespace MuzakBot.Database.Extensions;
 
 internal static class LyricsAnalyzerDbContextModelBuilderExtensions
 {
+    /// <summary>
+    /// Creates the model for the <see cref="DatabaseUpdate"/> class.
+    /// </summary>
+    /// <param name="modelBuilder">The model builder.</param>
+    /// <returns>The same builder instance so that multiple calls can be chained.</returns>
+    public static ModelBuilder CreateDatabaseUpdateModel(this ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<DatabaseUpdate>(entity =>
+        {
+            entity.ToTable("database_updates");
+            entity.ToContainer("database_updates");
+
+            entity.HasKey(e => e.Id);
+            entity.HasPartitionKey(e => e.PartitionKey);
+
+            entity
+                .Property(e => e.Id)
+                .HasColumnName("id")
+                .ToJsonProperty("id");
+
+            entity
+                .Property(e => e.PartitionKey)
+                .HasColumnName("partitionKey")
+                .ToJsonProperty("partitionKey");
+
+            entity
+                .Property(e => e.MigratedToEfCore)
+                .HasColumnName("migratedToEfCore")
+                .ToJsonProperty("migratedToEfCore");
+        });
+
+        return modelBuilder;
+    }
+
     /// <summary>
     /// Creates the model for the <see cref="SongLyricsItem"/> class.
     /// </summary>

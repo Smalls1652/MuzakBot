@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 
 using MuzakBot.Database.Extensions;
-
+using MuzakBot.Lib.Models.Database;
 using MuzakBot.Lib.Models.Database.LyricsAnalyzer;
 
 namespace MuzakBot.Database;
@@ -17,6 +17,11 @@ public class LyricsAnalyzerDbContext : DbContext
     /// <param name="options">The options for the database context.</param>
     public LyricsAnalyzerDbContext(DbContextOptions<LyricsAnalyzerDbContext> options) : base(options)
     {}
+
+    /// <summary>
+    /// <see cref="DatabaseUpdate"/> items in the database.
+    /// </summary>
+    public DbSet<DatabaseUpdate> DatabaseUpdates { get; set; } = null!;
 
     /// <summary>
     /// <see cref="SongLyricsItem"/> items in the database.
@@ -52,6 +57,7 @@ public class LyricsAnalyzerDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
+            .CreateDatabaseUpdateModel()
             .CreateSongLyricsItemModel()
             .CreateSongLyricsRequestJobModel()
             .CreateLyricsAnalyzerItemModel()
