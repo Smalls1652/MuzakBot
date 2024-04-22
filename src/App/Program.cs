@@ -93,13 +93,6 @@ builder.Services
     .AddLyricsAnalyzerDbContextFactory(databaseConfig);
 
 builder.Services
-    .AddCosmosDbService(options =>
-    {
-        options.ConnectionString = builder.Configuration.GetValue<string>("COSMOSDB_CONNECTION_STRING") ?? throw new("COSMOSDB_CONNECTION_STRING is not set.");
-        options.DatabaseName = builder.Configuration.GetValue<string>("COSMOSDB_DATABASE_NAME") ?? throw new("COSMOSDB_DATABASE_NAME is not set.");
-    });
-
-builder.Services
     .AddOpenAiService(options =>
     {
         options.ApiKey = builder.Configuration.GetValue<string>("OPENAI_SECRET_KEY") ?? throw new("OPENAI_SECRET_KEY is not set.");
