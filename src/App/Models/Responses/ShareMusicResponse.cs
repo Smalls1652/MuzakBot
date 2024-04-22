@@ -225,7 +225,7 @@ public class ShareMusicResponse : IResponse
         PlatformEntityLink? platformEntityLink = null;
         try
         {
-            platformEntityLink = entityItem.LinksByPlatform!["youtube"];
+            platformEntityLink = entityItem.LinksByPlatform![platform];
         }
         catch
         {
