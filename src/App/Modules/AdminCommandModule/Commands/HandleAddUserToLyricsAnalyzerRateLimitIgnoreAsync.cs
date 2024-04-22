@@ -1,6 +1,9 @@
 using Discord;
 using Discord.Interactions;
+
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+
 using MuzakBot.Lib.Models.CommandModules;
 using MuzakBot.Lib.Models.Database.LyricsAnalyzer;
 
@@ -25,6 +28,8 @@ public partial class AdminCommandModule
 
         EmbedBuilder embedBuilder = new();
 
+        using var dbContext = _lyricsAnalyzerDbContextFactory.CreateDbContext();
+
         IUser user;
         try
         {
@@ -48,7 +53,16 @@ public partial class AdminCommandModule
             return;
         }
 
-        LyricsAnalyzerConfig lyricsAnalyzerConfig = await _cosmosDbService.GetLyricsAnalyzerConfigAsync();
+        LyricsAnalyzerConfig? lyricsAnalyzerConfig = await dbContext.LyricsAnalyzerConfigs
+            .WithPartitionKey("lyricsanalyzer-config")
+            .FirstOrDefaultAsync();
+
+        if (lyricsAnalyzerConfig is null)
+        {
+            lyricsAnalyzerConfig = new(true);
+
+            dbContext.LyricsAnalyzerConfigs.Add(lyricsAnalyzerConfig);
+        }
 
         if (lyricsAnalyzerConfig.RateLimitIgnoredUserIds is null)
         {
@@ -76,7 +90,7 @@ public partial class AdminCommandModule
             }
 
             lyricsAnalyzerConfig.RateLimitIgnoredUserIds.Add(user.Id.ToString());
-            await _cosmosDbService.AddOrUpdateLyricsAnalyzerConfigAsync(lyricsAnalyzerConfig);
+            await dbContext.SaveChangesAsync();
 
             _logger.LogInformation("{Username} has been added to the rate limit ignore list.", user.Username);
 
@@ -113,7 +127,7 @@ public partial class AdminCommandModule
             }
 
             lyricsAnalyzerConfig.RateLimitIgnoredUserIds.Remove(user.Id.ToString());
-            await _cosmosDbService.AddOrUpdateLyricsAnalyzerConfigAsync(lyricsAnalyzerConfig);
+            await dbContext.SaveChangesAsync();
 
             _logger.LogInformation("{Username} has been removed from the rate limit ignore list.", user.Username);
 

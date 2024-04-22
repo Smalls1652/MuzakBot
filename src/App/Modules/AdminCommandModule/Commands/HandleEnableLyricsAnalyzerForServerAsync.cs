@@ -1,5 +1,7 @@
 using Discord.Interactions;
 using Discord.WebSocket;
+
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MuzakBot.Lib.Models.Database.LyricsAnalyzer;
 
@@ -33,6 +35,8 @@ public partial class AdminCommandModule
         await DeferAsync(
             ephemeral: false
         );
+
+        using var dbContext = _lyricsAnalyzerDbContextFactory.CreateDbContext();
 
         ulong guildIdUlong;
         try
@@ -71,10 +75,19 @@ public partial class AdminCommandModule
         }
 
         _logger.LogInformation("Getting lyrics analyzer config...");
-        LyricsAnalyzerConfig lyricsAnalyzerConfig;
+        LyricsAnalyzerConfig? lyricsAnalyzerConfig;
         try
         {
-            lyricsAnalyzerConfig = await _cosmosDbService.GetLyricsAnalyzerConfigAsync();
+            lyricsAnalyzerConfig = await dbContext.LyricsAnalyzerConfigs
+                .WithPartitionKey("lyricsanalyzer-config")
+                .FirstOrDefaultAsync();
+                
+            if (lyricsAnalyzerConfig is null)
+            {
+                lyricsAnalyzerConfig = new(true);
+
+                dbContext.LyricsAnalyzerConfigs.Add(lyricsAnalyzerConfig);
+            }
         }
         catch (Exception ex)
         {
@@ -142,7 +155,7 @@ public partial class AdminCommandModule
         _logger.LogInformation("Updating lyrics analyzer config...");
         try
         {
-            await _cosmosDbService.AddOrUpdateLyricsAnalyzerConfigAsync(lyricsAnalyzerConfig);
+            await dbContext.SaveChangesAsync();
         }
         catch (Exception ex)
         {

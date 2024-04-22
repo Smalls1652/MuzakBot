@@ -1,5 +1,7 @@
 using Discord;
 using Discord.Interactions;
+
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MuzakBot.App.Handlers;
 using MuzakBot.Lib.Models.CommandModules;
@@ -16,9 +18,13 @@ public partial class AdminCommandModule
             ephemeral: true
         );
 
+        using var dbContext = _lyricsAnalyzerDbContextFactory.CreateDbContext();
+
         EmbedBuilder embed;
 
-        LyricsAnalyzerPromptStyle? promptStyle = await _cosmosDbService.GetLyricsAnalyzerPromptStyleAsync(userPromptModal.ShortName);
+        LyricsAnalyzerPromptStyle? promptStyle = await dbContext.LyricsAnalyzerPromptStyles
+            .WithPartitionKey("prompt-style")
+            .FirstOrDefaultAsync(x => x.ShortName == userPromptModal.ShortName);
 
         if (promptStyle is null)
         {
@@ -42,7 +48,7 @@ public partial class AdminCommandModule
 
         try
         {
-            await _cosmosDbService.AddOrUpdateLyricsAnalyzerPromptStyleAsync(promptStyle);
+            await dbContext.SaveChangesAsync();
         }
         catch (Exception ex)
         {
