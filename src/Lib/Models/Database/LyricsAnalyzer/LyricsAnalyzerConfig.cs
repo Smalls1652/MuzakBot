@@ -5,7 +5,7 @@ namespace MuzakBot.Lib.Models.Database.LyricsAnalyzer;
 /// <summary>
 /// Holds the configuration for the lyrics analyzer.
 /// </summary>
-[Table("lyrics_analyzer_configs")]
+[Table("command_configs")]
 public class LyricsAnalyzerConfig : DatabaseItem, ILyricsAnalyzerConfig
 {
     /// <summary>
