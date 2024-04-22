@@ -19,8 +19,8 @@ public partial class ShareMusicCommandModule
     [CommandContextType(InteractionContextType.BotDm, InteractionContextType.PrivateChannel, InteractionContextType.Guild)]
     [IntegrationType(ApplicationIntegrationType.UserInstall, ApplicationIntegrationType.GuildInstall)]
     [SlashCommand(
-        name: "sharemusic",
-        description: "Get share links to a song or album on various streaming platforms."
+        name: "url",
+        description: "Get share links from a streaming service URL."
     )]
     private async Task ShareMusicCommandAsync(
         [Summary(
