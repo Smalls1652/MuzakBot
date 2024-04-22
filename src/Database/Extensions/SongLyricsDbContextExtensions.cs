@@ -49,7 +49,7 @@ public static class SongLyricsDbContextExtensions
         {
             options.UseCosmos(
                 connectionString: cosmosDbConfig.ConnectionString,
-                databaseName: cosmosDbConfig.DatabaseName
+                databaseName: "lyrics_analyzer"
             );
         });
 

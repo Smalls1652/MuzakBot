@@ -12,10 +12,4 @@ public sealed class CosmosDbConfigOptions
     /// </summary>
     [JsonPropertyName("COSMOSDB_CONNECTIONSTRING")]
     public string ConnectionString { get; set; } = null!;
-
-    /// <summary>
-    /// The name of the database to use.
-    /// </summary>
-    [JsonPropertyName("COSMOSDB_DB_NAME")]
-    public string DatabaseName { get; set; } = null!;
 }
