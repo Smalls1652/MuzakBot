@@ -303,6 +303,11 @@ internal static class LyricsAnalyzerDbContextModelBuilderExtensions
                 .ToJsonProperty("prompt");
 
             entity
+                .Property(e => e.UserPrompt)
+                .HasColumnName("userPrompt")
+                .ToJsonProperty("userPrompt");
+
+            entity
                 .Property(e => e.NoticeText)
                 .HasColumnName("noticeText")
                 .ToJsonProperty("noticeText");

@@ -80,6 +80,7 @@ public class LyricsAnalyzerPromptStyle : DatabaseItem, ILyricsAnalyzerPromptStyl
     /// <summary>
     /// The prompt used as a user prompt for the style.
     /// </summary>
+    [Column("userPrompt")]
     [JsonPropertyName("userPrompt")]
     public string UserPrompt { get; set; } = "Briefly explain the lyrics for the song \"{{songName}}\" by {{artistName}}. Format the response in Markdown syntax.";
 
