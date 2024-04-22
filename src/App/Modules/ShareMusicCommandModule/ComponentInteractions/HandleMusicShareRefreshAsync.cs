@@ -19,7 +19,7 @@ public partial class ShareMusicCommandModule
     /// existing message.
     /// </remarks>
     /// <param name="url">The Songlink/Odesli URL.</param>
-    [ComponentInteraction(customId: "refresh-musiclinks-btn-*")]
+    [ComponentInteraction(customId: "refresh-musiclinks-btn-*", true)]
     private async Task HandleMusicShareRefreshAsync(string url)
     {
         using var activity = _activitySource.StartHandleMusicShareRefreshAsyncActivity(url, Context);
