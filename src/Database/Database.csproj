@@ -23,6 +23,7 @@
 	</PropertyGroup>
 	<!-- Dependencies -->
 	<ItemGroup>
+		<PackageReference Include="Discord.Net" PrivateAssets="all"/>
 		<PackageReference Include="Microsoft.Azure.Cosmos" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" />
@@ -34,8 +35,8 @@
 		</PackageReference>
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
-		<PackageReference Include="Microsoft.Extensions.Configuration" PrivateAssets="all"/>
-		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" PrivateAssets="all"/>
+		<PackageReference Include="Microsoft.Extensions.Configuration" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" PrivateAssets="all" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" PrivateAssets="all" />
 		<PackageReference Include="Microsoft.Extensions.Hosting" PrivateAssets="all" />
 	</ItemGroup>

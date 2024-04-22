@@ -23,6 +23,7 @@
 	</PropertyGroup>
 	<!-- Dependencies -->
 	<ItemGroup>
+		<PackageReference Include="Discord.Net" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design">
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 			<PrivateAssets>all</PrivateAssets>
@@ -34,5 +35,6 @@
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Database\Database.csproj" />
+        <ProjectReference Include="..\Lib\Lib.csproj" />
 	</ItemGroup>
 </Project>
