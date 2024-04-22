@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+
 using MuzakBot.Lib.Models.Database.LyricsAnalyzer;
 
 namespace MuzakBot.App.Modules;
@@ -13,10 +15,14 @@ public partial class LyricsAnalyzerCommandModule
     /// <exception cref="NullReferenceException">The prompt style was null.</exception>
     private async Task<LyricsAnalyzerPromptStyle> GetPromptStyleAsync(string promptMode, string? parentActivityId)
     {
+        using var dbContext = _lyricsAnalyzerDbContextFactory.CreateDbContext();
+
         LyricsAnalyzerPromptStyle? promptStyle;
         try
         {
-            promptStyle = await _cosmosDbService.GetLyricsAnalyzerPromptStyleAsync(promptMode, parentActivityId);
+            promptStyle = await dbContext.LyricsAnalyzerPromptStyles
+                .WithPartitionKey("prompt-style")
+                .FirstAsync(item => item.ShortName == promptMode);
         }
         catch (Exception)
         {
