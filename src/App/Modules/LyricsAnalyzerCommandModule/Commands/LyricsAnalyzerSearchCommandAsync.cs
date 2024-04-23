@@ -39,10 +39,10 @@ public partial class LyricsAnalyzerCommandModule
     [RequireUserRateLimit]
     [RequireLyricsAnalyzerEnabledForServer]
     [SlashCommand(
-        name: "lyricsanalyzer",
+        name: "search",
         description: "Get an analysis of the lyrics of a song"
     )]
-    private async Task LyricsAnalyzerCommandAsync(
+    private async Task LyricsAnalyzerSearchCommandAsync(
         [Summary("artistName", "The name of an artist"),
          Autocomplete(typeof(AppleMusicArtistAutoCompleteHandler))
         ]
@@ -58,7 +58,7 @@ public partial class LyricsAnalyzerCommandModule
         bool isPrivateResponse = false
     )
     {
-        using var activity = _activitySource.StartLyricsAnalyzerCommandAsyncActivity(artistId, songId, Context);
+        using var activity = _activitySource.StartLyricsAnalyzerSearchCommandAsyncActivity(artistId, songId, Context);
 
         await DeferAsync(
             ephemeral: isPrivateResponse

@@ -1,6 +1,5 @@
 using System.Diagnostics;
 using Discord;
-using Discord.Commands;
 using Discord.Interactions;
 
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +16,7 @@ namespace MuzakBot.App.Modules;
 /// </summary>
 [CommandContextType(InteractionContextType.BotDm, InteractionContextType.PrivateChannel, InteractionContextType.Guild)]
 [IntegrationType(ApplicationIntegrationType.UserInstall, ApplicationIntegrationType.GuildInstall)]
+[Group("lyricsanalyzer", "Use AI to analyze the lyrics of a song.")]
 public partial class LyricsAnalyzerCommandModule : InteractionModuleBase<SocketInteractionContext>, IDisposable
 {
     private bool _isDisposed;

@@ -4,29 +4,29 @@ using Discord;
 namespace MuzakBot.App.Extensions;
 
 /// <summary>
-/// Extension methods for activity traces used by the <see cref="LyricsAnalyzerCommandModule"/> class.
+/// Extension methods for activity traces used by the <see cref="Modules.LyricsAnalyzerCommandModule"/> class.
 /// </summary>
 internal static class LyricsAnalyzerCommandModuleActivityExtensions
 {
     /// <summary>
-    /// Starts an activity for <see cref="LyricsAnalyzerCommandModule.HandleGetLyricsAsync(IInteractionContext, string, string)"/>.
+    /// Starts an activity for <see cref="Modules.LyricsAnalyzerCommandModule.LyricsAnalyzerSearchCommandAsync(string, string, string, bool)"/>.
     /// </summary>
     /// <param name="activitySource">The activity source.</param>
     /// <param name="artistName">The name of the artist.</param>
     /// <param name="songName">The name of the song.</param>
     /// <param name="context">The <see cref="IInteractionContext"/> for the request.</param>
     /// <returns>The started activity.</returns>
-    public static Activity? StartLyricsAnalyzerCommandAsyncActivity(this ActivitySource activitySource, string artistName, string songName, IInteractionContext context)
+    public static Activity? StartLyricsAnalyzerSearchCommandAsyncActivity(this ActivitySource activitySource, string artistName, string songName, IInteractionContext context)
     {
         if (context.Interaction.IsDMInteraction)
         {
             return activitySource.StartActivity(
-                name: "LyricsAnalyzerCommandAsync",
+                name: "LyricsAnalyzerSearchCommandAsync",
                 kind: ActivityKind.Server,
                 tags: new ActivityTagsCollection
                 {
                     { "command_Type", "SlashCommand"},
-                    { "command_Name", "lyricsanalyzer" },
+                    { "command_Name", "lyricsanalyzer search" },
                     { "artist_Name", artistName },
                     { "song_Name", songName },
                     { "user_Id", context.User.Id },
@@ -37,12 +37,12 @@ internal static class LyricsAnalyzerCommandModuleActivityExtensions
         else
         {
             return activitySource.StartActivity(
-                name: "LyricsAnalyzerCommandAsync",
+                name: "LyricsAnalyzerSearchCommandAsync",
                 kind: ActivityKind.Server,
                 tags: new ActivityTagsCollection
                 {
                 { "command_Type", "SlashCommand"},
-                { "command_Name", "lyricsanalyzer" },
+                { "command_Name", "lyricsanalyzer search" },
                 { "artist_Name", artistName },
                 { "song_Name", songName },
                 { "guild_Id", context.Guild.Id },

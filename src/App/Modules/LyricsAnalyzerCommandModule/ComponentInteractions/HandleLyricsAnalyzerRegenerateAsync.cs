@@ -26,7 +26,7 @@ public partial class LyricsAnalyzerCommandModule
     /// <exception cref="NullReferenceException">Thrown when the lyrics analyzer item is not found in the database.</exception>
     [RequireUserRateLimit]
     [RequireLyricsAnalyzerEnabledForServer]
-    [ComponentInteraction("lyrics-analyzer-regenerate-*")]
+    [ComponentInteraction("lyrics-analyzer-regenerate-*", true)]
     private async Task HandleLyricsAnalyzerRegenerateAsync(string responseId)
     {
         using var activity = _activitySource.StartActivity(
