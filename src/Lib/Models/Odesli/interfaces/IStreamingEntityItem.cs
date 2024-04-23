@@ -11,6 +11,14 @@ public interface IStreamingEntityItem
     string? Id { get; set; }
 
     /// <summary>
+    /// The type of the entity on the music streaming platform.
+    /// </summary>
+    /// <remarks>
+    /// Valid values are: "song" or "album".
+    /// </remarks>
+    string? ItemType { get; set; }
+
+    /// <summary>
     /// The name of the song/album on the music streaming platform.
     /// </summary>
     string? Title { get; set; }

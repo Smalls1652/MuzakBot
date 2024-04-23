@@ -13,6 +13,10 @@ public class StreamingEntityItem : IStreamingEntityItem
     [JsonConverter(typeof(JsonNumberToStringConverter))]
     public string? Id { get; set; }
 
+    /// <inheritdoc cref="IStreamingEntityItem.ItemType" />
+    [JsonPropertyName("type")]
+    public string? ItemType { get; set; }
+
     /// <inheritdoc cref="IStreamingEntityItem.Title" />
     [JsonPropertyName("title")]
     public string? Title { get; set; }
