@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using MuzakBot.App.Extensions;
 using MuzakBot.App.Handlers;
 using MuzakBot.App.Models.Responses;
+using MuzakBot.App.Preconditions.LyricsAnalyzer;
 using MuzakBot.App.Services;
 using MuzakBot.Lib;
 using MuzakBot.Lib.Models.AppleMusic;
@@ -35,6 +36,8 @@ public partial class LyricsAnalyzerCommandModule
     /// <exception cref="NullReferenceException"></exception>
     [CommandContextType(InteractionContextType.BotDm, InteractionContextType.PrivateChannel, InteractionContextType.Guild)]
     [IntegrationType(ApplicationIntegrationType.UserInstall, ApplicationIntegrationType.GuildInstall)]
+    [RequireUserRateLimit]
+    [RequireLyricsAnalyzerEnabledForServer]
     [SlashCommand(
         name: "lyricsanalyzer",
         description: "Get an analysis of the lyrics of a song"
@@ -84,74 +87,6 @@ public partial class LyricsAnalyzerCommandModule
             activity?.SetStatus(ActivityStatusCode.Error);
 
             return;
-        }
-
-        // Check if the command is enabled for the current server.
-        if (!Context.Interaction.IsDMInteraction && lyricsAnalyzerConfig.CommandIsEnabledToSpecificGuilds && lyricsAnalyzerConfig.CommandEnabledGuildIds is not null && !lyricsAnalyzerConfig.CommandEnabledGuildIds.Contains(Context.Guild.Id))
-        {
-            await FollowupAsync(
-                embed: GenerateErrorEmbed("This command is not enabled on this server. 😥").Build(),
-                components: GenerateRemoveComponent().Build(),
-                ephemeral: isPrivateResponse
-            );
-
-            return;
-        }
-
-        // Check if the command is disabled for the current server.
-        if (!Context.Interaction.IsDMInteraction && !lyricsAnalyzerConfig.CommandIsEnabledToSpecificGuilds && lyricsAnalyzerConfig.CommandDisabledGuildIds is not null && lyricsAnalyzerConfig.CommandDisabledGuildIds.Contains(Context.Guild.Id))
-        {
-            await FollowupAsync(
-                embed: GenerateErrorEmbed("This command is not enabled on this server. 😥").Build(),
-                components: GenerateRemoveComponent().Build(),
-                ephemeral: isPrivateResponse
-            );
-
-            return;
-        }
-
-        // Check if the current user is on the rate limit ignore list.
-        bool userIsOnRateLimitIgnoreList = lyricsAnalyzerConfig.RateLimitIgnoredUserIds is not null && lyricsAnalyzerConfig.RateLimitIgnoredUserIds.Contains(Context.User.Id.ToString());
-
-        // Get the current rate limit for the user.
-        LyricsAnalyzerUserRateLimit? lyricsAnalyzerUserRateLimit = null;
-        if (lyricsAnalyzerConfig.RateLimitEnabled && !userIsOnRateLimitIgnoreList)
-        {
-            _logger.LogInformation("Getting current rate limit for user '{UserId}' from database.", Context.User.Id);
-            lyricsAnalyzerUserRateLimit = await dbContext.LyricsAnalyzerUserRateLimits
-                .WithPartitionKey("user-item")
-                .FirstOrDefaultAsync(item => item.UserId == Context.User.Id.ToString());
-
-            if (lyricsAnalyzerUserRateLimit is null)
-            {
-                lyricsAnalyzerUserRateLimit = new(Context.User.Id.ToString());
-
-                dbContext.LyricsAnalyzerUserRateLimits.Add(lyricsAnalyzerUserRateLimit);
-
-                await dbContext.SaveChangesAsync();
-            }
-
-            _logger.LogInformation("Current rate limit for user '{UserId}' is {CurrentRequestCount}/{MaxRequests}.", Context.User.Id, lyricsAnalyzerUserRateLimit.CurrentRequestCount, lyricsAnalyzerConfig.RateLimitMaxRequests);
-
-            // If the user has reached the rate limit, send a message and return.
-            if (!lyricsAnalyzerUserRateLimit.EvaluateRequest(lyricsAnalyzerConfig.RateLimitMaxRequests))
-            {
-                _logger.LogInformation("User '{UserId}' has reached the rate limit.", Context.User.Id);
-
-                StringBuilder rateLimitMessageBuilder = new($"You have reached the rate limit ({lyricsAnalyzerConfig.RateLimitMaxRequests} requests) for this command. 😥\n\n");
-
-                DateTimeOffset resetTime = lyricsAnalyzerUserRateLimit.LastRequestTime.AddDays(1);
-
-                rateLimitMessageBuilder.AppendLine($"Rate limit will reset <t:{resetTime.ToUnixTimeSeconds()}:R>.");
-
-                await FollowupAsync(
-                    embed: GenerateErrorEmbed(rateLimitMessageBuilder.ToString()).Build(),
-                    components: GenerateRemoveComponent().Build(),
-                    ephemeral: isPrivateResponse
-                );
-
-                return;
-            }
         }
 
         // Get the prompt style from the database.
@@ -354,6 +289,20 @@ public partial class LyricsAnalyzerCommandModule
                 components: lyricsAnalyzerResponse.GenerateComponent().Build(),
                 ephemeral: isPrivateResponse
             );
+
+            bool userIsOnRateLimitIgnoreList = lyricsAnalyzerConfig.RateLimitIgnoredUserIds is not null && lyricsAnalyzerConfig.RateLimitIgnoredUserIds.Contains(Context.User.Id.ToString());
+            LyricsAnalyzerUserRateLimit? lyricsAnalyzerUserRateLimit = await dbContext.LyricsAnalyzerUserRateLimits
+                .WithPartitionKey("user-item")
+                .FirstOrDefaultAsync(item => item.UserId == Context.User.Id.ToString());
+
+            if (lyricsAnalyzerUserRateLimit is null)
+            {
+                lyricsAnalyzerUserRateLimit = new(Context.User.Id.ToString());
+
+                dbContext.LyricsAnalyzerUserRateLimits.Add(lyricsAnalyzerUserRateLimit);
+
+                await dbContext.SaveChangesAsync();
+            }
 
             if (lyricsAnalyzerConfig.RateLimitEnabled && !userIsOnRateLimitIgnoreList)
             {
