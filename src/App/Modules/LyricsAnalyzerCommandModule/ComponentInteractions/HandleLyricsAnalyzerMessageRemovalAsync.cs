@@ -18,7 +18,7 @@ public partial class LyricsAnalyzerCommandModule
     /// invoked by a user clicking the "Remove message" button on
     /// a failed lyrics analyzer message.
     /// </remarks>
-    [ComponentInteraction(customId: "remove-lyricanalyzer-post-btn-*")]
+    [ComponentInteraction(customId: "remove-lyricanalyzer-post-btn-*", true)]
     private async Task HandleLyricsAnalyzerMessageRemovalAsync()
     {
         await DeferAsync(
