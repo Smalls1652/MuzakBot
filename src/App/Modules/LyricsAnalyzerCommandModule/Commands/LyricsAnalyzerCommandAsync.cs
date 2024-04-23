@@ -39,7 +39,7 @@ public partial class LyricsAnalyzerCommandModule
     [RequireUserRateLimit]
     [RequireLyricsAnalyzerEnabledForServer]
     [SlashCommand(
-        name: "lyricsanalyzer",
+        name: "search",
         description: "Get an analysis of the lyrics of a song"
     )]
     private async Task LyricsAnalyzerCommandAsync(
