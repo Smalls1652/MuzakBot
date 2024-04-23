@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 using MuzakBot.App.Models.Responses;
+using MuzakBot.App.Preconditions.LyricsAnalyzer;
 using MuzakBot.Lib;
 using MuzakBot.Lib.Models.Database.LyricsAnalyzer;
 using MuzakBot.Lib.Models.OpenAi;
@@ -23,6 +24,8 @@ public partial class LyricsAnalyzerCommandModule
     /// <param name="responseId">The ID of the response to regenerate.</param>
     /// <returns></returns>
     /// <exception cref="NullReferenceException">Thrown when the lyrics analyzer item is not found in the database.</exception>
+    [RequireUserRateLimit]
+    [RequireLyricsAnalyzerEnabledForServer]
     [ComponentInteraction("lyrics-analyzer-regenerate-*")]
     private async Task HandleLyricsAnalyzerRegenerateAsync(string responseId)
     {
@@ -69,50 +72,6 @@ public partial class LyricsAnalyzerCommandModule
             activity?.SetStatus(ActivityStatusCode.Error);
 
             return;
-        }
-
-        // Check if the current user is on the rate limit ignore list.
-        bool userIsOnRateLimitIgnoreList = lyricsAnalyzerConfig.RateLimitIgnoredUserIds is not null && lyricsAnalyzerConfig.RateLimitIgnoredUserIds.Contains(Context.User.Id.ToString());
-
-        // Get the current rate limit for the user.
-        LyricsAnalyzerUserRateLimit? lyricsAnalyzerUserRateLimit = null;
-        if (lyricsAnalyzerConfig.RateLimitEnabled && !userIsOnRateLimitIgnoreList)
-        {
-            _logger.LogInformation("Getting current rate limit for user '{UserId}' from database.", Context.User.Id);
-            lyricsAnalyzerUserRateLimit = await dbContext.LyricsAnalyzerUserRateLimits
-                .WithPartitionKey("user-item")
-                .FirstOrDefaultAsync(item => item.UserId == Context.User.Id.ToString());
-
-            if (lyricsAnalyzerUserRateLimit is null)
-            {
-                lyricsAnalyzerUserRateLimit = new(Context.User.Id.ToString());
-
-                dbContext.LyricsAnalyzerUserRateLimits.Add(lyricsAnalyzerUserRateLimit);
-
-                await dbContext.SaveChangesAsync();
-            }
-
-            _logger.LogInformation("Current rate limit for user '{UserId}' is {CurrentRequestCount}/{MaxRequests}.", Context.User.Id, lyricsAnalyzerUserRateLimit.CurrentRequestCount, lyricsAnalyzerConfig.RateLimitMaxRequests);
-
-            // If the user has reached the rate limit, send a message and return.
-            if (!lyricsAnalyzerUserRateLimit.EvaluateRequest(lyricsAnalyzerConfig.RateLimitMaxRequests))
-            {
-                _logger.LogInformation("User '{UserId}' has reached the rate limit.", Context.User.Id);
-
-                StringBuilder rateLimitMessageBuilder = new($"You have reached the rate limit ({lyricsAnalyzerConfig.RateLimitMaxRequests} requests) for this command. 😥\n\n");
-
-                DateTimeOffset resetTime = lyricsAnalyzerUserRateLimit.LastRequestTime.AddDays(1);
-
-                rateLimitMessageBuilder.AppendLine($"Rate limit will reset <t:{resetTime.ToUnixTimeSeconds()}:R>.");
-
-                await componentInteraction.FollowupAsync(
-                    embed: GenerateErrorEmbed(rateLimitMessageBuilder.ToString()).Build(),
-                    components: GenerateRemoveComponent().Build(),
-                    ephemeral: isEphemeral
-                );
-
-                return;
-            }
         }
 
         // Get the lyrics analyzer item from the database.
@@ -281,6 +240,20 @@ public partial class LyricsAnalyzerCommandModule
                 components : lyricsAnalyzerResponse.GenerateComponent().Build(),
                 ephemeral: isEphemeral
             );
+
+            bool userIsOnRateLimitIgnoreList = lyricsAnalyzerConfig.RateLimitIgnoredUserIds is not null && lyricsAnalyzerConfig.RateLimitIgnoredUserIds.Contains(Context.User.Id.ToString());
+            LyricsAnalyzerUserRateLimit? lyricsAnalyzerUserRateLimit = await dbContext.LyricsAnalyzerUserRateLimits
+                .WithPartitionKey("user-item")
+                .FirstOrDefaultAsync(item => item.UserId == Context.User.Id.ToString());
+
+            if (lyricsAnalyzerUserRateLimit is null)
+            {
+                lyricsAnalyzerUserRateLimit = new(Context.User.Id.ToString());
+
+                dbContext.LyricsAnalyzerUserRateLimits.Add(lyricsAnalyzerUserRateLimit);
+
+                await dbContext.SaveChangesAsync();
+            }
 
             if (lyricsAnalyzerConfig.RateLimitEnabled && !userIsOnRateLimitIgnoreList)
             {
