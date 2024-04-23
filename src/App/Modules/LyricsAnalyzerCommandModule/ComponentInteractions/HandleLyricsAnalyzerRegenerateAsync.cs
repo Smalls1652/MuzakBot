@@ -44,6 +44,8 @@ public partial class LyricsAnalyzerCommandModule
 
         await componentInteraction.DeferLoadingAsync(isEphemeral);
 
+        using var dbContext = _lyricsAnalyzerDbContextFactory.CreateDbContext();
+
         _logger.LogInformation("Regenerating lyrics analyzer response for {responseId}", responseId);
 
         // Get the lyrics analyzer config from the database.
@@ -51,7 +53,9 @@ public partial class LyricsAnalyzerCommandModule
         LyricsAnalyzerConfig lyricsAnalyzerConfig;
         try
         {
-            lyricsAnalyzerConfig = await _cosmosDbService.GetLyricsAnalyzerConfigAsync(activity?.Id);
+            lyricsAnalyzerConfig = await dbContext.LyricsAnalyzerConfigs
+                .WithPartitionKey("lyricsanalyzer-config")
+                .FirstAsync();
         }
         catch (Exception ex)
         {
@@ -75,7 +79,18 @@ public partial class LyricsAnalyzerCommandModule
         if (lyricsAnalyzerConfig.RateLimitEnabled && !userIsOnRateLimitIgnoreList)
         {
             _logger.LogInformation("Getting current rate limit for user '{UserId}' from database.", Context.User.Id);
-            lyricsAnalyzerUserRateLimit = await _cosmosDbService.GetLyricsAnalyzerUserRateLimitAsync(Context.User.Id.ToString(), activity?.Id);
+            lyricsAnalyzerUserRateLimit = await dbContext.LyricsAnalyzerUserRateLimits
+                .WithPartitionKey("user-item")
+                .FirstOrDefaultAsync(item => item.UserId == Context.User.Id.ToString());
+
+            if (lyricsAnalyzerUserRateLimit is null)
+            {
+                lyricsAnalyzerUserRateLimit = new(Context.User.Id.ToString());
+
+                dbContext.LyricsAnalyzerUserRateLimits.Add(lyricsAnalyzerUserRateLimit);
+
+                await dbContext.SaveChangesAsync();
+            }
 
             _logger.LogInformation("Current rate limit for user '{UserId}' is {CurrentRequestCount}/{MaxRequests}.", Context.User.Id, lyricsAnalyzerUserRateLimit.CurrentRequestCount, lyricsAnalyzerConfig.RateLimitMaxRequests);
 
@@ -105,10 +120,8 @@ public partial class LyricsAnalyzerCommandModule
         LyricsAnalyzerItem? lyricsAnalyzerItem;
         try
         {
-            using (var dbContext = _songLyricsDbContextFactory.CreateDbContext())
-            {
-                lyricsAnalyzerItem = await dbContext.LyricsAnalyzerItems.FirstOrDefaultAsync(item => item.Id == responseId);
-            }
+            lyricsAnalyzerItem = await dbContext.LyricsAnalyzerItems
+                .FirstOrDefaultAsync(item => item.Id == responseId);
 
             if (lyricsAnalyzerItem is null)
             {
@@ -275,7 +288,7 @@ public partial class LyricsAnalyzerCommandModule
                 lyricsAnalyzerUserRateLimit!.IncrementRequestCount();
                 lyricsAnalyzerUserRateLimit!.LastRequestTime = DateTimeOffset.UtcNow;
 
-                await _cosmosDbService.AddOrUpdateLyricsAnalyzerUserRateLimitAsync(lyricsAnalyzerUserRateLimit, activity?.Id);
+                await dbContext.SaveChangesAsync();
             }
         }
         catch (Exception ex)

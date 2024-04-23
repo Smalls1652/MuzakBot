@@ -90,14 +90,7 @@ builder.Services
     });
 
 builder.Services
-    .AddSongLyricsDbContextFactory(databaseConfig);
-
-builder.Services
-    .AddCosmosDbService(options =>
-    {
-        options.ConnectionString = builder.Configuration.GetValue<string>("COSMOSDB_CONNECTION_STRING") ?? throw new("COSMOSDB_CONNECTION_STRING is not set.");
-        options.DatabaseName = builder.Configuration.GetValue<string>("COSMOSDB_DATABASE_NAME") ?? throw new("COSMOSDB_DATABASE_NAME is not set.");
-    });
+    .AddLyricsAnalyzerDbContextFactory(databaseConfig);
 
 builder.Services
     .AddOpenAiService(options =>
@@ -123,10 +116,6 @@ builder.Services.AddDiscordService(options =>
 using var host = builder.Build();
 
 await host
-    .ApplySongLyricsDbContextMigrations();
-
-// Initialize the database and containers for the Cosmos DB service
-// before running the host.
-await host.Services.GetRequiredService<ICosmosDbService>().InitializeDatabaseAsync();
+    .ApplyLyricsAnalyzerDbContextMigrations();
 
 await host.RunAsync();

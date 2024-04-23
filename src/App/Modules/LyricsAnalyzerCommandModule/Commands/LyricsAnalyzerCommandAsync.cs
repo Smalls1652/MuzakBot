@@ -61,12 +61,16 @@ public partial class LyricsAnalyzerCommandModule
             ephemeral: isPrivateResponse
         );
 
+        using var dbContext = _lyricsAnalyzerDbContextFactory.CreateDbContext();
+
         // Get the lyrics analyzer config from the database.
         _logger.LogInformation("Getting lyrics analyzer config from database.");
         LyricsAnalyzerConfig lyricsAnalyzerConfig;
         try
         {
-            lyricsAnalyzerConfig = await _cosmosDbService.GetLyricsAnalyzerConfigAsync(activity?.Id);
+            lyricsAnalyzerConfig = await dbContext.LyricsAnalyzerConfigs
+                .WithPartitionKey("lyricsanalyzer-config")
+                .FirstAsync();
         }
         catch (Exception ex)
         {
@@ -114,7 +118,18 @@ public partial class LyricsAnalyzerCommandModule
         if (lyricsAnalyzerConfig.RateLimitEnabled && !userIsOnRateLimitIgnoreList)
         {
             _logger.LogInformation("Getting current rate limit for user '{UserId}' from database.", Context.User.Id);
-            lyricsAnalyzerUserRateLimit = await _cosmosDbService.GetLyricsAnalyzerUserRateLimitAsync(Context.User.Id.ToString(), activity?.Id);
+            lyricsAnalyzerUserRateLimit = await dbContext.LyricsAnalyzerUserRateLimits
+                .WithPartitionKey("user-item")
+                .FirstOrDefaultAsync(item => item.UserId == Context.User.Id.ToString());
+
+            if (lyricsAnalyzerUserRateLimit is null)
+            {
+                lyricsAnalyzerUserRateLimit = new(Context.User.Id.ToString());
+
+                dbContext.LyricsAnalyzerUserRateLimits.Add(lyricsAnalyzerUserRateLimit);
+
+                await dbContext.SaveChangesAsync();
+            }
 
             _logger.LogInformation("Current rate limit for user '{UserId}' is {CurrentRequestCount}/{MaxRequests}.", Context.User.Id, lyricsAnalyzerUserRateLimit.CurrentRequestCount, lyricsAnalyzerConfig.RateLimitMaxRequests);
 
@@ -143,7 +158,9 @@ public partial class LyricsAnalyzerCommandModule
         LyricsAnalyzerPromptStyle promptStyle;
         try
         {
-            promptStyle = await GetPromptStyleAsync(promptMode, activity?.Id);
+            promptStyle = await dbContext.LyricsAnalyzerPromptStyles
+                .WithPartitionKey("prompt-style")
+                .FirstAsync(item => item.ShortName == promptMode);
         }
         catch (NullReferenceException ex)
         {
@@ -285,7 +302,13 @@ public partial class LyricsAnalyzerCommandModule
         OpenAiChatCompletion openAiChatCompletion;
         try
         {
-            openAiChatCompletion = await RunLyricsAnalysisAsync(artistName, songName, lyrics, promptStyle, activity?.Id);
+            openAiChatCompletion = await _openAiService.GetLyricAnalysisAsync(
+                artistName: artistName,
+                songName: songName,
+                lyrics: lyrics,
+                promptStyle: promptStyle,
+                parentActivityId: activity?.Id
+            ) ?? throw new NullReferenceException("The response from the OpenAI API was null.");
         }
         catch (Exception ex)
         {
@@ -308,13 +331,9 @@ public partial class LyricsAnalyzerCommandModule
             promptStyle: promptStyle.ShortName
         );
 
-        // Save the lyrics analyzer item to the database.
-        using (var dbContext = _songLyricsDbContextFactory.CreateDbContext())
-        {
-            dbContext.LyricsAnalyzerItems.Add(lyricsAnalyzerItem);
+        dbContext.LyricsAnalyzerItems.Add(lyricsAnalyzerItem);
 
-            await dbContext.SaveChangesAsync();
-        }
+        await dbContext.SaveChangesAsync();
 
         // Build the response.
         LyricsAnalyzerResponse lyricsAnalyzerResponse = new(
@@ -332,7 +351,7 @@ public partial class LyricsAnalyzerCommandModule
             await FollowupAsync(
                 text: lyricsAnalyzerResponse.GenerateText(),
                 embed: lyricsAnalyzerResponse.GenerateEmbed().Build(),
-                components : lyricsAnalyzerResponse.GenerateComponent().Build(),
+                components: lyricsAnalyzerResponse.GenerateComponent().Build(),
                 ephemeral: isPrivateResponse
             );
 
@@ -342,7 +361,7 @@ public partial class LyricsAnalyzerCommandModule
                 lyricsAnalyzerUserRateLimit!.IncrementRequestCount();
                 lyricsAnalyzerUserRateLimit!.LastRequestTime = DateTimeOffset.UtcNow;
 
-                await _cosmosDbService.AddOrUpdateLyricsAnalyzerUserRateLimitAsync(lyricsAnalyzerUserRateLimit, activity?.Id);
+                await dbContext.SaveChangesAsync();
             }
         }
         catch (Exception ex)

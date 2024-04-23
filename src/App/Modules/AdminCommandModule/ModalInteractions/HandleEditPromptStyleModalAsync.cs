@@ -1,6 +1,9 @@
 using Discord;
 using Discord.Interactions;
+
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+
 using MuzakBot.App.Handlers;
 using MuzakBot.Lib.Models.CommandModules;
 using MuzakBot.Lib.Models.Database.LyricsAnalyzer;
@@ -18,11 +21,13 @@ public partial class AdminCommandModule
 
         EmbedBuilder embed;
 
-        LyricsAnalyzerPromptStyle promptStyle = new(promptStyleModal);
+        using var dbContext = _lyricsAnalyzerDbContextFactory.CreateDbContext();
 
-        LyricsAnalyzerPromptStyle? existingPromptStyle = await _cosmosDbService.GetLyricsAnalyzerPromptStyleAsync(promptStyle.ShortName);
+        LyricsAnalyzerPromptStyle? promptStyle = await dbContext.LyricsAnalyzerPromptStyles
+            .WithPartitionKey("prompt-style")
+            .FirstOrDefaultAsync(x => x.ShortName == promptStyleModal.ShortName);
 
-        if (existingPromptStyle is null)
+        if (promptStyle is null)
         {
             embed = new EmbedBuilder()
                 .WithTitle("Lyrics Analyzer Prompt Style")
@@ -38,15 +43,15 @@ public partial class AdminCommandModule
             return;
         }
 
-        promptStyle.Id = existingPromptStyle.Id;
-        promptStyle.PartitionKey = existingPromptStyle.PartitionKey;
-        promptStyle.UserPrompt = existingPromptStyle.UserPrompt;
+        promptStyle.Name = promptStyleModal.Name;
+        promptStyle.AnalysisType = promptStyleModal.AnalysisType;
+        promptStyle.Prompt = promptStyleModal.Prompt;
+        promptStyle.NoticeText = promptStyleModal.NoticeText;
 
         promptStyle.UpdateLastUpdateTime();
-
         try
         {
-            await _cosmosDbService.AddOrUpdateLyricsAnalyzerPromptStyleAsync(promptStyle);
+            await dbContext.SaveChangesAsync();
         }
         catch (Exception ex)
         {

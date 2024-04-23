@@ -1,8 +1,12 @@
 using Azure.Monitor.OpenTelemetry.Exporter;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+
 using MuzakBot.App.Metrics;
 using MuzakBot.Lib.Services.Extensions.Telemetry;
+
+using OpenTelemetry.Instrumentation.EntityFrameworkCore;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.ResourceDetectors.Container;
@@ -106,12 +110,16 @@ internal static class OpenTelemetryExtensions
                     .CreateDefault()
                     .AddService("MuzakBot")
                     .AddDetector(new ContainerResourceDetector());
-            
+
                 tracing
                     .AddMuzakBotTraceSources()
                     .AddMuzakBotServicesTraceSources()
                     .SetResourceBuilder(resourceBuilder)
-                    .AddHttpClientInstrumentation();
+                    .AddHttpClientInstrumentation()
+                    .AddEntityFrameworkCoreInstrumentation(options =>
+                    {
+                        options.SetDbStatementForText = true;
+                    });
 
                 tracing.AddOtlpExporter();
 

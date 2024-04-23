@@ -2,6 +2,8 @@ using System.Text;
 using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
+
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MuzakBot.Lib.Models.Database.LyricsAnalyzer;
 
@@ -27,7 +29,12 @@ public partial class AdminCommandModule
         LyricsAnalyzerConfig lyricsAnalyzerConfig;
         try
         {
-            lyricsAnalyzerConfig = await _cosmosDbService.GetLyricsAnalyzerConfigAsync();
+            using (var dbContext = _lyricsAnalyzerDbContextFactory.CreateDbContext())
+            {
+                lyricsAnalyzerConfig = await dbContext.LyricsAnalyzerConfigs
+                    .WithPartitionKey("lyricsanalyzer-config")
+                    .FirstAsync();
+            }
         }
         catch (Exception ex)
         {

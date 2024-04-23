@@ -30,8 +30,7 @@ public static class DatabaseConfigExtensions
                 DatabaseType = databaseType,
                 CosmosDbConfig = new()
                 {
-                    ConnectionString = configuration.GetValue<string>("COSMOSDB_CONNECTIONSTRING") ?? throw new ConfigValueNotFoundException("COSMOSDB_CONNECTIONSTRING"),
-                    DatabaseName = configuration.GetValue<string>("COSMOSDB_DB_NAME") ?? throw new ConfigValueNotFoundException("COSMOSDB_DB_NAME")
+                    ConnectionString = configuration.GetValue<string>("COSMOSDB_CONNECTIONSTRING") ?? throw new ConfigValueNotFoundException("COSMOSDB_CONNECTIONSTRING")
                 }
             },
 
