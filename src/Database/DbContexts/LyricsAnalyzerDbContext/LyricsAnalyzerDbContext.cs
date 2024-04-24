@@ -53,6 +53,11 @@ public class LyricsAnalyzerDbContext : DbContext
     /// </summary>
     public DbSet<LyricsAnalyzerUserRateLimit> LyricsAnalyzerUserRateLimits { get; set; } = null!;
 
+    /// <summary>
+    /// <see cref="AnalyzedLyrics"/> items in the database.
+    /// </summary>
+    public DbSet<AnalyzedLyrics> AnalyzedLyricsItems { get; set; } = null!;
+
     /// <inheritdoc/>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -63,6 +68,7 @@ public class LyricsAnalyzerDbContext : DbContext
             .CreateLyricsAnalyzerItemModel()
             .CreateLyricsAnalyzerConfigModel()
             .CreateLyricsAnalyzerPromptStyleModel()
-            .CreateLyricsAnalyzerUserRateLimitModel();
+            .CreateLyricsAnalyzerUserRateLimitModel()
+            .CreateAnalyedLyricsModel();
     }    
 }

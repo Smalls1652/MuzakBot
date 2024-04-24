@@ -312,6 +312,17 @@ public partial class LyricsAnalyzerCommandModule
 
                 await dbContext.SaveChangesAsync();
             }
+
+            AnalyzedLyrics analyzedLyrics = new(
+                artistName: artistName,
+                songName: songName,
+                promptStyleUsed: promptStyle.ShortName,
+                songLyricsId: lyricsAnalyzerItem.Id,
+                analysis: openAiChatCompletion.Choices[0].Message.Content
+            );
+
+            dbContext.AnalyzedLyricsItems.Add(analyzedLyrics);
+            await dbContext.SaveChangesAsync();
         }
         catch (Exception ex)
         {

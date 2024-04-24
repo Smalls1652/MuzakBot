@@ -369,4 +369,63 @@ internal static class LyricsAnalyzerDbContextModelBuilderExtensions
 
         return modelBuilder;
     }
+
+    /// <summary>
+    /// Creates the model for the <see cref="AnalyzedLyrics"/> class.
+    /// </summary>
+    /// <param name="modelBuilder">The model builder.</param>
+    /// <returns>The same builder instance so that multiple calls can be chained.</returns>
+    public static ModelBuilder CreateAnalyedLyricsModel(this ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<AnalyzedLyrics>(entity =>
+        {
+            entity.ToTable("analyzed_lyrics");
+            entity.ToContainer("analyzed_lyrics");
+
+            entity.HasKey(e => e.Id);
+            entity.HasPartitionKey(e => e.PartitionKey);
+
+            entity
+                .Property(e => e.Id)
+                .HasColumnName("id")
+                .ToJsonProperty("id");
+
+            entity
+                .Property(e => e.PartitionKey)
+                .HasColumnName("partitionKey")
+                .ToJsonProperty("partitionKey");
+
+            entity
+                .Property(e => e.CreatedAt)
+                .HasColumnName("createdAt")
+                .ToJsonProperty("createdAt");
+
+            entity
+                .Property(e => e.ArtistName)
+                .HasColumnName("artistName")
+                .ToJsonProperty("artistName");
+
+            entity
+                .Property(e => e.SongName)
+                .HasColumnName("songName")
+                .ToJsonProperty("songName");
+
+            entity
+                .Property(e => e.PromptStyleUsed)
+                .HasColumnName("promptStyleUsed")
+                .ToJsonProperty("promptStyleUsed");
+
+            entity
+                .Property(e => e.SongLyricsId)
+                .HasColumnName("songLyricsId")
+                .ToJsonProperty("songLyricsId");
+
+            entity
+                .Property(e => e.Analysis)
+                .HasColumnName("analysis")
+                .ToJsonProperty("analysis");
+        });
+
+        return modelBuilder;
+    }
 }
