@@ -21,7 +21,7 @@ public partial class LyricsAnalyzerCommandModule : InteractionModuleBase<SocketI
 {
     private bool _isDisposed;
     private readonly ActivitySource _activitySource = new("MuzakBot.App.Modules.LyricsAnalyzerCommandModule");
-    private readonly IMusicBrainzService _musicBrainzService;
+    private readonly IOdesliService _odesliService;
     private readonly IAppleMusicApiService _appleMusicApiService;
     private readonly IGeniusApiService _geniusApiService;
     private readonly IOpenAiService _openAiService;
@@ -33,14 +33,14 @@ public partial class LyricsAnalyzerCommandModule : InteractionModuleBase<SocketI
     /// <summary>
     /// Initializes a new instance of the <see cref="LyricsAnalyzerCommandModule"/> class.
     /// </summary>
-    /// <param name="musicBrainzService">The <see cref="IMusicBrainzService"/>.</param>
+    /// <param name="odesliService">The <see cref="IOdesliService"/>.</param>
     /// <param name="geniusApiService">The <see cref="IGeniusApiService"/>.</param>
     /// <param name="openAiService">The <see cref="IOpenAiService"/>.</param>
     /// <param name="httpClientFactory">The <see cref="IHttpClientFactory"/>.</param>
     /// <param name="logger">The logger.</param>
-    public LyricsAnalyzerCommandModule(IMusicBrainzService musicBrainzService, IAppleMusicApiService appleMusicApiService, IGeniusApiService geniusApiService, IOpenAiService openAiService, IDbContextFactory<LyricsAnalyzerDbContext> lyricsAnalyzerContextFactory, IQueueClientService queueClientService, IHttpClientFactory httpClientFactory, ILogger<LyricsAnalyzerCommandModule> logger)
+    public LyricsAnalyzerCommandModule(IOdesliService odesliService, IAppleMusicApiService appleMusicApiService, IGeniusApiService geniusApiService, IOpenAiService openAiService, IDbContextFactory<LyricsAnalyzerDbContext> lyricsAnalyzerContextFactory, IQueueClientService queueClientService, IHttpClientFactory httpClientFactory, ILogger<LyricsAnalyzerCommandModule> logger)
     {
-        _musicBrainzService = musicBrainzService;
+        _odesliService = odesliService;
         _appleMusicApiService = appleMusicApiService;
         _geniusApiService = geniusApiService;
         _openAiService = openAiService;
