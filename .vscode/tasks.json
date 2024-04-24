@@ -1,4 +1,4 @@
-{
+﻿{
   "version": "2.0.0",
   "tasks": [
     {
@@ -236,6 +236,10 @@
         {
           "label": "MuzakBot: DatabaseDesign",
           "value": "src/DatabaseDesign/"
+        },
+        {
+          "label": "WebApp",
+          "value": "src/WebApp/"
         }
       ]
     },
@@ -294,6 +298,10 @@
         {
           "label": "MuzakBot: GeniusService",
           "value": "src/GeniusService/"
+        },
+        {
+          "label": "WebApp",
+          "value": "src/WebApp/"
         }
       ]
     },
@@ -310,6 +318,10 @@
         {
           "label": "MuzakBot: GeniusService",
           "value": "src/GeniusService/"
+        },
+        {
+          "label": "WebApp",
+          "value": "src/WebApp/"
         }
       ]
     },

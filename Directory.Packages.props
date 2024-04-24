@@ -12,6 +12,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageVersion>
+    <PackageVersion Include="MarkDig" Version="0.37.0" />
     <PackageVersion Include="Microsoft.Azure.Cosmos" Version="3.39.1" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="8.0.4" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Abstractions" Version="8.0.4" />

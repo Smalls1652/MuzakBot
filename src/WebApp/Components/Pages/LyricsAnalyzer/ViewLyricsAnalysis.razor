@@ -1,0 +1,72 @@
+@namespace MuzakBot.WebApp.Components.Pages
+
+@page "/lyrics-analyzer/analysis"
+@page "/lyrics-analyzer/analysis/{AnalysisId}"
+
+<div class="row">
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    <h2>
+                        Lyrics Analysis
+                    </h2>
+                </div>
+
+                <div class="card-body">
+                @if (_loading)
+                {
+                    <div class="row pt-2">
+                        <div class="col">
+                            <p>Loading...</p>
+                        </div>
+                    </div>
+                }
+
+                @if (_errorOccurred)
+                {
+                    <div class="row pt-2">
+                        <div class="col">
+                            <p>
+                                @_errorMessage!
+                            </p>
+                        </div>
+                    </div>
+                }
+
+                @if (_analyzedLyrics is null && !_errorOccurred && !_loading)
+                {
+                    <div class="row pt-2">
+                        <div class="col">
+                            <h3>
+                                Not a valid lyric analysis
+                            </h3>
+                        </div>
+                    </div>
+                }
+
+                @if (_analyzedLyrics is not null && _analyzedLyricsEnriched is not null && !_errorOccurred && !_loading)
+                {
+                    <div class="row pt-2">
+                        <div class="col">
+                            <h3>
+                                @_analyzedLyrics.SongName by @_analyzedLyrics.ArtistName
+                            </h3>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <hr />
+                        </div>
+                    </div>
+                    <div class="row pt-2">
+                        <div class="col">
+                            <div>
+                                @((MarkupString)_analyzedLyricsEnriched)
+                            </div>
+                        </div>
+                    </div>
+                }
+                </div>
+            </div>
+    </div>
+</div>

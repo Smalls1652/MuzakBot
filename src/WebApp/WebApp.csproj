@@ -1,0 +1,143 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+    <!-- Core properties-->
+    <PropertyGroup>
+        <RootNamespace>MuzakBot.WebApp</RootNamespace>
+        <AssemblyName>MuzakBot.WebApp</AssemblyName>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+        <EnableConfigurationBindingGenerator>true</EnableConfigurationBindingGenerator>
+    </PropertyGroup>
+    <!-- Package properties -->
+    <PropertyGroup>
+        <PackageId>MuzakBot.WebApp</PackageId>
+        <Description>
+			Website for MuzakBot.
+		</Description>
+        <Authors>Timothy Small</Authors>
+        <Company>Smalls.Online</Company>
+        <Copyright>© 2024 Smalls.Online</Copyright>
+        <RepositoryUrl>https://github.com/Smalls1652/MuzakBot</RepositoryUrl>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    </PropertyGroup>
+    <!-- Dependencies -->
+    <ItemGroup>
+        <PackageReference Include="Discord.Net" />
+        <PackageReference Include="MarkDig" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Database\Database.csproj" />
+        <ProjectReference Include="..\Lib\Lib.csproj" />
+    </ItemGroup>
+    <!-- Files to include/exclude -->
+    <ItemGroup>
+        <!-- Exclude 'package.json' -->
+        <Content Update="package.json">
+            <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+            <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+        </Content>
+        <!-- Exclude 'package-lock.json' -->
+        <Content Update="package-lock.json">
+            <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+            <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+        </Content>
+        <!-- Exclude files in 'node_modules\' -->
+        <None Include="node_modules\**\*">
+            <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+            <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+        </None>
+        <None Remove="node_modules\**\*" />
+    </ItemGroup>
+    <!-- Custom targets -->
+    <!-- 
+    Name:
+        CopyWebDependencyFiles
+
+    Description:
+        Copies web dependency files to the 'wwwroot\' directory.
+    -->
+    <Target Name="CopyWebDependencyFiles" BeforeTargets="Build">
+        <CallTarget Targets="CopyBootstrapFiles" />
+        <CallTarget Targets="CopyBootstrapJsFiles" />
+        <CallTarget Targets="CopyPopperJsFiles" />
+        <CallTarget Targets="CopyBootstrapIconsFiles" />
+    </Target>
+    <!-- 
+    Name:
+        CopyBootstrapFiles
+
+    Description:
+        Copies Bootstrap files to the 'wwwroot\css\bootstrap' directory.
+    -->
+    <Target Name="CopyBootstrapFiles">
+        <PropertyGroup>
+            <BootstrapCss_OutputPath>$(MSBuildProjectDirectory)\wwwroot\css\bootstrap\</BootstrapCss_OutputPath>
+        </PropertyGroup>
+        <ItemGroup>
+            <BootstrapCssFiles Include="$(MSBuildProjectDirectory)\node_modules\bootstrap\dist\css\bootstrap.min.css;$(MSBuildProjectDirectory)\node_modules\bootstrap\dist\css\bootstrap.min.css.map" />
+        </ItemGroup>
+        <MakeDir Directories="$(BootstrapCss_OutputPath)" />
+        <Copy SourceFiles="@(BootstrapCssFiles)" DestinationFolder="$(BootstrapCss_OutputPath)" />
+        <Message Importance="high" Text="Bootstrap CSS -&gt; $(BootstrapCss_OutputPath)" />
+    </Target>
+    <!-- 
+    Name:
+        CopyBootstrapJsFiles
+
+    Description:
+        Copies Bootstrap JavaScript files to the 'wwwroot\js\bootstrap' directory.
+    -->
+    <Target Name="CopyBootstrapJsFiles">
+        <PropertyGroup>
+            <BootstrapJs_OutputPath>$(MSBuildProjectDirectory)\wwwroot\js\bootstrap\</BootstrapJs_OutputPath>
+        </PropertyGroup>
+        <ItemGroup>
+            <BootstrapJsFiles Include="$(MSBuildProjectDirectory)\node_modules\bootstrap\dist\js\bootstrap.bundle.min.js;$(MSBuildProjectDirectory)\node_modules\bootstrap\dist\js\bootstrap.bundle.min.js.map" />
+        </ItemGroup>
+        <MakeDir Directories="$(BootstrapJs_OutputPath)" />
+        <Copy SourceFiles="@(BootstrapJsFiles)" DestinationFolder="$(BootstrapJs_OutputPath)" />
+        <Message Importance="high" Text="Bootstrap JavaScript -&gt; $(BootstrapJs_OutputPath)" />
+    </Target>
+    <!-- 
+    Name:
+        CopyPopperJsFiles
+
+    Description:
+        Copies PopperJS files to the 'wwwroot\js\popper' directory.
+    -->
+    <Target Name="CopyPopperJsFiles">
+        <PropertyGroup>
+            <PopperJs_OutputPath>$(MSBuildProjectDirectory)\wwwroot\js\popper\</PopperJs_OutputPath>
+        </PropertyGroup>
+        <ItemGroup>
+            <PopperJsFiles Include="$(MSBuildProjectDirectory)\node_modules\@popperjs\core\dist\cjs\popper.js" />
+        </ItemGroup>
+        <MakeDir Directories="$(PopperJs_OutputPath)" />
+        <Copy SourceFiles="@(PopperJsFiles)" DestinationFolder="$(PopperJs_OutputPath)" />
+        <Message Importance="high" Text="PopperJS -&gt; $(PopperJs_OutputPath)" />
+    </Target>
+    <!-- 
+    Name:
+        CopyBootstrapIconsFiles
+
+    Description:
+        Copies Bootstrap Icons files to the 'wwwroot\css\bootstrap-icons' directory.
+    -->
+    <Target Name="CopyBootstrapIconsFiles">
+        <PropertyGroup>
+            <BootstrapIcons_OutputPath>$(MSBuildProjectDirectory)\wwwroot\css\bootstrap-icons\</BootstrapIcons_OutputPath>
+            <BootstrapIconsFonts_OutputPath>$(MSBuildProjectDirectory)\wwwroot\css\bootstrap-icons\fonts\</BootstrapIconsFonts_OutputPath>
+        </PropertyGroup>
+        <ItemGroup>
+            <BootstrapIconFiles Include="$(MSBuildProjectDirectory)\node_modules\bootstrap-icons\font\bootstrap-icons.css;" />
+            <BootstrapIconFontFiles Include="$(MSBuildProjectDirectory)\node_modules\bootstrap-icons\font\fonts\**\*" />
+        </ItemGroup>
+        <MakeDir Directories="$(BootstrapIcons_OutputPath)" />
+        <Copy SourceFiles="@(BootstrapIconFiles)" DestinationFolder="$(BootstrapIcons_OutputPath)" />
+        <Message Importance="high" Text="Bootstrap Icons -&gt; $(BootstrapIcons_OutputPath)" />
+        <MakeDir Directories="$(BootstrapIconsFonts_OutputPath)" />
+        <Copy SourceFiles="@(BootstrapIconFontFiles)" DestinationFolder="$(BootstrapIconsFonts_OutputPath)" />
+        <Message Importance="high" Text="Bootstrap Icons Fonts -&gt; $(BootstrapIconsFonts_OutputPath)" />
+    </Target>
+</Project>
