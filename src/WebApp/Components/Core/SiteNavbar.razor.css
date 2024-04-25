@@ -1,0 +1,8 @@
+.bg-grayer {
+    background-color: rgba(60, 66, 79, .85);
+}
+
+.navbar-blur {
+    -webkit-backdrop-filter: blur(7px);
+    backdrop-filter: blur(7px);
+}
