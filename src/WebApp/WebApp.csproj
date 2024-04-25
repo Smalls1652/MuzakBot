@@ -52,6 +52,17 @@
     <!-- Custom targets -->
     <!-- 
     Name:
+        RunNpmInstall
+
+    Description:
+        Runs 'npm install' to install web dependencies.
+    -->
+    <Target Name="RunNpmInstall" BeforeTargets="CopyWebDependencyFiles" Condition="!Exists('node_modules') Or '$(FORCE_NPM_INSTALL)'=='true'">
+        <Message Importance="high" Text="WebApp -&gt; Running 'npm install'..." />
+        <Exec Command="npm install" />
+    </Target>
+    <!-- 
+    Name:
         CopyWebDependencyFiles
 
     Description:
