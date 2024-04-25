@@ -1,3 +1,22 @@
+body {
+    background-color: rgb(221, 226, 227) !important;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+.background-img {
+    background-color: rgb(221, 226, 227) !important;
+    background: linear-gradient(116deg, rgba(221, 226, 227, 1) 0%, rgba(161, 175, 211, 1) 97%);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    min-width: 100vw;
+    min-height: 100vh;
+    position: fixed;
+    z-index: -1;
+}
+
 h1:focus {
     outline: none;
 }
