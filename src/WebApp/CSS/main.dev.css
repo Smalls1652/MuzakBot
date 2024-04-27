@@ -189,7 +189,7 @@ body {
 }
 
 .navbar-toggler-button {
-    @apply text-3xl;
+    @apply text-3xl mr-4;
 }
 
 @media (min-width: 992px) {
