@@ -1,4 +1,4 @@
-﻿{
+{
   "debug.internalConsoleOptions": "neverOpen",
   "git.detectSubmodules": false,
   "dotnet.defaultSolution": "MuzakBot.sln",
@@ -6,5 +6,6 @@
   "dotnet.server.path": "latest",
   "task.quickOpen.history": 0,
   "task.autoDetect": "off",
-  "powershell.startAutomatically": false
+  "powershell.startAutomatically": false,
+  "azurite.location": "./.azurite"
 }

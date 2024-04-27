@@ -6,6 +6,7 @@ bootstrap/
 bootstrap-icons/
 popper/
 main.css
+.azurite/
 
 __blobstorage__/
 __queuestorage__/
