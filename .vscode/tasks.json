@@ -1,4 +1,4 @@
-﻿{
+{
   "version": "2.0.0",
   "tasks": [
     {
@@ -180,6 +180,35 @@
         "cwd": "${workspaceFolder}"
       },
       "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "Watch CSS file",
+      "detail": "Watch the CSS file for changes.",
+      "icon": {
+        "id": "feedback"
+      },
+      "type": "npm",
+      "script": "watch-css",
+      "options": {
+        "cwd": "${workspaceFolder}/src/WebApp/"
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "isBackground": true,
+      "problemMatcher": {
+        "base": "$msCompile",
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "^Processing .+?\\.css$",
+          "endsPattern": "^Waiting for file changes\\.\\.\\.$"
+        }
+      }
     }
   ],
   "inputs": [
