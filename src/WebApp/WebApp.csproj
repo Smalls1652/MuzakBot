@@ -30,6 +30,14 @@
         <ProjectReference Include="..\Database\Database.csproj" />
         <ProjectReference Include="..\Lib\Lib.csproj" />
     </ItemGroup>
+    <!-- .NET Watch settings
+    <ItemGroup>
+        <Watch
+            Include="**\*.cs;**\*.js;**\*.razor;**\*.html;**\*.cshtml"
+            Exclude="node_modules\**\*"
+        />
+    </ItemGroup>
+    -->
     <!-- Files to include/exclude -->
     <ItemGroup>
         <!-- Exclude 'package.json' -->
@@ -73,6 +81,7 @@
         <CallTarget Targets="CopyBootstrapJsFiles" />
         <CallTarget Targets="CopyPopperJsFiles" />
         <CallTarget Targets="CopyBootstrapIconsFiles" />
+        <CallTarget Targets="BuildTailwindCss" Condition="'$(Configuration)'=='Release'" />
     </Target>
     <!-- 
     Name:
@@ -150,5 +159,19 @@
         <MakeDir Directories="$(BootstrapIconsFonts_OutputPath)" />
         <Copy SourceFiles="@(BootstrapIconFontFiles)" DestinationFolder="$(BootstrapIconsFonts_OutputPath)" />
         <Message Importance="high" Text="Bootstrap Icons Fonts -&gt; $(BootstrapIconsFonts_OutputPath)" />
+    </Target>
+    <!-- 
+    Name:
+        BuildTailwindCss
+
+    Description:
+        Builds and Copies Tailwind CSS files to the 'wwwroot\css\' directory.
+    -->
+    <Target Name="BuildTailwindCss">
+        <PropertyGroup>
+            <TailwindCss_MainCssFile>$(MSBuildProjectDirectory)\CSS\main.dev.css</TailwindCss_MainCssFile>
+            <TaildwindCss_OutputPath>$(MSBuildProjectDirectory)\wwwroot\css\main.css</TaildwindCss_OutputPath>
+        </PropertyGroup>
+        <Exec Command="npx postcss --output '$(TaildwindCss_OutputPath)' '$(TailwindCss_MainCssFile)'" />
     </Target>
 </Project>
