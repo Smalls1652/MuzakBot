@@ -5,6 +5,10 @@
         <div class="page-card w-full">
             <div class="page-card-header">
                 <h2 class="card-title">
+                    @if (Icon is not null)
+                    {
+                        <i class="bi bi-@(Icon) mr-2"></i>
+                    }
                     @Title
                 </h2>
             </div>

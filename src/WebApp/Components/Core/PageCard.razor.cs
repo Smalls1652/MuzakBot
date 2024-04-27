@@ -9,5 +9,8 @@ public partial class PageCard : ComponentBase
     public string Title { get; set; } = null!;
 
     [Parameter]
+    public string? Icon { get; set; }
+
+    [Parameter]
     public RenderFragment? ChildContent { get; set; }
 }
