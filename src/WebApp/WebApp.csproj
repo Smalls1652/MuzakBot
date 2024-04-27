@@ -77,9 +77,6 @@
         Copies web dependency files to the 'wwwroot\' directory.
     -->
     <Target Name="CopyWebDependencyFiles" BeforeTargets="Build">
-        <CallTarget Targets="CopyBootstrapFiles" />
-        <CallTarget Targets="CopyBootstrapJsFiles" />
-        <CallTarget Targets="CopyPopperJsFiles" />
         <CallTarget Targets="CopyBootstrapIconsFiles" />
         <CallTarget Targets="BuildTailwindCss" Condition="'$(Configuration)'=='Release'" />
     </Target>
