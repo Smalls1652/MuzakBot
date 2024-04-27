@@ -3,10 +3,25 @@
 @using MuzakBot.WebApp.Components.Core
 @using MuzakBot.WebApp.Components.LyricsAnalyzer
 
-@rendermode @(new InteractiveServerRenderMode(false))
-
 @page "/lyrics-analyzer/analysis"
 @page "/lyrics-analyzer/analysis/{AnalysisId}"
+
+<HeadContent>
+    @if (_loading)
+    {
+        <PageTitle>MuzakBot - Lyrics analysis - Loading...</PageTitle>
+    }
+
+    @if (_errorOccurred)
+    {
+        <PageTitle>MuzakBot - Lyrics analysis - Error</PageTitle>
+    }
+
+    @if (_analyzedLyrics is not null && _analyzedLyricsEnriched is not null && !_errorOccurred && !_loading)
+    {
+        <PageTitle>MuzakBot - Lyrics analysis - @_analyzedLyrics.SongName by @_analyzedLyrics.ArtistName</PageTitle>
+    }
+</HeadContent>
 
 <PageCard Title="Lyrics Analysis">
     @if (_loading)

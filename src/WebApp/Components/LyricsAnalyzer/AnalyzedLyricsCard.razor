@@ -1,7 +1,7 @@
 @namespace MuzakBot.WebApp.Components.LyricsAnalyzer
 
-<div class="row pt-2">
-    <div class="col">
+<div class="grid grid-flow-row auto-rows-auto">
+    <div>
         <h3>
             @AnalyzedLyrics.SongName
         </h3>
@@ -9,16 +9,11 @@
             by @AnalyzedLyrics.ArtistName
         </div>
     </div>
-</div>
-<div class="row">
-    <div class="col">
-        <hr />
-    </div>
-</div>
-<div class="row pt-2">
-    <div class="col">
-        <div>
-            @((MarkupString)AnalysisMarkdown)
+    <div class="pt-2">
+        <div class="col">
+            <div>
+                @((MarkupString)AnalysisMarkdown)
+            </div>
         </div>
     </div>
 </div>

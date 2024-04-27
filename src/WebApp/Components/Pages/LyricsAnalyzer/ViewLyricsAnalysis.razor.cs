@@ -9,6 +9,7 @@ using MuzakBot.Lib.Models.Database.LyricsAnalyzer;
 
 namespace MuzakBot.WebApp.Components.Pages;
 
+[StreamRendering(false)]
 public partial class ViewLyricsAnalysis : ComponentBase
 {
     [Inject]
@@ -62,5 +63,7 @@ public partial class ViewLyricsAnalysis : ComponentBase
         );
 
         _loading = false;
+
+        StateHasChanged();
     }
 }
