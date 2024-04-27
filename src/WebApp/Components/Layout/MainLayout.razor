@@ -1,0 +1,26 @@
+﻿@namespace MuzakBot.WebApp.Components.Layout
+
+@using MuzakBot.WebApp.Components.Core
+
+@inherits LayoutComponentBase
+
+<header>
+    <div class="background-img"></div>
+    <SiteNavbar />
+</header>
+
+<main class="pt-5 pb-10">
+    <div class="md:container md:mx-auto page-container">
+        <div class="flex justify-center mt-2">
+            <div class="flex-auto w-full" id="pagecontent">
+                @Body
+            </div>
+        </div>
+    </div>
+</main>
+
+<div id="blazor-error-ui">
+    An unhandled error has occurred.
+    <a href="" class="reload">Reload</a>
+    <a class="dismiss">🗙</a>
+</div>

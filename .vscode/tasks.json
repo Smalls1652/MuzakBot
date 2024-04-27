@@ -180,6 +180,35 @@
         "cwd": "${workspaceFolder}"
       },
       "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "Watch CSS file",
+      "detail": "Watch the CSS file for changes.",
+      "icon": {
+        "id": "feedback"
+      },
+      "type": "npm",
+      "script": "watch-css",
+      "options": {
+        "cwd": "${workspaceFolder}/src/WebApp/"
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "isBackground": true,
+      "problemMatcher": {
+        "base": "$msCompile",
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "^Processing .+?\\.css$",
+          "endsPattern": "^Waiting for file changes\\.\\.\\.$"
+        }
+      }
     }
   ],
   "inputs": [
@@ -236,6 +265,10 @@
         {
           "label": "MuzakBot: DatabaseDesign",
           "value": "src/DatabaseDesign/"
+        },
+        {
+          "label": "WebApp",
+          "value": "src/WebApp/"
         }
       ]
     },
@@ -294,6 +327,10 @@
         {
           "label": "MuzakBot: GeniusService",
           "value": "src/GeniusService/"
+        },
+        {
+          "label": "WebApp",
+          "value": "src/WebApp/"
         }
       ]
     },
@@ -310,6 +347,10 @@
         {
           "label": "MuzakBot: GeniusService",
           "value": "src/GeniusService/"
+        },
+        {
+          "label": "WebApp",
+          "value": "src/WebApp/"
         }
       ]
     },

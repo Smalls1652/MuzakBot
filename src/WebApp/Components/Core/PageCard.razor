@@ -1,0 +1,20 @@
+@namespace MuzakBot.WebApp.Components.Core
+
+<div class="grid grid-flow-row auto-rows-auto">
+    <div class="columns-1">
+        <div class="page-card w-full">
+            <div class="page-card-header">
+                <h2 class="card-title">
+                    @if (Icon is not null)
+                    {
+                        <i class="bi bi-@(Icon) mr-2"></i>
+                    }
+                    @Title
+                </h2>
+            </div>
+            <div class="page-card-body">
+                @ChildContent
+            </div>
+        </div>
+    </div>
+</div>

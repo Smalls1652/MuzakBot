@@ -1,0 +1,53 @@
+.navbar-container {
+    @apply w-full mx-2 py-2;
+
+    padding-left: calc(var(--gutter-x) * .5);
+    padding-right: calc(var(--gutter-x) * 1);
+}
+
+.navbar-brand {
+    @apply shrink flex gap-x-2 items-center;
+}
+
+.navbar-brand > div > .navbar-logo {
+    min-width: 50px;
+    min-height: 50px;
+    border-radius: 50%;
+}
+
+.navbar-brand > div > .navbar-title {
+    @apply text-2xl font-bold;
+}
+
+.navbar-items {
+    @apply flex justify-end w-full;
+}
+
+.navbar-links {
+    @apply flex row-auto gap-x-3 list-none items-center;
+}
+
+.navbar-link {
+    @apply text-lg;
+}
+
+.navbar-link {
+    @apply text-gray-300;
+}
+
+.navbar-link:hover {
+    @apply text-gray-50;
+}
+
+.navbar-link.active {
+    @apply text-white;
+}
+
+.bg-grayer {
+    background-color: rgba(60, 66, 79, .85);
+}
+
+.navbar-blur {
+    -webkit-backdrop-filter: blur(7px);
+    backdrop-filter: blur(7px);
+}

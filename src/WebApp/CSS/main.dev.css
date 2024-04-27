@@ -1,0 +1,223 @@
+@config "../tailwind.config.js";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+
+    h1 {
+        @apply text-5xl;
+    }
+
+    h2 {
+        @apply text-4xl font-semibold;
+    }
+
+    h3 {
+        @apply text-3xl;
+    }
+
+    h4 {
+        @apply text-2xl font-bold;
+    }
+
+    h5 {
+        @apply text-xl font-bold;
+    }
+
+    h6 {
+        @apply text-lg font-bold;
+    }
+
+    p {
+        @apply mt-0 mb-4;
+    }
+}
+
+:root {
+    --gutter-x: 1.5rem;
+    --gutter-y: 0;
+}
+
+.clearfix::after {
+    display: block;
+    clear: both;
+    content: "";
+}
+
+.text-muted {
+    @apply text-gray-500;
+}
+
+.page-container {
+    @apply w-full ml-auto mr-auto;
+
+    padding-left: calc(var(--gutter-x) * .5);
+    padding-right: calc(var(--gutter-x) * .5);
+}
+
+.row {
+    @apply flex flex-wrap;
+}
+
+/* Navbar */
+
+.navbar-container {
+    @apply flex w-full mx-2 py-2;
+
+    padding-left: calc(var(--gutter-x) * .5);
+    padding-right: calc(var(--gutter-x) * 1);
+}
+
+@media (max-width: 991px) {
+    .navbar-container {
+        @apply flex-col;
+    }
+}
+
+@media (min-width: 992px) {
+    .navbar-container {
+        @apply flex-row;
+    }
+}
+
+.navbar-brand {
+    @apply shrink flex gap-x-2 items-center;
+}
+
+.navbar-brand > div > .navbar-logo {
+    min-width: 50px;
+    min-height: 50px;
+    border-radius: 50%;
+}
+
+.navbar-brand > div > .navbar-title {
+    @apply text-2xl font-bold;
+}
+
+.navbar-items {
+    @apply flex flex-auto justify-end w-full basis-full;
+}
+
+@media (min-width: 992px) {
+    .navbar-links {
+        @apply items-center;
+    }
+}
+
+@media (max-width: 991px) {
+    .navbar-links {
+        @apply items-start pt-4;
+    }
+}
+
+@media (max-width: 991px) {
+    .navbar-links {
+        @apply flex flex-col list-none gap-y-2 grow;
+    }
+}
+
+@media (min-width: 992px) {
+    .navbar-links {
+        @apply flex row-auto gap-x-3 list-none;
+    }
+}
+
+.navbar-link {
+    @apply text-lg;
+}
+
+.navbar-link:not(.active) {
+    @apply transition ease-in-out duration-200;
+    @apply text-gray-300;
+}
+
+.navbar-link:hover {
+    @apply transition ease-in-out duration-200;
+    @apply text-gray-50;
+}
+
+.navbar-link.active {
+    @apply text-white;
+}
+
+@media (max-width: 991px) {
+    .navbar-collapse:not(.show) {
+        @apply hidden; 
+    }
+}
+
+.navbar-collapse-animation {
+    height: 0;
+    overflow: hidden;
+    transition-property: height;
+    transition-duration: 500ms;
+    transition-timing-function: ease;
+}
+
+.navbar-toggler-button {
+    @apply text-3xl;
+}
+
+@media (min-width: 992px) {
+    .navbar-toggler-button {
+        @apply hidden;
+    }
+}
+
+.bg-grayer {
+    background-color: rgba(60, 66, 79, .85);
+}
+
+.navbar-blur {
+    -webkit-backdrop-filter: blur(7px);
+    backdrop-filter: blur(7px);
+}
+
+/* Page Card */
+
+.page-card {
+    @apply bg-white shadow-lg rounded-lg;
+}
+
+.page-card-header {
+    @apply bg-gray-500 p-4 border border-solid border-stone-300 text-white;
+    @apply rounded-lg shadow-md;
+}
+
+.page-card-header > :is(h1, h2, h3, h4, h5, h6) {
+    text-shadow:
+        1px 1px 20px #000;
+}
+
+.page-card-body {
+    @apply flex px-4 pt-5 pb-2 leading-relaxed;
+}
+
+@media (min-width: 992px) {
+    .page-card-body-image {
+        @apply grid grid-flow-col grid-cols-10 gap-x-2 flex-col-reverse;
+    }
+}
+
+@media (max-width: 991px) {
+    .page-card-body-image {
+        @apply flex flex-col-reverse gap-y-2;
+    }
+}
+
+@media (max-width: 991px) {
+    .muzakbot-logo-img {
+        height: auto;
+        width: 100%;
+    }
+}
+
+@media (min-width: 992px) {
+    .muzakbot-logo-img {
+        height: auto;
+        width: 256px;
+        max-width: 256px;
+    }
+}

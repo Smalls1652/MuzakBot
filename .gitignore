@@ -2,6 +2,10 @@ appsettings.Development.json
 appsettings.Staging.json
 .idea/
 localdbs/
+bootstrap/
+bootstrap-icons/
+popper/
+main.css
 
 __blobstorage__/
 __queuestorage__/

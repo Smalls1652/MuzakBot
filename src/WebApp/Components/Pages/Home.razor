@@ -1,0 +1,51 @@
+﻿@namespace MuzakBot.WebApp.Components.Pages
+
+@using MuzakBot.WebApp.Components.Core
+
+@page "/"
+
+<PageTitle>MuzakBot</PageTitle>
+
+<PageCard Title="Home" Icon="house-fill">
+    <div class="basis-full">
+        <div class="clearfix">
+            <img src="images/logo.png" alt="MuzakBot logo" class="muzakbot-logo-img mb-4 float-none md:float-right" />
+            <div class="mb-4">
+                <a href="https://discord.com/oauth2/authorize?client_id=1131341120924831866" rel="noopener noreferrer"
+                    target="_blank">
+                    <img src="https://badgen.net/static/Discord%20Bot/Add%20to%20your%20server%20or%20as%20an%20user%20app!/purple?icon=discord&scale=2"
+                        alt="Add MuzakBot to your Discord server or as an user app!" />
+                </a>
+            </div>
+            <div>
+                <p>
+                    MuzakBot is a Discord bot that provides various music-related features:
+                </p>
+                <ul class="list-disc list-inside mb-4">
+                    <li>
+                        Share music with your friends easily, with links to various music streaming services.
+                    </li>
+                    <li>
+                        Analyze song lyrics with OpenAI's GPT-4.
+                    </li>
+                    <li>
+                        And more to be added in the future!
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <p>
+                    To use it, you can:
+                </p>
+                <ul class="list-disc list-inside">
+                    <li>
+                        Add it directly to your Discord server.
+                    </li>
+                    <li>
+                        Add it as an user app.
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</PageCard>

@@ -1,0 +1,62 @@
+@namespace MuzakBot.WebApp.Components.Pages
+
+@using MuzakBot.WebApp.Components.Core
+@using MuzakBot.WebApp.Components.LyricsAnalyzer
+
+@page "/lyrics-analyzer/analysis"
+@page "/lyrics-analyzer/analysis/{AnalysisId}"
+
+<HeadContent>
+    @if (_loading)
+    {
+        <PageTitle>MuzakBot - Lyrics analysis - Loading...</PageTitle>
+    }
+
+    @if (_errorOccurred)
+    {
+        <PageTitle>MuzakBot - Lyrics analysis - Error</PageTitle>
+    }
+
+    @if (_analyzedLyrics is not null && _analyzedLyricsEnriched is not null && !_errorOccurred && !_loading)
+    {
+        <PageTitle>MuzakBot - Lyrics analysis - @_analyzedLyrics.SongName by @_analyzedLyrics.ArtistName</PageTitle>
+    }
+</HeadContent>
+
+<PageCard Title="Lyrics Analysis" Icon="music-note-list">
+    @if (_loading)
+    {
+        <div class="row pt-2">
+            <div class="col">
+                <p>Loading...</p>
+            </div>
+        </div>
+    }
+
+    @if (_errorOccurred)
+    {
+        <div class="row pt-2">
+            <div class="col">
+                <p>
+                    @_errorMessage!
+                </p>
+            </div>
+        </div>
+    }
+
+    @if (_analyzedLyrics is null && !_errorOccurred && !_loading)
+    {
+        <div class="row pt-2">
+            <div class="col">
+                <h3>
+                    Not a valid lyric analysis
+                </h3>
+            </div>
+        </div>
+    }
+
+    @if (_analyzedLyrics is not null && _analyzedLyricsEnriched is not null && !_errorOccurred && !_loading)
+    {
+        <AnalyzedLyricsCard AnalyzedLyrics="@_analyzedLyrics" AnalysisMarkdown="@_analyzedLyricsEnriched" />
+    }
+</PageCard>

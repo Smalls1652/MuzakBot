@@ -1,0 +1,19 @@
+{
+  "name": "muzakbot.webapp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "watch-css": "postcss --watch --output \"./wwwroot/css/main.css\" --verbose \"./CSS/main.dev.css\""
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "autoprefixer": "^10.4.19",
+    "bootstrap-icons": "^1.11.3",
+    "cssnano": "^7.0.1",
+    "postcss-cli": "^11.0.0",
+    "postcss-import": "^16.1.0",
+    "tailwindcss": "^3.4.3"
+  }
+}

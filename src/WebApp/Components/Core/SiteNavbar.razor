@@ -1,0 +1,41 @@
+@namespace MuzakBot.WebApp.Components.Core
+
+<nav class="navbar navbar-blur bg-grayer border-bottom border-body">
+    <div class="navbar-container">
+        <div class="flex flex-row items-center">
+            <a class="navbar-brand grow" href="/">
+                <div>
+                    <img src="images/logo.png" alt="MuzakBot logo" width="50" height="50" class="navbar-logo">
+                </div>
+                <div>
+                    <span class="text-white navbar-title self-center">MuzakBot</span>
+                </div>
+            </a>
+            <div class="navbar-toggler">
+                <button class="navbar-toggler-button" id="navbar-toggler-button">
+                    <i class="bi bi-list text-white"></i>
+                </button>
+            </div>
+        </div>
+        <div class="navbar-items navbar-collapse grow" id="navbar-collapse-section">
+            <ul class="navbar-links">
+                <li>
+                    <a href="/" class="navbar-link@(_currentTopLevelPage == "" ? " active" : "")">
+                        <i class="bi bi-house-fill"></i> Home
+                    </a>
+                </li>
+                @{
+                    #if DEBUG
+                }
+                <li>
+                    <a href="/lyrics-analyzer/analysis/33719f9d-3e0a-4c9b-bdd8-82ae06793c9c" class="navbar-link@(_currentTopLevelPage == "lyrics-analyzer" ? " active" : "")">
+                        <i class="bi bi-music-note-list"></i> Lyrics Analyzer
+                    </a>
+                </li>
+                @{
+                    #endif
+                }
+            </ul>
+        </div>
+    </div>
+</nav>

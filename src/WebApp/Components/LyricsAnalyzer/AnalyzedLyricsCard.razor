@@ -1,0 +1,19 @@
+@namespace MuzakBot.WebApp.Components.LyricsAnalyzer
+
+<div class="grid grid-flow-row auto-rows-auto">
+    <div>
+        <h3>
+            @AnalyzedLyrics.SongName
+        </h3>
+        <div class="text-muted">
+            by @AnalyzedLyrics.ArtistName
+        </div>
+    </div>
+    <div class="pt-2">
+        <div class="col">
+            <div>
+                @((MarkupString)AnalysisMarkdown)
+            </div>
+        </div>
+    </div>
+</div>
