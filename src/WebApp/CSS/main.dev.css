@@ -40,6 +40,12 @@
     --gutter-y: 0;
 }
 
+.clearfix::after {
+    display: block;
+    clear: both;
+    content: "";
+}
+
 .text-muted {
     @apply text-gray-500;
 }
@@ -186,7 +192,7 @@
 }
 
 .page-card-body {
-    @apply px-4 pt-5 pb-2 leading-relaxed;
+    @apply flex px-4 pt-5 pb-2 leading-relaxed;
 }
 
 @media (min-width: 992px) {
@@ -198,5 +204,20 @@
 @media (max-width: 991px) {
     .page-card-body-image {
         @apply flex flex-col-reverse gap-y-2;
+    }
+}
+
+@media (max-width: 991px) {
+    .muzakbot-logo-img {
+        height: auto;
+        width: 100%;
+    }
+}
+
+@media (min-width: 992px) {
+    .muzakbot-logo-img {
+        height: auto;
+        width: 256px;
+        max-width: 256px;
     }
 }
