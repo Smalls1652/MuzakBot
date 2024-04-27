@@ -5,6 +5,7 @@ localdbs/
 bootstrap/
 bootstrap-icons/
 popper/
+main.css
 
 __blobstorage__/
 __queuestorage__/
