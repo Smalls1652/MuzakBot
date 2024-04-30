@@ -182,6 +182,58 @@
       "problemMatcher": "$msCompile"
     },
     {
+      "label": "Watch MuzakBot WebApp",
+      "detail": "Run MuzakBot WebApp for local debugging and watch for changes.",
+      "icon": {
+        "id": "eye-watch",
+        "color": "terminal.ansiCyan"
+      },
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "watch",
+        "--",
+        "run",
+        "--configuration",
+        "Debug",
+        "--environment",
+        "Development",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/src/WebApp/",
+        "env": {
+          "DOTNET_ENVIRONMENT": "Development",
+          "GITVERSION_LOCAL_BUILD": "true"
+        }
+      },
+      "runOptions": {
+        "instanceLimit": 2
+      },
+      "presentation": {
+        "echo": false,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": true
+      },
+      "isBackground": true,
+      "problemMatcher": [
+        {
+          "base": "$msCompile",
+          "background": {
+            "activeOnStart": true,
+            "beginsPattern": "^info: Microsoft.\\Hosting\\.Lifetime",
+            "endsPattern": "^\\s*Application started\\..+?$"
+          }
+        }
+      ],
+      "dependsOn": [
+        "Watch CSS file"
+      ]
+    },
+    {
       "label": "Watch CSS file",
       "detail": "Watch the CSS file for changes.",
       "icon": {
