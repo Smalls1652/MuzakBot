@@ -33,6 +33,15 @@
     p {
         @apply mt-0 mb-4;
     }
+
+    dl, ol, ul {
+        @apply list-disc;
+        @apply pl-8 mb-4;
+    }
+
+    dl dl, ol ol, ul ul {
+        @apply mb-0;
+    }
 }
 
 :root {
@@ -146,13 +155,13 @@ body {
 
 @media (max-width: 991px) {
     .navbar-links {
-        @apply flex flex-col list-none gap-y-2 grow;
+        @apply flex flex-col list-none gap-y-2 grow mb-0;
     }
 }
 
 @media (min-width: 992px) {
     .navbar-links {
-        @apply flex row-auto gap-x-3 list-none;
+        @apply flex row-auto gap-x-3 list-none mb-0;
     }
 }
 
@@ -228,7 +237,8 @@ body {
 }
 
 .page-card-body {
-    @apply flex px-4 pt-5 pb-2 leading-relaxed;
+    @apply flex leading-relaxed;
+    @apply px-4 pt-5 pb-2;
 }
 
 @media (min-width: 992px) {
