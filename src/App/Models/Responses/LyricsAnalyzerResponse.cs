@@ -20,13 +20,15 @@ public class LyricsAnalyzerResponse : IResponse
     /// <param name="openAiChatCompletion">The completion from OpenAI's chat API.</param>
     /// <param name="promptStyle">The style of the prompt used for the completion.</param>
     /// <param name="responseId">The response ID.</param>
-    public LyricsAnalyzerResponse(string artistName, string songName, OpenAiChatCompletion openAiChatCompletion, LyricsAnalyzerPromptStyle promptStyle, string responseId)
+    /// <param name="analysisId">The ID of the analysis in the database.</param>
+    public LyricsAnalyzerResponse(string artistName, string songName, OpenAiChatCompletion openAiChatCompletion, LyricsAnalyzerPromptStyle promptStyle, string responseId, string analysisId)
     {
         ArtistName = artistName;
         SongName = songName;
         ChatCompletion = openAiChatCompletion;
         PromptStyle = promptStyle;
         ResponseId = responseId;
+        AnalysisId = analysisId;
     }
 
     /// <summary>
@@ -54,6 +56,11 @@ public class LyricsAnalyzerResponse : IResponse
     /// </summary>
     public string ResponseId { get; }
 
+    /// <summary>
+    /// The ID of the analysis in the database.
+    /// </summary>
+    public string AnalysisId { get; }
+
     /// <inheritdoc />
     public ComponentBuilder GenerateComponent()
     {
@@ -64,6 +71,12 @@ public class LyricsAnalyzerResponse : IResponse
                 emote: new Emoji("🔄"),
                 customId: $"lyrics-analyzer-regenerate-{ResponseId}",
                 row: 0
+            )
+            .WithButton(
+                label: "View on website",
+                style: ButtonStyle.Link,
+                emote: new Emoji("🌐"),
+                url: $"https://muzakbot.smalls.online/lyrics-analyzer/analysis/{AnalysisId}"
             );
 
         return componentBuilder;

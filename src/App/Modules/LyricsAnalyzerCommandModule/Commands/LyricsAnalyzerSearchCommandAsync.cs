@@ -270,13 +270,25 @@ public partial class LyricsAnalyzerCommandModule
 
         await dbContext.SaveChangesAsync();
 
+        AnalyzedLyrics analyzedLyrics = new(
+            artistName: artistName,
+            songName: songName,
+            promptStyleUsed: promptStyle.ShortName,
+            songLyricsId: lyricsAnalyzerItem.Id,
+            analysis: openAiChatCompletion.Choices[0].Message.Content
+        );
+
+        dbContext.AnalyzedLyricsItems.Add(analyzedLyrics);
+        await dbContext.SaveChangesAsync();
+
         // Build the response.
         LyricsAnalyzerResponse lyricsAnalyzerResponse = new(
             artistName: artistName,
             songName: songName,
             openAiChatCompletion: openAiChatCompletion,
             promptStyle: promptStyle,
-            responseId: lyricsAnalyzerItem.Id
+            responseId: lyricsAnalyzerItem.Id,
+            analysisId: analyzedLyrics.Id
         );
 
         // Send the response to Discord.
@@ -312,17 +324,6 @@ public partial class LyricsAnalyzerCommandModule
 
                 await dbContext.SaveChangesAsync();
             }
-
-            AnalyzedLyrics analyzedLyrics = new(
-                artistName: artistName,
-                songName: songName,
-                promptStyleUsed: promptStyle.ShortName,
-                songLyricsId: lyricsAnalyzerItem.Id,
-                analysis: openAiChatCompletion.Choices[0].Message.Content
-            );
-
-            dbContext.AnalyzedLyricsItems.Add(analyzedLyrics);
-            await dbContext.SaveChangesAsync();
         }
         catch (Exception ex)
         {
