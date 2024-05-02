@@ -3,6 +3,7 @@ using Discord.Interactions;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+
 using MuzakBot.Lib.Models.CommandModules;
 using MuzakBot.Lib.Models.Database.LyricsAnalyzer;
 
@@ -23,9 +24,10 @@ public partial class AdminCommandModule
 
         EmbedBuilder embed;
 
-        bool promptStyleExists = await dbContext.LyricsAnalyzerPromptStyles
+        bool promptStyleExists = dbContext.LyricsAnalyzerPromptStyles
             .WithPartitionKey("prompt-style")
-            .AnyAsync(x => x.ShortName == promptStyle.ShortName);
+            .ToList()
+            .Any(item => item.ShortName == promptStyle.ShortName);
 
         if (promptStyleExists)
         {
