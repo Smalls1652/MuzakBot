@@ -19,7 +19,25 @@
 
     @if (_analyzedLyrics is not null && _analyzedLyricsEnriched is not null && !_errorOccurred && !_loading)
     {
+        <!-- Generic meta tags -->
         <PageTitle>MuzakBot - Lyrics analysis - @_analyzedLyrics.SongName by @_analyzedLyrics.ArtistName</PageTitle>
+        <meta content="AI generated lyrics analysis for the song '@(_analyzedLyrics.SongName)' by @(_analyzedLyrics.ArtistName)." name="description" />
+        <meta content="Tim Small" name="author" />
+
+        <!-- OpenGraph/Facebook meta tags -->
+        <meta content="MuzakBot" name="title" property="og:title" />
+        <meta content="AI generated lyrics analysis for the song '@(_analyzedLyrics.SongName)' by @(_analyzedLyrics.ArtistName)." property="og:description" />
+        <meta content="https://muzakbot.smalls.online/lyrics-analyzer/analysis/@(AnalysisId!)" property="og:url" />
+        <meta content="website" property="og:type">
+        <meta content="https://muzakbot.smalls.online/images/logo_wide_social.png" property="og:image">
+
+        <!-- Twitter meta tags -->
+        <meta content="summary_large_image" name="twitter:card">
+        <meta content="MuzakBot" name="twitter:title">
+        <meta content="AI generated lyrics analysis for the song '@(_analyzedLyrics.SongName)' by @(_analyzedLyrics.ArtistName)." name="twitter:description">
+        <meta content="muzakbot.smalls.online" property="twitter:domain">
+        <meta content="https://muzakbot.smalls.online/lyrics-analyzer/analysis/@(AnalysisId!)" property="twitter:url">
+        <meta content="https://muzakbot.smalls.online/images/logo_wide_social.png" name="twitter:image">
     }
 </HeadContent>
 
