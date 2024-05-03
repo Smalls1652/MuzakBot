@@ -46,6 +46,15 @@
     dl dl, ol ol, ul ul {
         @apply mb-0;
     }
+
+    a {
+        @apply text-blue-600 cursor-pointer underline;
+        @apply transition-colors ease-in-out duration-200;
+    }
+
+    a:hover {
+        @apply text-blue-900;
+    }
 }
 
 :root {
@@ -129,6 +138,9 @@ body {
 
 .navbar-brand {
     @apply shrink flex gap-x-2 items-center;
+    @apply cursor-pointer;
+
+    text-decoration: none;
 }
 
 .navbar-brand > div > .navbar-logo {
@@ -172,6 +184,8 @@ body {
 .navbar-link {
     @apply text-lg px-2 py-2;
     @apply rounded-lg;
+    
+    text-decoration: none;
 }
 
 .navbar-link:not(.active) {
@@ -240,7 +254,7 @@ body {
 
 .page-card-header > :is(h1, h2, h3, h4, h5, h6) {
     @apply mb-0;
-    
+
     text-shadow:
         1px 1px 20px #000;
 }
@@ -285,8 +299,13 @@ body {
     @apply transition ease-in-out duration-200;
 }
 
+.add-to-discord-button {
+    text-decoration: none;
+}
+
 .add-to-discord-button:hover {
     @apply bg-indigo-600;
+    @apply text-white;
 }
 
 /* Blazor specific */
