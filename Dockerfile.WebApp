@@ -3,6 +3,9 @@ FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
 ARG TARGETOS
 ARG TARGETARCH
 
+ARG NUGET_USER
+ARG NUGET_TOKEN
+
 ENV CONTAINER_IMAGE_BUILD=true
 
 ENV NODE_MAJOR=20
@@ -26,6 +29,7 @@ COPY ./Directory.Packages.props ./
 COPY ./nuget.config ./
 COPY ./src ./src
 
+RUN dotnet nuget update source smalls1652-github --username "${NUGET_USER}" --password "${NUGET_TOKEN}" --store-password-in-clear-text
 RUN dotnet publish ./src/WebApp --configuration "Release" --os "${TARGETOS}" --arch "${TARGETARCH}"
 
 RUN rm -rf /app/artifacts/publish/WebApp/release/*.pdb; \
