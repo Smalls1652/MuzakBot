@@ -1,6 +1,7 @@
 ﻿@namespace MuzakBot.WebApp.Components.Pages
 
 @using MuzakBot.WebApp.Components.Core
+@using MuzakBot.WebApp.Components.Content
 
 @page "/"
 
@@ -34,33 +35,7 @@
                 <AddToDiscordButton />
             </div>
             <div>
-                <p>
-                    MuzakBot is a Discord bot that provides various music-related features:
-                </p>
-                <ul class="list-disc list-inside mb-4">
-                    <li>
-                        Share music with your friends easily, with links to various music streaming services.
-                    </li>
-                    <li>
-                        Analyze song lyrics with OpenAI's GPT-4.
-                    </li>
-                    <li>
-                        And more to be added in the future!
-                    </li>
-                </ul>
-            </div>
-            <div>
-                <p>
-                    To use it, you can:
-                </p>
-                <ul class="list-disc list-inside">
-                    <li>
-                        Add it directly to your Discord server.
-                    </li>
-                    <li>
-                        Add it as an user app.
-                    </li>
-                </ul>
+                <HomePageContent />
             </div>
         </div>
     </div>
