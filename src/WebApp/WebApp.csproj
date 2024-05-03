@@ -23,7 +23,7 @@
     </PropertyGroup>
     <!-- Dependencies -->
     <ItemGroup>
-        <PackageReference Include="BlazorMD.SourceGenerator" PrivateAssets="all" />
+        <PackageReference Include="BlazorMD.SourceGenerator" />
         <PackageReference Include="Discord.Net" />
         <PackageReference Include="MarkDig" />
     </ItemGroup>
