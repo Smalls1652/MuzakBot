@@ -9,6 +9,9 @@ on:
   pull_request:
   workflow_dispatch:
 
+permissions:
+  packages: read
+
 jobs:
   build:
     name: Build
@@ -29,8 +32,11 @@ jobs:
         with:
           global-json-file: global.json
 
+      - name: Configure 'smalls1652-github' NuGet feed
+        run: dotnet nuget update source smalls1652-github --username "${{ github.repository_owner }}" --password "${{ secrets.GITHUB_TOKEN }}" --store-password-in-clear-text
+
       - name: Run 'dotnet restore'
-        run: dotnet restore ${{ matrix.project}}
+        run: dotnet restore ${{ matrix.project }}
 
       - name: Run 'dotnet build'
         run: dotnet build ${{ matrix.project }} --configuration Release
