@@ -1,0 +1,176 @@
+@namespace MuzakBot.WebApp.Components.Pages
+
+@using MuzakBot.WebApp.Components.Core
+
+@page "/privacy-policy"
+
+<HeadContent>
+    <!-- Generic meta tags -->
+    <PageTitle>MuzakBot - Privacy Policy</PageTitle>
+    <meta content="The privacy policy for the Discord bot, MuzakBot." name="description" />
+    <meta content="Tim Small" name="author" />
+
+    <!-- OpenGraph/Facebook meta tags -->
+    <meta content="MuzakBot - Privacy Policy" name="title" property="og:title" />
+    <meta content="The privacy policy for the Discord bot, MuzakBot." property="og:description" />
+    <meta content="https://muzakbot.smalls.online/privacy-policy" property="og:url" />
+    <meta content="website" property="og:type">
+    <meta content="https://muzakbot.smalls.online/images/logo_wide_social.png" property="og:image">
+
+    <!-- Twitter meta tags -->
+    <meta content="summary_large_image" name="twitter:card">
+    <meta content="MuzakBot - Privacy Policy" name="twitter:title">
+    <meta content="The privacy policy for the Discord bot, MuzakBot." name="twitter:description">
+    <meta content="muzakbot.smalls.online" property="twitter:domain">
+    <meta content="https://muzakbot.smalls.online/privacy-policy" property="twitter:url">
+    <meta content="https://muzakbot.smalls.online/images/logo_wide_social.png" name="twitter:image">
+</HeadContent>
+
+<PageCard Title="Privacy Policy" Icon="shield-lock-fill">
+    <div class="basis-full">
+        <div class="mb-2">
+            <span class="font-bold">Last updated:</span> <span class="font-mono">@(_lastUpdated.ToString("yyyy-MM-dd"))</span>
+        </div>
+        <p>
+            This document outlines the privacy policy for the services MuzakBot (The Discord bot and the website) provides. It will go over the data we collect and how we use it. By using MuzakBot, you agree to the collection and use of information in accordance with this policy.
+        </p>
+        <h2 id="data-collection">
+            Data collection
+        </h2>
+        <p>
+            MuzakBot collects a minimal amount of data for telemetry purposes or to provide essential services for the Discord bot. All data collected is stored in United States. This data includes:
+        </p>
+        <ul>
+            <li>
+                The unique ID of your Discord user account.
+            </li>
+            <li>
+                The unique ID of the Discord server (guild) the bot has been added to.
+            </li>
+            <li>
+                The inputs you provide to the commands MuzakBot provides. This includes:
+                <ul>
+                    <li>
+                        URLs (Uniform resource locators)
+                    </li>
+                    <li>
+                        Artist names
+                    </li>
+                    <li>
+                        Album names
+                    </li>
+                    <li>
+                        Song names
+                    </li>
+                    <li>
+                        Lyrics analyzer prompt styles
+                    </li>
+                </ul>
+            </li>
+        </ul>
+        <p>
+            We <span class="font-bold">do not</span> collect any data when you use the website.
+        </p>
+        <h2 id="how-we-use-your-data">
+            How we use your data
+        </h2>
+        <p>
+            We use the data we collect to provide and maintain the services MuzakBot offers. It is only used for:
+        </p>
+        <ul>
+            <li>
+                Providing the services MuzakBot offers.
+            </li>
+            <li>
+                Identifying what features are used the most.
+            </li>
+            <li>
+                Troubleshooting issues with the Discord bot.
+            </li>
+        </ul>
+        <p>
+            We <span class="font-bold">do not</span> (and <span class="font-bold">will never</span>) use your data for:
+        </p>
+        <ul>
+            <li>
+                Selling your data to third parties for any purposes.
+            </li>
+            <li>
+                Transmitting any personal data (such as your Discord user ID) to third parties.
+            </li>
+        </ul>
+        <h2 id="third-party-services">
+            Third-party services
+        </h2>
+        <p>
+            MuzakBot uses third-party services to provide the services it offers. These services include:
+        </p>
+        <ul>
+            <li>
+                <a href="https://discord.com" target="_blank" rel="noopener noreferrer">Discord</a>
+                <ul>
+                    <li>
+                        This is the platform the bot runs on.
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="https://odesli.co" target="_blank" rel="noopener noreferrer">Songlink/Odesli</a>
+                <ul>
+                    <li>
+                        We use this service to provide links to various music streaming services for a given song or album.
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="https://www.apple.com/apple-music/" target="_blank" rel="noopener noreferrer">Apple Music</a>
+                <ul>
+                    <li>
+                        We use this service for looking up artists, albums, or songs.
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="https://openai.com" target="_blank" rel="noopener noreferrer">OpenAI</a>
+                <ul>
+                    <li>
+                        We use this service for the lyrics analyzer features MuzakBot offers.
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="https://azure.com" target="_blank" rel="noopener noreferrer">Microsoft Azure</a>
+                <ul>
+                    <li>
+                        We use this service to:
+                        <ul>
+                            <li>
+                                Host the Discord bot.
+                            </li>
+                            <li>
+                                Store the telemetry/data we collect.
+                            </li>
+                            <li>
+                                Store the database for the various services MuzakBot offers.
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="https://cloudflare.com" target="_blank" rel="noopener noreferrer">Cloudflare</a>
+                <ul>
+                    <li>
+                        We use this service for the website.
+                    </li>
+                </ul>
+            </li>
+        </ul>
+        <h2 id="changes-to-this-privacy-policy">
+            Changes to this privacy policy
+        </h2>
+        <p>
+            We may update our privacy policy from time to time to reflect changes in the services MuzakBot offers and/or how we handle your data.
+        </p>
+    </div>
+</PageCard>
