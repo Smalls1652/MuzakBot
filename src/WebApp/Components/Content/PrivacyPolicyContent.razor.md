@@ -52,4 +52,4 @@ MuzakBot uses third-party services to provide the services it offers. These serv
 
 ## Changes to this policy {#changes-to-this-policy}
 
-We may update our privacy policy from time to time to reflect changes in the services MuzakBot offers and/or how we handle your data.
+We may update our privacy policy from time to time to reflect changes in the services MuzakBot offers and/or how we handle your data. If you want to see the changes to this privacy policy over time, you can [click here to view the updates](https://github.com/Smalls1652/MuzakBot/commits/main/src/WebApp/Components/Content/PrivacyPolicyContent.razor.md){ target="_blank" rel="noopener noreferrer" }.
