@@ -64,5 +64,5 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            "GITHUB_USER=${{ github.actor }}"
-            "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}"
+            "NUGET_USER=${{ github.repository_owner }}"
+            "NUGET_TOKEN=${{ secrets.GITHUB_TOKEN }}"
