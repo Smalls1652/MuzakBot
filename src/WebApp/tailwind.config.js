@@ -7,9 +7,9 @@ module.exports = {
     "container": {
       "padding": {
         "DEFAULT": "1rem",
-        "sm": "2rem",
-        "lg": "7rem",
-        "xl": "8rem",
+        "sm": "1rem",
+        "lg": "3rem",
+        "xl": "7rem",
         "2xl": "8rem"
       }
     },
