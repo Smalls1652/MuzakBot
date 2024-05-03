@@ -29,6 +29,7 @@ We **do not** (and **will never**) use your data for:
 
 * Selling your data to third parties for any purposes.
 * Transmitting any personal data (such as your Discord user ID) to third parties.
+    * The only exception is "_Microsoft Azure_", which is due to where the data is store and is detailed below in the **Third-party services** section.
 
 ## Third-party services {#third-party-services}
 
