@@ -6,6 +6,10 @@
 
 @layer base {
 
+    h1, h2, h3, h4, h5, h6 {
+        @apply mb-3;
+    }
+
     h1 {
         @apply text-5xl;
     }
@@ -235,6 +239,8 @@ body {
 }
 
 .page-card-header > :is(h1, h2, h3, h4, h5, h6) {
+    @apply mb-0;
+    
     text-shadow:
         1px 1px 20px #000;
 }
