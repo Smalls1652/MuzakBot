@@ -28,7 +28,7 @@ push-new-branches = false
 # You want to disable this if your code hosting platform
 # (GitHub, GitLab, etc) deletes head branches when
 # merging pull requests through its UI.
-ship-delete-tracking-branch = false
+ship-delete-tracking-branch = true
 
 # Should "git ship" sync branches before shipping them?
 #
@@ -94,7 +94,7 @@ platform = "github"
 # the main branch and shipped back into the main branch.
 # Typically you develop features and bug fixes on them,
 # hence their name.
-feature-branches = "merge"
+feature-branches = "rebase"
 
 # How should Git Town synchronize perennial branches?
 # Perennial branches have no parent branch.
