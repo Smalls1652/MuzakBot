@@ -171,7 +171,15 @@ body {
 
 @media (max-width: 991px) {
     .navbar-links {
-        @apply flex flex-col list-none gap-y-2 grow mb-0;
+        @apply flex flex-col list-none gap-y-2 grow mb-0 pl-0;
+    }
+
+    .navbar-links > li {
+        @apply flex w-full;
+    }
+
+    .navbar-links > li > a {
+        @apply basis-full grow;
     }
 }
 
