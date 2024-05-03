@@ -166,21 +166,24 @@ body {
 }
 
 .navbar-link {
-    @apply text-lg;
+    @apply text-lg px-2 py-2;
+    @apply rounded-lg;
 }
 
 .navbar-link:not(.active) {
-    @apply transition ease-in-out duration-200;
+    @apply transition-colors ease-in-out duration-200;
     @apply text-gray-300;
 }
 
 .navbar-link:hover {
-    @apply transition ease-in-out duration-200;
-    @apply text-gray-50;
+    @apply transition-colors ease-in-out duration-200;
+    @apply text-gray-100;
+    @apply bg-slate-800;
 }
 
 .navbar-link.active {
     @apply text-white;
+    @apply bg-slate-900;
 }
 
 @media (max-width: 991px) {
