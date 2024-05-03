@@ -1,11 +1,20 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [
+  "content": [
     "./**/*.{razor,cshtml,html}"
   ],
-  theme: {
-    extend: {},
+  "theme": {
+    "container": {
+      "padding": {
+        "DEFAULT": "1rem",
+        "sm": "1rem",
+        "lg": "3rem",
+        "xl": "7rem",
+        "2xl": "8rem"
+      }
+    },
+    "extend": {}
   },
-  plugins: []
+  "plugins": []
 }
 
