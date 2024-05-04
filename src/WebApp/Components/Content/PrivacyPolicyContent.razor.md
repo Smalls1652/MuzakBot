@@ -9,11 +9,11 @@ MuzakBot collects a minimal amount of data for telemetry purposes or to provide 
 * The unique ID of your Discord user account.
 * The unique ID of the Discord server (guild) the bot has been added to.
 * The inputs you provide to the commands MuzakBot provides. This includes:
-    * URLs (Uniform resource locators)
-    * Artist names
-    * Album names
-    * Song names
-    * Lyrics analyzer prompt styles
+  * URLs (Uniform resource locators)
+  * Artist names
+  * Album names
+  * Song names
+  * Lyrics analyzer prompt styles
 
 We **do not** collect any data when you use the website.
 
@@ -29,27 +29,27 @@ We **do not** (and **will never**) use your data for:
 
 * Selling your data to third parties for any purposes.
 * Transmitting any personal data (such as your Discord user ID) to third parties.
-    * The only exception is "_Microsoft Azure_", which is due to where the data is store and is detailed below in the **Third-party services** section.
+  * The only exception is "_Microsoft Azure_", which is due to where the data is store and is detailed below in the **Third-party services** section.
 
 ## Third-party services {#third-party-services}
 
 MuzakBot uses third-party services to provide the services it offers. These services include:
 
 * [Discord](https://discord.com){ target="_blank" rel="noopener noreferrer" }
-    * This is the platform the bot runs on.
+  * This is the platform the bot runs on.
 * [Songlink/Odesli](https://odesli.co){ target="_blank" rel="noopener noreferrer" }
-    * We use this service to provide links to various music streaming services for a given song or album.
+  * We use this service to provide links to various music streaming services for a given song or album.
 * [Apple Music](https://www.apple.com/apple-music/){ target="_blank" rel="noopener noreferrer" }
-    * We use this service for looking up artists, albums, or songs.
+  * We use this service for looking up artists, albums, or songs.
 * [OpenAI](https://openai.com){ target="_blank" rel="noopener noreferrer" }
-    * We use this service for the lyrics analyzer features MuzakBot offers.
+  * We use this service for the lyrics analyzer features MuzakBot offers.
 * [Microsoft Azure](https://azure.com){ target="_blank" rel="noopener noreferrer" }
-    * We use this service to:
-        * Host the Discord bot.
-        * Store the telemetry/data we collect.
-        * Store the database for the various services MuzakBot offers.
+  * We use this service to:
+    * Host the Discord bot.
+    * Store the telemetry/data we collect.
+    * Store the database for the various services MuzakBot offers.
 * [Cloudflare](https://cloudflare.com){ target="_blank" rel="noopener noreferrer" }
-    * We use this service for the website.
+  * We use this service for the website.
 
 ## Changes to this policy {#changes-to-this-policy}
 
