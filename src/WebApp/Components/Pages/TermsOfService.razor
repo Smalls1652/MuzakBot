@@ -1,0 +1,34 @@
+@namespace MuzakBot.WebApp.Components.Pages
+
+@using MuzakBot.WebApp.Components.Core
+@using MuzakBot.WebApp.Components.Content
+
+@page "/terms-of-service"
+
+<HeadContent>
+    <!-- Generic meta tags -->
+    <PageTitle>MuzakBot - Terms of Service</PageTitle>
+    <meta content="The terms of service for the Discord bot, MuzakBot." name="description" />
+    <meta content="Tim Small" name="author" />
+
+    <!-- OpenGraph/Facebook meta tags -->
+    <meta content="MuzakBot - Terms of Service" name="title" property="og:title" />
+    <meta content="The terms of service for the Discord bot, MuzakBot." property="og:description" />
+    <meta content="https://muzakbot.smalls.online/terms-of-service" property="og:url" />
+    <meta content="website" property="og:type">
+    <meta content="https://muzakbot.smalls.online/images/logo_wide_social.png" property="og:image">
+
+    <!-- Twitter meta tags -->
+    <meta content="summary_large_image" name="twitter:card">
+    <meta content="MuzakBot - Terms of Service" name="twitter:title">
+    <meta content="The terms of service for the Discord bot, MuzakBot." name="twitter:description">
+    <meta content="muzakbot.smalls.online" property="twitter:domain">
+    <meta content="https://muzakbot.smalls.online/terms-of-service" property="twitter:url">
+    <meta content="https://muzakbot.smalls.online/images/logo_wide_social.png" name="twitter:image">
+</HeadContent>
+
+<PageCard Title="Terms of Service" Icon="file-richtext-fill">
+    <div class="basis-auto">
+        <TermsOfServiceContent />
+    </div>
+</PageCard>
