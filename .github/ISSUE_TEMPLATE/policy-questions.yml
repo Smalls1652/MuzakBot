@@ -1,0 +1,27 @@
+name: Policy question
+description: For questions about our terms of service or privacy policy.
+title: "[Policy question]: "
+labels:
+  - "policy question"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for submitting a question about our policies! Please keep in mind that this project is currently maintained by one person, so responses may be delayed.
+  - id: PolicyType
+    type: dropdown
+    attributes:
+      label: Which policy?
+      description: The policy you have a question about.
+      multiple: false
+      options:
+        - "Terms of Service"
+        - "Privacy Policy"
+    validations:
+      required: true
+  - id: QuestionText
+    type: textarea
+    attributes:
+      label: What's your question?
+    validations:
+      required: true
