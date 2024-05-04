@@ -4,6 +4,11 @@ root = true
 [*]
 indent_style = space
 
+# Markdown files
+[*.md]
+indent_size = 4
+insert_final_newline = true
+
 # Xml files
 [*.xml]
 indent_size = 2
