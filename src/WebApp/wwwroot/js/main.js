@@ -35,6 +35,8 @@ function toggleNavbar() {
 }
 
 Blazor.addEventListener('enhancedload', () => {
+    window.scrollTo(0, 0);
+
     SetActiveLink();
 
     let navbarCollapse = document.getElementById("navbar-collapse-section");
