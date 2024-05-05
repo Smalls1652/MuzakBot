@@ -1,0 +1,29 @@
+{
+  "labels": {
+    "bug": [
+      "bug",
+      "bug fix",
+      "bugfix"
+    ],
+    "maintenance": [
+      "maintenance"
+    ]
+  },
+  "separateProjectLabel": {
+    "enable": true,
+    "projectLabels": [
+      {
+        "name": "Discord Bot",
+        "label": "Bot"
+      },
+      {
+        "name": "Libraries",
+        "label": "Libraries"
+      },
+      {
+        "name": "Website",
+        "label": "Website"
+      }
+    ]
+  }
+}
