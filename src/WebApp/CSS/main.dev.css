@@ -299,6 +299,18 @@ body {
     }
 }
 
+.notice-info {
+    @apply border-l-2 border-solid border-gray-800;
+    @apply md:w-full lg:w-8/12;;
+}
+
+.notice-info > blockquote {
+    @apply text-white;
+    @apply bg-gray-600;
+    @apply mt-1 ml-1 mb-1 pt-2 pl-4 pr-2 pb-1;
+    @apply rounded-md;
+}
+
 .add-to-discord-button {
     @apply bg-indigo-500;
     @apply border border-solid border-indigo-900;
