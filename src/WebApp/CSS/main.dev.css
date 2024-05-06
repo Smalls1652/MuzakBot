@@ -301,7 +301,7 @@ body {
 
 .notice-info {
     @apply border-l-2 border-solid border-gray-800;
-    @apply md:w-full lg:w-8/12;;
+    @apply w-full lg:w-8/12;;
 }
 
 .notice-info > blockquote {
@@ -326,6 +326,15 @@ body {
 .add-to-discord-button:hover {
     @apply bg-indigo-600;
     @apply text-white;
+}
+
+.param-table > tbody {
+    @apply divide-y;
+}
+
+.param-table > tbody > tr > td {
+    @apply px-2 py-1;
+    @apply lg:px-4 lg:py-2;
 }
 
 /* Blazor specific */

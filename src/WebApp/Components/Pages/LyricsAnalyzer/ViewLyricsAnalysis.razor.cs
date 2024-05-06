@@ -22,6 +22,7 @@ public partial class ViewLyricsAnalysis : ComponentBase
     private bool _errorOccurred = false;
     private string? _errorMessage;
     private AnalyzedLyrics? _analyzedLyrics;
+    private LyricsAnalyzerPromptStyle? _promptStyle;
     private string? _analyzedLyricsEnriched;
 
     protected override async Task OnInitializedAsync()
@@ -42,6 +43,9 @@ public partial class ViewLyricsAnalysis : ComponentBase
             _errorOccurred = true;
             _errorMessage = "Analysis not found.";
         }
+
+        _promptStyle = await dbContext.LyricsAnalyzerPromptStyles
+            .FirstOrDefaultAsync(item => item.ShortName == _analyzedLyrics!.PromptStyleUsed);
 
         _analyzedLyricsEnriched = Markdown.ToHtml(
             markdown: _analyzedLyrics!.Analysis,

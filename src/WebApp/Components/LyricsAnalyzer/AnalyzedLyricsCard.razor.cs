@@ -12,5 +12,9 @@ public partial class AnalyzedLyricsCard : ComponentBase
 
     [Parameter]
     [EditorRequired]
+    public LyricsAnalyzerPromptStyle PromptStyle { get; set; } = null!;
+
+    [Parameter]
+    [EditorRequired]
     public string AnalysisMarkdown { get; set; } = null!;
 }
