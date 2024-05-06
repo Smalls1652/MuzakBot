@@ -75,6 +75,6 @@
 
     @if (_analyzedLyrics is not null && _analyzedLyricsEnriched is not null && !_errorOccurred && !_loading)
     {
-        <AnalyzedLyricsCard AnalyzedLyrics="@_analyzedLyrics" AnalysisMarkdown="@_analyzedLyricsEnriched" />
+        <AnalyzedLyricsCard AnalyzedLyrics="@_analyzedLyrics" PromptStyle="@_promptStyle" AnalysisMarkdown="@_analyzedLyricsEnriched" />
     }
 </PageCard>

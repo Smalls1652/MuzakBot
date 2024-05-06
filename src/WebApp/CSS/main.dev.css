@@ -299,6 +299,18 @@ body {
     }
 }
 
+.notice-info {
+    @apply border-l-2 border-solid border-gray-800;
+    @apply w-full lg:w-8/12;;
+}
+
+.notice-info > blockquote {
+    @apply text-white;
+    @apply bg-gray-600;
+    @apply mt-1 ml-1 mb-1 pt-2 pl-4 pr-2 pb-1;
+    @apply rounded-md;
+}
+
 .add-to-discord-button {
     @apply bg-indigo-500;
     @apply border border-solid border-indigo-900;
@@ -314,6 +326,15 @@ body {
 .add-to-discord-button:hover {
     @apply bg-indigo-600;
     @apply text-white;
+}
+
+.param-table > tbody {
+    @apply divide-y;
+}
+
+.param-table > tbody > tr > td {
+    @apply px-2 py-1;
+    @apply lg:px-4 lg:py-2;
 }
 
 /* Blazor specific */
