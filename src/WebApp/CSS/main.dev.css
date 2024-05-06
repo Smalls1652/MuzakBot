@@ -284,19 +284,11 @@ body {
     }
 }
 
-@media (max-width: 991px) {
-    .muzakbot-logo-img {
-        height: auto;
-        width: 100%;
-    }
-}
-
-@media (min-width: 992px) {
-    .muzakbot-logo-img {
-        height: auto;
-        width: 256px;
-        max-width: 256px;
-    }
+.muzakbot-logo-img {
+    @apply h-auto mx-auto;
+    @apply w-4/5;
+    @apply sm:w-5/12;
+    @apply lg:w-64;
 }
 
 .notice-info {
