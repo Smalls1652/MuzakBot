@@ -80,6 +80,9 @@ public class DiscordService : IDiscordService, IHostedService
         _logger.LogAddModuleToInteractionService("CoreCommandModule");
         await _interactionService.AddModuleAsync<CoreCommandModule>(_serviceProvider);
 
+        _logger.LogAddModuleToInteractionService("AlbumReleaseLookupCommandModule");
+        await _interactionService.AddModuleAsync<AlbumReleaseLookupCommandModule>(_serviceProvider);
+
         // Add logging to the DiscordSocketClient and InteractionService
         _discordSocketClient.Log += HandleLog;
         _interactionService.Log += HandleLog;
@@ -133,7 +136,8 @@ public class DiscordService : IDiscordService, IHostedService
             modules: [
                 _interactionService.GetModuleInfo<ShareMusicCommandModule>(),
                 _interactionService.GetModuleInfo<LyricsAnalyzerCommandModule>(),
-                _interactionService.GetModuleInfo<CoreCommandModule>()
+                _interactionService.GetModuleInfo<CoreCommandModule>(),
+                _interactionService.GetModuleInfo<AlbumReleaseLookupCommandModule>()
             ]
         );
 
