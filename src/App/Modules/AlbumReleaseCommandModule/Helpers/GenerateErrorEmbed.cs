@@ -2,7 +2,7 @@ using Discord;
 
 namespace MuzakBot.App.Modules;
 
-public partial class AlbumReleaseLookupCommandModule
+public partial class AlbumReleaseCommandModule
 {
     private EmbedBuilder GenerateErrorEmbed(string title, string message)
     {

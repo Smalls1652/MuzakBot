@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 
 namespace MuzakBot.App.Modules;
 
-public partial class AlbumReleaseLookupCommandModule
+public partial class AlbumReleaseCommandModule
 {
     /// <summary>
     /// Generates a <see cref="ComponentBuilder"/> for the "Remove message"

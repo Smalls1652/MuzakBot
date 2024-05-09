@@ -10,7 +10,7 @@ namespace MuzakBot.App.Modules;
 [CommandContextType(InteractionContextType.BotDm, InteractionContextType.PrivateChannel, InteractionContextType.Guild)]
 [IntegrationType(ApplicationIntegrationType.UserInstall, ApplicationIntegrationType.GuildInstall)]
 [Group("albumrelease", "Look up the release date of an album.")]
-public partial class AlbumReleaseLookupCommandModule : InteractionModuleBase<SocketInteractionContext>, IDisposable
+public partial class AlbumReleaseCommandModule : InteractionModuleBase<SocketInteractionContext>, IDisposable
 {
     private bool _isDisposed;
     private readonly ActivitySource _activitySource = new("MuzakBot.App.Modules.AlbumReleaseLookupCommandModule");
@@ -18,7 +18,7 @@ public partial class AlbumReleaseLookupCommandModule : InteractionModuleBase<Soc
     private readonly ILogger _logger;
     private readonly IAppleMusicApiService _appleMusicApiService;
 
-    public AlbumReleaseLookupCommandModule(ILogger<AlbumReleaseLookupCommandModule> logger, IAppleMusicApiService appleMusicApiService)
+    public AlbumReleaseCommandModule(ILogger<AlbumReleaseCommandModule> logger, IAppleMusicApiService appleMusicApiService)
     {
         _logger = logger;
         _appleMusicApiService = appleMusicApiService;

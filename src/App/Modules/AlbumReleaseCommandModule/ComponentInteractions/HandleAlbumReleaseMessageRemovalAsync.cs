@@ -8,7 +8,7 @@ using System.Diagnostics;
 
 namespace MuzakBot.App.Modules;
 
-public partial class AlbumReleaseLookupCommandModule
+public partial class AlbumReleaseCommandModule
 {
     /// <summary>
     /// Handler for removing a failed share message.

@@ -10,7 +10,7 @@ using MuzakBot.Lib.Models.AppleMusic;
 
 namespace MuzakBot.App.Modules;
 
-public partial class AlbumReleaseLookupCommandModule
+public partial class AlbumReleaseCommandModule
 {
     [CommandContextType(InteractionContextType.BotDm, InteractionContextType.PrivateChannel, InteractionContextType.Guild)]
     [IntegrationType(ApplicationIntegrationType.UserInstall, ApplicationIntegrationType.GuildInstall)]
