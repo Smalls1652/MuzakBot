@@ -52,4 +52,61 @@ public sealed class Artwork : IArtwork
     /// </summary>
     [JsonPropertyName("url")]
     public string Url { get; set; } = null!;
+
+    /// <summary>
+    /// Get the album artwork URL with a resolution of 512x512.
+    /// </summary>
+    /// <returns>A string representing the URL to the album artwork.</returns>
+    public string GetAlbumArtworkUrl() => GetAlbumArtworkUrlByResolution(512, 512);
+
+    /// <summary>
+    /// Get the album artwork URL with a specific resolution.
+    /// </summary>
+    /// <param name="width">The width.</param>
+    /// <param name="height">The height</param>
+    /// <returns>A string reprensenting the URL to the album artwork.</returns>
+    /// <exception cref="ArgumentException">Thrown when the requested resolution is larger than the original image.</exception>
+    public string GetAlbumArtworkUrlByResolution(int width, int height)
+    {
+        if (width > Width || height > Height)
+        {
+            throw new ArgumentException("The requested resolution is larger than the original image.");
+        }
+
+        return Url
+            .Replace(
+                oldValue: "{w}",
+                newValue: width.ToString()
+            )
+            .Replace(
+                oldValue: "{h}",
+                newValue: height.ToString()
+            );
+    }
+
+    /// <summary>
+    /// Get a stream of the album artwork.
+    /// </summary>
+    /// <param name="width">The width.</param>
+    /// <param name="height">The height.</param>
+    /// <returns>A stream of the album artwork.</returns>
+    public async Task<Stream> GetAlbumArtworkStreamAsync(int width, int height)
+    {
+        using HttpClient client = new();
+
+        using HttpRequestMessage requestMessage = new(
+            method: HttpMethod.Get,
+            requestUri: GetAlbumArtworkUrlByResolution(width, height)
+        );
+
+        using HttpResponseMessage responseMessage = await client.SendAsync(requestMessage);
+
+        MemoryStream memoryStream = new();
+
+        await responseMessage.Content.CopyToAsync(memoryStream);
+
+        memoryStream.Position = 0;
+
+        return memoryStream;
+    }
 }
