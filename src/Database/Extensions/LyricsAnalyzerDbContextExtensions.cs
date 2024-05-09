@@ -70,9 +70,11 @@ public static class LyricsAnalyzerDbContextExtensions
     /// <returns>The same service collection so that multiple calls can be chained.</returns>
     private static IServiceCollection AddLyricsAnalyzerDbContextFactoryForSqlite(this IServiceCollection services, SqliteDbConfigOptions sqliteDbConfig)
     {
+        string dbPath = Path.Join(sqliteDbConfig.DbPath, "lyrics_analyzer.sqlite");
+
         services.AddDbContextFactory<LyricsAnalyzerDbContext>(options =>
         {
-            options.UseSqlite($"Data Source={sqliteDbConfig.DbPath}");
+            options.UseSqlite($"Data Source={dbPath}");
         });
 
         return services;
