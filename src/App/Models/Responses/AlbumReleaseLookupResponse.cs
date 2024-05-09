@@ -42,7 +42,15 @@ public sealed class AlbumReleaseLookupResponse : IResponse, IDisposable
     /// <inheritdoc/>
     public ComponentBuilder GenerateComponent()
     {
-        throw new NotImplementedException();
+        ComponentBuilder componentBuilder = new ComponentBuilder()
+            .WithButton(
+                label: "Remind me",
+                style: ButtonStyle.Primary,
+                customId: "albumrelease-remindme",
+                emote: new Emoji("🔔")
+            );
+
+        return componentBuilder;
     }
 
     /// <inheritdoc/>
@@ -79,6 +87,11 @@ public sealed class AlbumReleaseLookupResponse : IResponse, IDisposable
         throw new NotImplementedException();
     }
 
+    /// <summary>
+    /// Get the Eastern timezone date time offset for a given date.
+    /// </summary>
+    /// <param name="date">The input date.</param>
+    /// <returns>The Eastern timezone date time offset.</returns>
     private DateTimeOffset GetEasternDateTimeOffset(DateOnly date)
     {
         TimeZoneInfo easternTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");

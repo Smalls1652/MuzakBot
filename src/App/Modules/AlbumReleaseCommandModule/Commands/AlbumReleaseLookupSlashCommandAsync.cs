@@ -62,6 +62,7 @@ public partial class AlbumReleaseCommandModule
 
         await FollowupWithFileAsync(
             embed: albumReleaseLookupResponse.GenerateEmbed().Build(),
+            components: albumReleaseLookupResponse.GenerateComponent().Build(),
             fileName: albumReleaseLookupResponse.AlbumArtFileName,
             fileStream: albumReleaseLookupResponse.AlbumArtworkStream
         );
