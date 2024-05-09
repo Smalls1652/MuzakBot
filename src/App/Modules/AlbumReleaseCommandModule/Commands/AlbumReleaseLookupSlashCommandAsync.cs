@@ -6,6 +6,7 @@ using Discord.Interactions;
 using Microsoft.Extensions.Logging;
 
 using MuzakBot.App.Handlers;
+using MuzakBot.App.Models.Responses;
 using MuzakBot.Lib.Models.AppleMusic;
 
 namespace MuzakBot.App.Modules;
@@ -57,31 +58,10 @@ public partial class AlbumReleaseCommandModule
             return;
         }
 
-        DateOnly albumReleaseDate = album.Attributes!.ReleaseDate;
-        DateTimeOffset albumReleaseDateTime = new(albumReleaseDate.Year, albumReleaseDate.Month, albumReleaseDate.Day, 12, 0, 0, TimeSpan.Zero);
-
-        StringBuilder descriptionBuilder = new($"by {album.Attributes!.ArtistName}\n\n");
-
-        descriptionBuilder.AppendLine($"Releases <t:{albumReleaseDateTime.ToUnixTimeSeconds()}:R> (approximately).");
-
-        string artworkUrl = album.Attributes!.Artwork.Url
-            .Replace(
-                oldValue: "{w}",
-                newValue: "512"
-            )
-            .Replace(
-                oldValue: "{h}",
-                newValue: "512"
-            );
-
-        EmbedBuilder embed = new EmbedBuilder()
-            .WithTitle(album.Attributes!.Name)
-            .WithDescription(descriptionBuilder.ToString())
-            .WithColor(Color.Green)
-            .WithImageUrl(artworkUrl);
+        AlbumReleaseLookupResponse albumReleaseLookupResponse = new(album);
 
         await FollowupAsync(
-            embed: embed.Build()
+            embed: albumReleaseLookupResponse.GenerateEmbed().Build()
         );
     }
 }
