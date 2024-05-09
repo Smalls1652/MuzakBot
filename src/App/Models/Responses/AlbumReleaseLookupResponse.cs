@@ -9,8 +9,10 @@ namespace MuzakBot.App.Models.Responses;
 /// <summary>
 /// Represents a response for the album release lookup command.
 /// </summary>
-public sealed class AlbumReleaseLookupResponse : IResponse
+public sealed class AlbumReleaseLookupResponse : IResponse, IDisposable
 {
+    private bool _isDisposed;
+
     /// <summary>
     /// Initialize a new instance of the <see cref="AlbumReleaseLookupResponse"/> class.
     /// </summary>
@@ -18,12 +20,24 @@ public sealed class AlbumReleaseLookupResponse : IResponse
     public AlbumReleaseLookupResponse(Album album)
     {
         Album = album;
+        AlbumArtFileName = $"{Guid.NewGuid():N}.jpg";
+        AlbumArtworkStream = Album.Attributes!.Artwork.GetAlbumArtworkStreamAsync(512, 512).GetAwaiter().GetResult();
     }
 
     /// <summary>
     /// The album to show the release date for.
     /// </summary>
     public Album Album { get; }
+
+    /// <summary>
+    /// The name being used for the album artwork file.
+    /// </summary>
+    public string AlbumArtFileName { get; }
+
+    /// <summary>
+    /// The stream of the album artwork.
+    /// </summary>
+    public Stream AlbumArtworkStream { get; }
 
     /// <inheritdoc/>
     public ComponentBuilder GenerateComponent()
@@ -45,23 +59,16 @@ public sealed class AlbumReleaseLookupResponse : IResponse
             .AppendLine("## Release Date")
             .AppendLine()
             .AppendLine()
-            .AppendLine($"<t:{albumReleaseDateTime.ToUnixTimeSeconds()}:f> (<t:{albumReleaseDateTime.ToUnixTimeSeconds()}:R>)");
-
-        string artworkUrl = Album.Attributes!.Artwork.Url
-            .Replace(
-                oldValue: "{w}",
-                newValue: "512"
-            )
-            .Replace(
-                oldValue: "{h}",
-                newValue: "512"
-            );
+            .AppendLine($"<t:{albumReleaseDateTime.ToUnixTimeSeconds()}:f> (<t:{albumReleaseDateTime.ToUnixTimeSeconds()}:R>)")
+            .AppendLine()
+            .AppendLine("> ⚠️ **Note:**")
+            .AppendLine("> The time of release varies depending on your timezone/region.");
 
         EmbedBuilder embedBuilder = new EmbedBuilder()
             .WithTitle(Album.Attributes!.Name)
             .WithDescription(descriptionBuilder.ToString())
             .WithColor(Color.Green)
-            .WithImageUrl(artworkUrl);
+            .WithImageUrl($"attachment://{AlbumArtFileName}");
 
         return embedBuilder;
     }
@@ -89,4 +96,14 @@ public sealed class AlbumReleaseLookupResponse : IResponse
         );
     }
 
+    public void Dispose()
+    {
+        ObjectDisposedException.ThrowIf(_isDisposed, this);
+
+        AlbumArtworkStream.Dispose();
+
+        _isDisposed = true;
+
+        GC.SuppressFinalize(this);
+    }
 }
