@@ -90,7 +90,8 @@ builder.Services
     });
 
 builder.Services
-    .AddLyricsAnalyzerDbContextFactory(databaseConfig);
+    .AddLyricsAnalyzerDbContextFactory(databaseConfig)
+    .AddAlbumReleaseDbContextFactory(databaseConfig);
 
 builder.Services
     .AddOpenAiService(options =>
@@ -117,5 +118,8 @@ using var host = builder.Build();
 
 await host
     .ApplyLyricsAnalyzerDbContextMigrations();
+
+await host
+    .ApplyAlbumReleaseDbContextMigrations();
 
 await host.RunAsync();
