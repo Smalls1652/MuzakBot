@@ -58,10 +58,12 @@ public partial class AlbumReleaseCommandModule
             return;
         }
 
-        AlbumReleaseLookupResponse albumReleaseLookupResponse = new(album);
+        using AlbumReleaseLookupResponse albumReleaseLookupResponse = new(album);
 
-        await FollowupAsync(
-            embed: albumReleaseLookupResponse.GenerateEmbed().Build()
+        await FollowupWithFileAsync(
+            embed: albumReleaseLookupResponse.GenerateEmbed().Build(),
+            fileName: albumReleaseLookupResponse.AlbumArtFileName,
+            fileStream: albumReleaseLookupResponse.AlbumArtworkStream
         );
     }
 }
