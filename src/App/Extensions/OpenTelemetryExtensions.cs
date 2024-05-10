@@ -156,6 +156,7 @@ internal static class OpenTelemetryExtensions
             .AddSource("MuzakBot.App.Modules.ShareMusicCommandModule")
             .AddSource("MuzakBot.App.Modules.LyricsAnalyzerCommandModule")
             .AddSource("MuzakBot.App.Modules.AlbumReleaseLookupCommandModule")
+            .AddSource("MuzakBot.App.Services.AlbumReleaseReminderMonitorService")
             .AddSource("MuzakBot.App.Services.DiscordService");
     }
 }
