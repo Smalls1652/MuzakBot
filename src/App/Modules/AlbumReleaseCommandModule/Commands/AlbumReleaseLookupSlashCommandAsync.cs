@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using MuzakBot.App.Handlers;
 using MuzakBot.App.Models.Responses;
 using MuzakBot.Lib.Models.AppleMusic;
+using MuzakBot.Lib.Models.Odesli;
 
 namespace MuzakBot.App.Modules;
 
@@ -58,7 +59,25 @@ public partial class AlbumReleaseCommandModule
             return;
         }
 
-        using AlbumReleaseLookupResponse albumReleaseLookupResponse = new(album);
+        MusicEntityItem musicEntityItem;
+        try
+        {
+            musicEntityItem = await _odesliService.GetShareLinksAsync(album.Attributes!.Url)
+                ?? throw new Exception("Failed to get share links from Odesli API.");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to get share links from Odesli API.");
+
+            await FollowupAsync(
+                embed: GenerateErrorEmbed("An error occurred while getting the share links. 😥").Build(),
+                components: GenerateRemoveComponent().Build()
+            );
+
+            return;
+        }
+
+        using AlbumReleaseLookupResponse albumReleaseLookupResponse = new(album, musicEntityItem);
 
         await FollowupWithFileAsync(
             embed: albumReleaseLookupResponse.GenerateEmbed().Build(),
