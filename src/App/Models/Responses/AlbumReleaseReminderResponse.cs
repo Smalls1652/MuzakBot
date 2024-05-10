@@ -11,7 +11,7 @@ namespace MuzakBot.App.Models.Responses;
 /// <summary>
 /// Represents a response for the album release reminder.
 /// </summary>
-public sealed class AlbumReleaseReminderResponse : IResponse, IDisposable
+public sealed class AlbumReleaseReminderResponse : IBotResponse, IDisposable
 {
     private bool _isDisposed;
 

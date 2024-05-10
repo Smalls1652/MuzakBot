@@ -10,7 +10,7 @@ namespace MuzakBot.App.Models.Responses;
 /// <summary>
 /// Represents a response for the album release lookup command.
 /// </summary>
-public sealed class AlbumReleaseLookupResponse : IResponse, IDisposable
+public sealed class AlbumReleaseLookupResponse : IBotResponse, IDisposable
 {
     private bool _isDisposed;
 

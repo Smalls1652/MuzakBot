@@ -10,7 +10,7 @@ namespace MuzakBot.App.Models.Responses;
 /// <summary>
 /// Represents a response for the lyrics analyzer command.
 /// </summary>
-public class LyricsAnalyzerResponse : IResponse
+public class LyricsAnalyzerResponse : IBotResponse
 {
     /// <summary>
     /// Initialize a new instance of the <see cref="LyricsAnalyzerResponse"/> class.
