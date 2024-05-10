@@ -32,7 +32,7 @@ public class DiscordService : IDiscordService, IHostedService
     private readonly DiscordSocketClient _discordSocketClient;
     private readonly InteractionService _interactionService;
     private readonly ILogger<DiscordService> _logger;
-    private readonly IAlbumReleaseReminderQueueService _albumReleaseReminderQueueService;
+    private readonly IAlbumReleaseReminderMonitorService _albumReleaseReminderQueueService;
     private readonly string _clientToken;
 #if DEBUG
     private readonly ulong _testGuildId;
@@ -40,7 +40,7 @@ public class DiscordService : IDiscordService, IHostedService
     private readonly ulong _adminGuildId;
     private readonly IServiceProvider _serviceProvider;
 
-    public DiscordService(DiscordSocketClient discordSocketClient, InteractionService interactionService, ILogger<DiscordService> logger, IAlbumReleaseReminderQueueService albumReleaseReminderQueueService, IOptions<DiscordServiceOptions> options, IServiceProvider serviceProvider)
+    public DiscordService(DiscordSocketClient discordSocketClient, InteractionService interactionService, ILogger<DiscordService> logger, IAlbumReleaseReminderMonitorService albumReleaseReminderQueueService, IOptions<DiscordServiceOptions> options, IServiceProvider serviceProvider)
     {
         _discordSocketClient = discordSocketClient;
         _interactionService = interactionService;
