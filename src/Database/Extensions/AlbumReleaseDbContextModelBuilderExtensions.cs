@@ -27,11 +27,6 @@ public static class AlbumReleaseDbContextModelBuilderExtensions
                 .ToJsonProperty("partitionKey");
 
             entity
-                .Property(e => e.ArtistId)
-                .HasColumnName("artistId")
-                .ToJsonProperty("artistId");
-
-            entity
                 .Property(e => e.AlbumId)
                 .HasColumnName("albumId")
                 .ToJsonProperty("albumId");

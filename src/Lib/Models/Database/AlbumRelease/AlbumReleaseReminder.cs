@@ -9,19 +9,14 @@ public class AlbumReleaseReminder : DatabaseItem
     public AlbumReleaseReminder()
     {}
 
-    public AlbumReleaseReminder(string artistId, string albumId, ulong guildId, DateTimeOffset releaseDate)
+    public AlbumReleaseReminder(string albumId, ulong guildId, DateTimeOffset releaseDate)
     {
-        Id = new Guid($"{artistId}-{albumId}-{guildId}").ToString();
+        Id = new Guid($"{albumId}-{guildId}").ToString();
         PartitionKey = "album-release-reminder";
-        ArtistId = artistId;
         AlbumId = albumId;
         GuildId = guildId;
         ReleaseDate = releaseDate.UtcDateTime;
     }
-
-    [Column("artistId")]
-    [JsonPropertyName("artistId")]
-    public string ArtistId { get; set; } = null!;
 
     [Column("albumId")]
     [JsonPropertyName("albumId")]
