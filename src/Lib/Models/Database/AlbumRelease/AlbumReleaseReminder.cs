@@ -38,4 +38,8 @@ public class AlbumReleaseReminder : DatabaseItem
     [Column("releaseDate")]
     [JsonPropertyName("releaseDate")]
     public DateTime ReleaseDate { get; set; }
+
+    [Column("reminderSent")]
+    [JsonPropertyName("reminderSent")]
+    public bool ReminderSent { get; set; } = false;
 }

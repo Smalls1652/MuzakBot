@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MuzakBot.Database;
 
@@ -10,9 +11,11 @@ using MuzakBot.Database;
 namespace MuzakBot.Database.Migrations.AlbumReleaseDb
 {
     [DbContext(typeof(AlbumReleaseDbContext))]
-    partial class AlbumReleaseDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240510010413_Add_ReminderSentProperty")]
+    partial class Add_ReminderSentProperty
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.4");

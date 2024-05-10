@@ -50,6 +50,11 @@ public static class AlbumReleaseDbContextModelBuilderExtensions
                 .Property(e => e.ReleaseDate)
                 .HasColumnName("releaseDate")
                 .ToJsonProperty("releaseDate");
+
+            entity
+                .Property(e => e.ReminderSent)
+                .HasColumnName("reminderSent")
+                .ToJsonProperty("reminderSent");
         });
 
         return modelBuilder;
