@@ -18,10 +18,13 @@ public sealed class AlbumReleaseLookupResponse : IResponse, IDisposable
     /// Initialize a new instance of the <see cref="AlbumReleaseLookupResponse"/> class.
     /// </summary>
     /// <param name="album">The album to show the release date for.</param>
-    public AlbumReleaseLookupResponse(Album album, MusicEntityItem musicEntityItem)
+    /// <param name="musicEntityItem">The music entity item from Odesli.</param>
+    /// <param name="isDm">Whether the response is for a DM.</param>
+    public AlbumReleaseLookupResponse(Album album, MusicEntityItem musicEntityItem, bool isDm)
     {
         Album = album;
         MusicEntityItem = musicEntityItem;
+        IsDm = isDm;
         AlbumArtFileName = $"{Guid.NewGuid():N}.jpg";
         AlbumArtworkStream = Album.Attributes!.Artwork.GetAlbumArtworkStreamAsync(512, 512).GetAwaiter().GetResult();
     }
@@ -37,6 +40,11 @@ public sealed class AlbumReleaseLookupResponse : IResponse, IDisposable
     public MusicEntityItem MusicEntityItem { get; }
 
     /// <summary>
+    /// Whether the response is for a DM.
+    /// </summary>
+    public bool IsDm { get; }
+
+    /// <summary>
     /// The name being used for the album artwork file.
     /// </summary>
     public string AlbumArtFileName { get; }
@@ -49,13 +57,20 @@ public sealed class AlbumReleaseLookupResponse : IResponse, IDisposable
     /// <inheritdoc/>
     public ComponentBuilder GenerateComponent()
     {
-        ComponentBuilder componentBuilder = new ComponentBuilder()
-            .WithButton(
-                label: "Remind me",
-                style: ButtonStyle.Primary,
-                customId: $"albumrelease-remindme-{Album.Id}",
-                emote: new Emoji("🔔")
-            )
+        ComponentBuilder componentBuilder = new ComponentBuilder();
+
+        if (!IsDm)
+        {
+            componentBuilder
+                .WithButton(
+                    label: "Remind me",
+                    style: ButtonStyle.Primary,
+                    customId: $"albumrelease-remindme-{Album.Id}",
+                    emote: new Emoji("🔔")
+                );
+        }
+        
+        componentBuilder
             .WithButton(
                 label: "Links",
                 style: ButtonStyle.Link,
