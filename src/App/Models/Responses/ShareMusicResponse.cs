@@ -9,7 +9,7 @@ namespace MuzakBot.App.Models.Responses;
 /// <summary>
 /// Represents a response for the share music command.
 /// </summary>
-public class ShareMusicResponse : IResponse
+public class ShareMusicResponse : IBotResponse
 {
     private readonly PlatformEntityLink? _youtubeLink;
     private readonly PlatformEntityLink? _appleMusicLink;

@@ -7,7 +7,7 @@ namespace MuzakBot.App.Models.Responses;
 /// <summary>
 /// Represents a response containing information about the bot.
 /// </summary>
-public sealed class BotInfoResponse : IResponse
+public sealed class BotInfoResponse : IBotResponse
 {
     private readonly string _currentYear = DateTimeOffset.Now.ToString("yyyy");
     private readonly Version? _assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version;

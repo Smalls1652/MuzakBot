@@ -7,7 +7,7 @@ namespace MuzakBot.App.Models.Responses;
 /// <summary>
 /// Represents a response for when an album release reminder is added for a user. 
 /// </summary>
-public sealed class AlbumReleaseReminderAddedResponse : IResponse
+public sealed class AlbumReleaseReminderAddedResponse : IBotResponse
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="AlbumReleaseReminderAddedResponse"/> class.

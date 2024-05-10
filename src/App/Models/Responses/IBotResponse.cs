@@ -5,7 +5,7 @@ namespace MuzakBot.App.Models.Responses;
 /// <summary>
 /// Interface for a response to a bot interaction.
 /// </summary>
-public interface IResponse
+public interface IBotResponse
 {
     /// <summary>
     /// Generates the text for the response.
