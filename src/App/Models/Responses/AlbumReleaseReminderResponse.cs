@@ -16,7 +16,7 @@ public sealed class AlbumReleaseReminderResponse : IResponse, IDisposable
     /// Initialize a new instance of the <see cref="AlbumReleaseReminderResponse"/> class.
     /// </summary>
     /// <param name="album">The album to show the release date for.</param>
-    public AlbumReleaseReminderResponse(Album album, MusicEntityItem musicEntityItem, List<SocketUser> usersToNotify)
+    public AlbumReleaseReminderResponse(Album album, MusicEntityItem musicEntityItem, List<string> usersToNotify)
     {
         Album = album;
         MusicEntityItem = musicEntityItem;
@@ -32,7 +32,7 @@ public sealed class AlbumReleaseReminderResponse : IResponse, IDisposable
 
     public MusicEntityItem MusicEntityItem { get; }
 
-    public List<SocketUser> UsersToNotify { get; }
+    public List<string> UsersToNotify { get; }
 
     /// <summary>
     /// The name being used for the album artwork file.
@@ -65,19 +65,8 @@ public sealed class AlbumReleaseReminderResponse : IResponse, IDisposable
             .AppendLine($"by {Album.Attributes!.ArtistName}")
             .AppendLine()
             .AppendLine("🔔 **Album has been released!** 🔔")
-            .AppendLine();
-
-        for (int i = 0; i < UsersToNotify.Count; i++)
-        {
-            if (i != UsersToNotify.Count - 1)
-            {
-                descriptionBuilder.Append($"{UsersToNotify[i].Mention}, ");
-            }
-            else
-            {
-                descriptionBuilder.Append(UsersToNotify[i].Mention);
-            }
-        }
+            .AppendLine()
+            .AppendLine(string.Join(", ", UsersToNotify));
 
         EmbedBuilder embedBuilder = new EmbedBuilder()
             .WithTitle(Album.Attributes!.Name)
