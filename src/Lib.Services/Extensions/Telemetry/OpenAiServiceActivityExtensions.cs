@@ -1,4 +1,5 @@
 using System.Diagnostics;
+
 using MuzakBot.Lib.Models.OpenAi;
 
 namespace MuzakBot.Lib.Services.Extensions.Telemetry;

@@ -26,4 +26,4 @@ namespace MuzakBot.Lib.Services;
 [JsonSerializable(typeof(CosmosDbResponse<LyricsAnalyzerUserRateLimit>))]
 [JsonSerializable(typeof(CosmosDbResponse<LyricsAnalyzerPromptStyle>))]
 internal partial class DatabaseJsonContext : JsonSerializerContext
-{}
+{ }

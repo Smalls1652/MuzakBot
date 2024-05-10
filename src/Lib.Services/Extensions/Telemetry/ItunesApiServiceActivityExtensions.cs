@@ -1,4 +1,5 @@
 using System.Diagnostics;
+
 using MuzakBot.Lib.Models.Diagnostics;
 
 namespace MuzakBot.Lib.Services.Extensions.Telemetry;
@@ -16,7 +17,7 @@ internal static class ItunesApiServiceActivityExtensions
     /// <param name="tags">The activity tags.</param>
     /// <returns>The started activity.</returns>
     public static Activity? StartItunesApiServiceActivity(this ActivitySource activitySource, ItunesApiActivityType activityType, ItunesApiActivityTags tags) => StartItunesApiServiceActivity(activitySource, activityType, tags, null);
-    
+
     /// <summary>
     /// Starts an activity for the iTunes API service.
     /// </summary>
@@ -27,7 +28,8 @@ internal static class ItunesApiServiceActivityExtensions
     /// <returns>The started activity.</returns>
     public static Activity? StartItunesApiServiceActivity(this ActivitySource activitySource, ItunesApiActivityType activityType, ItunesApiActivityTags tags, string? parentActivityId)
     {
-        string activityName = activityType switch {
+        string activityName = activityType switch
+        {
             ItunesApiActivityType.GetArtitstSearchResult => "GetArtitstSearchResultAsync",
             ItunesApiActivityType.GetArtistIdLookupResult => "GetArtistIdLookupResultAsync",
             ItunesApiActivityType.GetSongsByArtistResult => "GetSongsByArtistResultAsync",

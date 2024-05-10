@@ -19,4 +19,4 @@ namespace MuzakBot.Lib.Services;
 [JsonSerializable(typeof(OpenAiUsage))]
 [JsonSerializable(typeof(OpenAiChatCompletion))]
 internal partial class OpenAiJsonContext : JsonSerializerContext
-{}
+{ }

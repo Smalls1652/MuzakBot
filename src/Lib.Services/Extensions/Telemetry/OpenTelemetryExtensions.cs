@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Diagnostics.Metrics;
+
 using OpenTelemetry.Trace;
 
 namespace MuzakBot.Lib.Services.Extensions.Telemetry;

@@ -1,11 +1,13 @@
 using System.Diagnostics;
 using System.Net;
 using System.Text.Json;
+
 using Microsoft.Extensions.Logging;
-using MuzakBot.Lib.Services.Logging.MusicBrainz;
-using MuzakBot.Lib.Models.MusicBrainz;
+
 using MuzakBot.Lib.Models.Diagnostics;
+using MuzakBot.Lib.Models.MusicBrainz;
 using MuzakBot.Lib.Services.Extensions.Telemetry;
+using MuzakBot.Lib.Services.Logging.MusicBrainz;
 
 namespace MuzakBot.Lib.Services;
 

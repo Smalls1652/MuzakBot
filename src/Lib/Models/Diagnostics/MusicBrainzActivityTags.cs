@@ -11,7 +11,7 @@ public class MusicBrainzActivityTags
     /// Initializes a new instance of the <see cref="MusicBrainzActivityTags"/> class.
     /// </summary>
     public MusicBrainzActivityTags()
-    {}
+    { }
 
     /// <summary>
     /// Gets or sets the name of the artist.

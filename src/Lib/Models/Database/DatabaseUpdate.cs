@@ -13,7 +13,7 @@ public sealed class DatabaseUpdate : DatabaseItem
     /// </summary>
     [JsonConstructor]
     public DatabaseUpdate()
-    {}
+    { }
 
     /// <summary>
     /// Whether this is the first time <see cref="DatabaseUpdate"/> is being added.

@@ -257,7 +257,7 @@ public partial class GeniusApiService : IGeniusApiService
         if (archivedStatus is null || archivedStatus.ArchivedSnapshots is null || archivedStatus.ArchivedSnapshots.Closest is null || archivedStatus.ArchivedSnapshots.Closest.Available == false || ConvertWaybackTimeStampToDateTimeOffset(archivedStatus.ArchivedSnapshots.Closest.Timestamp) < DateTimeOffset.UtcNow.AddDays(-30))
         {
             _logger.LogGeniusGetLatestWaybackNotFound(url);
-            
+
             if (!isSecondRun)
             {
                 _logger.LogGeniusGetLatestWaybackAttemptArchive(url);
@@ -301,7 +301,7 @@ public partial class GeniusApiService : IGeniusApiService
 
         using HttpRequestMessage requestMessage = new(
             method: HttpMethod.Post,
-            requestUri: $"https://web.archive.org/save/{url}"            
+            requestUri: $"https://web.archive.org/save/{url}"
         );
 
         MultipartFormDataContent formContent = new()

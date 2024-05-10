@@ -1,4 +1,5 @@
 using System.Diagnostics.Metrics;
+
 using Microsoft.Extensions.Logging;
 
 namespace MuzakBot.App.Metrics;
@@ -6,7 +7,7 @@ namespace MuzakBot.App.Metrics;
 public class RequestDuration<T> : IDisposable
 {
     private readonly long _requestStartTime = TimeProvider.System.GetTimestamp();
-    
+
     private readonly ILogger<T> _logger;
     private readonly Histogram<double> _histogram;
 

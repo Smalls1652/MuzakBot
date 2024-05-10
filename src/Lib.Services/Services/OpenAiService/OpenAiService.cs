@@ -1,11 +1,13 @@
 using System.Diagnostics;
 using System.Text;
+
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using MuzakBot.Lib.Services.Extensions.Telemetry;
-using MuzakBot.Lib.Services.Logging.OpenAi;
+
 using MuzakBot.Lib.Models.Database.LyricsAnalyzer;
 using MuzakBot.Lib.Models.OpenAi;
+using MuzakBot.Lib.Services.Extensions.Telemetry;
+using MuzakBot.Lib.Services.Logging.OpenAi;
 
 namespace MuzakBot.Lib.Services;
 

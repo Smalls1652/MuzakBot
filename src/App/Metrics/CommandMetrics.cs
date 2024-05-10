@@ -1,4 +1,5 @@
 using System.Diagnostics.Metrics;
+
 using Microsoft.Extensions.Logging;
 
 namespace MuzakBot.App.Metrics;

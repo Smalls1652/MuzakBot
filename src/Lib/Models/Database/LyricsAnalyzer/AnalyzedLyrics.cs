@@ -13,7 +13,7 @@ public class AnalyzedLyrics : DatabaseItem
     /// </summary>
     [JsonConstructor]
     public AnalyzedLyrics()
-    {}
+    { }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AnalyzedLyrics"/> class.

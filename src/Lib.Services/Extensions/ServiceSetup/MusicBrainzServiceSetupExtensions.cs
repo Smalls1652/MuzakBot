@@ -1,4 +1,5 @@
 using System.Reflection;
+
 using Microsoft.Extensions.DependencyInjection;
 
 namespace MuzakBot.Lib.Services.Extensions;

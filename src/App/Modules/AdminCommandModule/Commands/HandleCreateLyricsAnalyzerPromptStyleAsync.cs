@@ -1,6 +1,8 @@
 using Discord;
 using Discord.Interactions;
+
 using Microsoft.Extensions.Logging;
+
 using MuzakBot.Lib.Models.CommandModules;
 using MuzakBot.Lib.Models.Database.LyricsAnalyzer;
 

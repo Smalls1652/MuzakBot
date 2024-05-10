@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
+
 using MuzakBot.Lib.Models.Database.LyricsAnalyzer;
 
 namespace MuzakBot.Lib.Services.Extensions.Telemetry;

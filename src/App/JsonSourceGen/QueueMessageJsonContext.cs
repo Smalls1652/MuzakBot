@@ -16,4 +16,4 @@ namespace MuzakBot.App;
 [JsonSerializable(typeof(SongLyricsRequestMessage))]
 [JsonSerializable(typeof(SongLyricsRequestMessage[]))]
 internal partial class QueueMessageJsonContext : JsonSerializerContext
-{}
+{ }
