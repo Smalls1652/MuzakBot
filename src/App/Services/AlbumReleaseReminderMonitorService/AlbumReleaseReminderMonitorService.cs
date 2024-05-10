@@ -150,7 +150,7 @@ public sealed class AlbumReleaseReminderMonitorService : IAlbumReleaseReminderMo
                 }
             }
 
-            await Task.Delay(300000, cancellationToken);
+            await Task.Delay(TimeSpan.FromMinutes(30), cancellationToken);
         }
 
         _logger.LogInformation("Stopping album release reminder queue service.");
