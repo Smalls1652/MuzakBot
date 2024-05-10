@@ -40,7 +40,7 @@ public class AppleMusicArtistAlbumAutocompleteHandler : AutocompleteHandler
         {
             results.Add(
                 item: new(
-                    name: "Start typing a song name...",
+                    name: "Start typing an album name...",
                     value: ""
                 )
             );
