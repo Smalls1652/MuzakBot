@@ -72,6 +72,9 @@ builder.Services
     .AddMusicBrainzService();
 
 builder.Services
+    .AddSingleton<IAlbumReleaseReminderQueueService, AlbumReleaseReminderQueueService>();
+
+builder.Services
     .AddAppleMusicApiService(options =>
     {
         options.AppleTeamId = builder.Configuration.GetValue<string>("APPLE_TEAM_ID") ?? throw new("APPLE_TEAM_ID is not set.");
