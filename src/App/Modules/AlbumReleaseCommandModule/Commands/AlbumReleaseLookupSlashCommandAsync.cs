@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text;
 
 using Discord;
@@ -37,6 +38,18 @@ public partial class AlbumReleaseCommandModule
         string albumId
     )
     {
+        using var activity = _activitySource.StartActivity(
+            name: "AlbumReleaseLookupSlashCommandAsync",
+            kind: ActivityKind.Server,
+            tags: new ActivityTagsCollection
+            {
+                { "command_Type", "SlashCommand" },
+                { "command_Name", "albumrelease lookup" },
+                { "artist_Id", artistId },
+                { "album_Id", albumId }
+            }
+        );
+
         await DeferAsync();
 
         Album album;
@@ -53,6 +66,8 @@ public partial class AlbumReleaseCommandModule
                 components: GenerateRemoveComponent().Build()
             );
 
+            activity?.SetStatus(ActivityStatusCode.Error);
+
             return;
         }
 
@@ -62,6 +77,7 @@ public partial class AlbumReleaseCommandModule
                 embed: GenerateErrorEmbed("This album has already been released.").Build(),
                 components: GenerateRemoveComponent().Build()
             );
+
             return;
         }
 
@@ -80,6 +96,8 @@ public partial class AlbumReleaseCommandModule
                 components: GenerateRemoveComponent().Build()
             );
 
+            activity?.SetStatus(ActivityStatusCode.Error);
+
             return;
         }
 
@@ -91,5 +109,7 @@ public partial class AlbumReleaseCommandModule
             fileName: albumReleaseLookupResponse.AlbumArtFileName,
             fileStream: albumReleaseLookupResponse.AlbumArtworkStream
         );
+
+        _logger.LogInformation("Album release lookup response sent for album {AlbumId}", album.Id);
     }
 }

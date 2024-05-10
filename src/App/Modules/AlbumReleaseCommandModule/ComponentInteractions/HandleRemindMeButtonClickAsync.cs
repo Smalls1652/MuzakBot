@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 using Discord;
 using Discord.Interactions;
 using Discord.Rest;
@@ -28,6 +30,18 @@ public partial class AlbumReleaseCommandModule
         var componentInteraction = (Context.Interaction as IComponentInteraction)!;
 
         await componentInteraction.DeferLoadingAsync(true);
+
+        using var activity = _activitySource.StartActivity(
+            name: "HandleRemindMeButtonClickAsync",
+            kind: ActivityKind.Server,
+            tags: new ActivityTagsCollection
+            {
+                { "command_Type", "ComponentInteraction" },
+                { "command_Name", "Remind me" },
+                { "user_Id", componentInteraction.User.Id.ToString() },
+                { "album_Id", albumId }
+            }
+        );
 
         Album album = await _appleMusicApiService.GetAlbumFromCatalogAsync(albumId);
 
@@ -99,5 +113,7 @@ public partial class AlbumReleaseCommandModule
             embed: reminderAddedResponse.GenerateEmbed().Build(),
             ephemeral: true
         );
+
+        _logger.LogInformation("User {UserId} has been added to be reminded for album {AlbumId}", Context.User.Id, album.Id);
     }
 }
