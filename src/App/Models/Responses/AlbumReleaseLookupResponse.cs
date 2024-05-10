@@ -3,6 +3,7 @@ using System.Text;
 using Discord;
 
 using MuzakBot.Lib.Models.AppleMusic;
+using MuzakBot.Lib.Models.Odesli;
 
 namespace MuzakBot.App.Models.Responses;
 
@@ -17,9 +18,10 @@ public sealed class AlbumReleaseLookupResponse : IResponse, IDisposable
     /// Initialize a new instance of the <see cref="AlbumReleaseLookupResponse"/> class.
     /// </summary>
     /// <param name="album">The album to show the release date for.</param>
-    public AlbumReleaseLookupResponse(Album album)
+    public AlbumReleaseLookupResponse(Album album, MusicEntityItem musicEntityItem)
     {
         Album = album;
+        MusicEntityItem = musicEntityItem;
         AlbumArtFileName = $"{Guid.NewGuid():N}.jpg";
         AlbumArtworkStream = Album.Attributes!.Artwork.GetAlbumArtworkStreamAsync(512, 512).GetAwaiter().GetResult();
     }
@@ -28,6 +30,8 @@ public sealed class AlbumReleaseLookupResponse : IResponse, IDisposable
     /// The album to show the release date for.
     /// </summary>
     public Album Album { get; }
+
+    public MusicEntityItem MusicEntityItem { get; }
 
     /// <summary>
     /// The name being used for the album artwork file.
@@ -46,8 +50,13 @@ public sealed class AlbumReleaseLookupResponse : IResponse, IDisposable
             .WithButton(
                 label: "Remind me",
                 style: ButtonStyle.Primary,
-                customId: "albumrelease-remindme",
+                customId: $"albumrelease-remindme-{Album.Id}",
                 emote: new Emoji("🔔")
+            )
+            .WithButton(
+                label: "Links",
+                style: ButtonStyle.Link,
+                url: MusicEntityItem.PageUrl!.ToString()
             );
 
         return componentBuilder;
@@ -60,21 +69,18 @@ public sealed class AlbumReleaseLookupResponse : IResponse, IDisposable
 
         DateTimeOffset albumReleaseDateTime = GetEasternDateTimeOffset(albumReleaseDate);
 
-        StringBuilder descriptionBuilder = new();
+        string description = $@"
+by {Album.Attributes!.ArtistName}
+### Release Date
+<t:{albumReleaseDateTime.ToUnixTimeSeconds()}:f> (<t:{albumReleaseDateTime.ToUnixTimeSeconds()}:R>)
 
-        descriptionBuilder
-            .AppendLine($"by {Album.Attributes!.ArtistName}")
-            .AppendLine("## Release Date")
-            .AppendLine()
-            .AppendLine()
-            .AppendLine($"<t:{albumReleaseDateTime.ToUnixTimeSeconds()}:f> (<t:{albumReleaseDateTime.ToUnixTimeSeconds()}:R>)")
-            .AppendLine()
-            .AppendLine("> ⚠️ **Note:**")
-            .AppendLine("> The time of release varies depending on your timezone/region.");
+> ⚠️ **Note:**
+> The time of release varies depending on your timezone/region.        
+";
 
         EmbedBuilder embedBuilder = new EmbedBuilder()
             .WithTitle(Album.Attributes!.Name)
-            .WithDescription(descriptionBuilder.ToString())
+            .WithDescription(description)
             .WithColor(Color.Green)
             .WithImageUrl($"attachment://{AlbumArtFileName}");
 
