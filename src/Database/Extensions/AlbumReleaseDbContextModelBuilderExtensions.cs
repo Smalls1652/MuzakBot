@@ -37,6 +37,11 @@ public static class AlbumReleaseDbContextModelBuilderExtensions
                 .ToJsonProperty("guildId");
 
             entity
+                .Property(e => e.ChannelId)
+                .HasColumnName("channelId")
+                .ToJsonProperty("channelId");
+
+            entity
                 .Property(e => e.UserIdsToRemind)
                 .HasColumnName("userIdsToRemind")
                 .ToJsonProperty("userIdsToRemind");

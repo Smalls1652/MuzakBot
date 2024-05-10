@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MuzakBot.Database;
 
@@ -10,9 +11,11 @@ using MuzakBot.Database;
 namespace MuzakBot.Database.Migrations.AlbumReleaseDb
 {
     [DbContext(typeof(AlbumReleaseDbContext))]
-    partial class AlbumReleaseDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240510021405_Add_ChannelId_Property")]
+    partial class Add_ChannelId_Property
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.4");
@@ -32,16 +35,14 @@ namespace MuzakBot.Database.Migrations.AlbumReleaseDb
                         .HasAnnotation("Cosmos:PropertyName", "albumId")
                         .HasAnnotation("Relational:JsonPropertyName", "albumId");
 
-                    b.Property<string>("ChannelId")
-                        .IsRequired()
-                        .HasColumnType("TEXT")
+                    b.Property<ulong>("ChannelId")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("channelId")
                         .HasAnnotation("Cosmos:PropertyName", "channelId")
                         .HasAnnotation("Relational:JsonPropertyName", "channelId");
 
-                    b.Property<string>("GuildId")
-                        .IsRequired()
-                        .HasColumnType("TEXT")
+                    b.Property<ulong>("GuildId")
+                        .HasColumnType("INTEGER")
                         .HasColumnName("guildId")
                         .HasAnnotation("Cosmos:PropertyName", "guildId")
                         .HasAnnotation("Relational:JsonPropertyName", "guildId");

@@ -9,12 +9,13 @@ public class AlbumReleaseReminder : DatabaseItem
     public AlbumReleaseReminder()
     {}
 
-    public AlbumReleaseReminder(string albumId, ulong guildId, DateTimeOffset releaseDate)
+    public AlbumReleaseReminder(string albumId, string guildId, string channelId, DateTimeOffset releaseDate)
     {
-        Id = new Guid($"{albumId}-{guildId}").ToString();
+        Id = $"{albumId}-{guildId}-{channelId}";
         PartitionKey = "album-release-reminder";
         AlbumId = albumId;
         GuildId = guildId;
+        ChannelId = channelId;
         ReleaseDate = releaseDate.UtcDateTime;
     }
 
@@ -24,7 +25,11 @@ public class AlbumReleaseReminder : DatabaseItem
 
     [Column("guildId")]
     [JsonPropertyName("guildId")]
-    public ulong GuildId { get; set; }
+    public string GuildId { get; set; }
+
+    [Column("channelId")]
+    [JsonPropertyName("channelId")]
+    public string ChannelId { get; set; }
 
     [Column("userIdsToRemind")]
     [JsonPropertyName("userIdsToRemind")]
@@ -37,4 +42,24 @@ public class AlbumReleaseReminder : DatabaseItem
     [Column("reminderSent")]
     [JsonPropertyName("reminderSent")]
     public bool ReminderSent { get; set; } = false;
+
+    public void AddUserIdToRemind(string userId)
+    {
+        if (UserIdsToRemind.Contains(userId))
+        {
+            throw new InvalidOperationException("User ID is already in the list of user IDs to remind.");
+        }
+
+        UserIdsToRemind.Add(userId);
+    }
+
+    public void RemoveUserIdToRemind(string userId)
+    {
+        if (!UserIdsToRemind.Contains(userId))
+        {
+            throw new InvalidOperationException("User ID is not in the list of user IDs to remind.");
+        }
+
+        UserIdsToRemind.Remove(userId);
+    }
 }
