@@ -83,7 +83,7 @@ public partial class AlbumReleaseCommandModule
             return;
         }
 
-        using AlbumReleaseLookupResponse albumReleaseLookupResponse = new(album, musicEntityItem);
+        using AlbumReleaseLookupResponse albumReleaseLookupResponse = new(album, musicEntityItem, Context.Interaction.IsDMInteraction);
 
         await FollowupWithFileAsync(
             embed: albumReleaseLookupResponse.GenerateEmbed().Build(),
