@@ -72,6 +72,9 @@ builder.Services
     .AddMusicBrainzService();
 
 builder.Services
+    .AddSingleton<IAlbumReleaseReminderMonitorService, AlbumReleaseReminderMonitorService>();
+
+builder.Services
     .AddAppleMusicApiService(options =>
     {
         options.AppleTeamId = builder.Configuration.GetValue<string>("APPLE_TEAM_ID") ?? throw new("APPLE_TEAM_ID is not set.");
@@ -90,7 +93,8 @@ builder.Services
     });
 
 builder.Services
-    .AddLyricsAnalyzerDbContextFactory(databaseConfig);
+    .AddLyricsAnalyzerDbContextFactory(databaseConfig)
+    .AddAlbumReleaseDbContextFactory(databaseConfig);
 
 builder.Services
     .AddOpenAiService(options =>
@@ -117,5 +121,8 @@ using var host = builder.Build();
 
 await host
     .ApplyLyricsAnalyzerDbContextMigrations();
+
+await host
+    .ApplyAlbumReleaseDbContextMigrations();
 
 await host.RunAsync();

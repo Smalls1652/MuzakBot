@@ -26,11 +26,13 @@ public class DiscordService : IDiscordService, IHostedService
     private bool _isDisposed;
     private CancellationTokenSource? _cts;
     private Task? _runTask;
+    private Task? _albumReleaseReminderMonitorTask;
 
     private readonly ActivitySource _activitySource = new("MuzakBot.App.Services.DiscordService");
     private readonly DiscordSocketClient _discordSocketClient;
     private readonly InteractionService _interactionService;
     private readonly ILogger<DiscordService> _logger;
+    private readonly IAlbumReleaseReminderMonitorService _albumReleaseReminderQueueService;
     private readonly string _clientToken;
 #if DEBUG
     private readonly ulong _testGuildId;
@@ -38,11 +40,12 @@ public class DiscordService : IDiscordService, IHostedService
     private readonly ulong _adminGuildId;
     private readonly IServiceProvider _serviceProvider;
 
-    public DiscordService(DiscordSocketClient discordSocketClient, InteractionService interactionService, ILogger<DiscordService> logger, IOptions<DiscordServiceOptions> options, IServiceProvider serviceProvider)
+    public DiscordService(DiscordSocketClient discordSocketClient, InteractionService interactionService, ILogger<DiscordService> logger, IAlbumReleaseReminderMonitorService albumReleaseReminderQueueService, IOptions<DiscordServiceOptions> options, IServiceProvider serviceProvider)
     {
         _discordSocketClient = discordSocketClient;
         _interactionService = interactionService;
         _logger = logger;
+        _albumReleaseReminderQueueService = albumReleaseReminderQueueService;
         _clientToken = options.Value.ClientToken ?? throw new ArgumentNullException(nameof(options), "Client token is null.");
 #if DEBUG
         _testGuildId = ulong.Parse(options.Value.TestGuildId ?? throw new ArgumentNullException(nameof(options), "Test guild ID is null."));
@@ -79,6 +82,9 @@ public class DiscordService : IDiscordService, IHostedService
 
         _logger.LogAddModuleToInteractionService("CoreCommandModule");
         await _interactionService.AddModuleAsync<CoreCommandModule>(_serviceProvider);
+
+        _logger.LogAddModuleToInteractionService("AlbumReleaseCommandModule");
+        await _interactionService.AddModuleAsync<AlbumReleaseCommandModule>(_serviceProvider);
 
         // Add logging to the DiscordSocketClient and InteractionService
         _discordSocketClient.Log += HandleLog;
@@ -133,7 +139,8 @@ public class DiscordService : IDiscordService, IHostedService
             modules: [
                 _interactionService.GetModuleInfo<ShareMusicCommandModule>(),
                 _interactionService.GetModuleInfo<LyricsAnalyzerCommandModule>(),
-                _interactionService.GetModuleInfo<CoreCommandModule>()
+                _interactionService.GetModuleInfo<CoreCommandModule>(),
+                _interactionService.GetModuleInfo<AlbumReleaseCommandModule>()
             ]
         );
 
@@ -149,6 +156,8 @@ public class DiscordService : IDiscordService, IHostedService
 
         string slashCommandsLoadedString = string.Join(",", _interactionService.SlashCommands);
         _logger.LogSlashCommandsLoaded(slashCommandsLoadedString);
+
+        _albumReleaseReminderMonitorTask = _albumReleaseReminderQueueService.StartMonitorAsync(_cts!.Token);
     }
 
     private async Task HandleInteraction(SocketInteraction interaction)
@@ -277,6 +286,21 @@ public class DiscordService : IDiscordService, IHostedService
                     .ConfigureAwait(ConfigureAwaitOptions.SuppressThrowing);
             }
         }
+
+        if (_albumReleaseReminderMonitorTask is not null)
+        {
+            try
+            {
+                _cts?.Cancel();
+            }
+            finally
+            {
+                await _albumReleaseReminderMonitorTask
+                    .WaitAsync(cancellationToken)
+                    .ConfigureAwait(ConfigureAwaitOptions.SuppressThrowing);
+            }
+        }
+
     }
 
     /// <inheritdoc cref="IAsyncDisposable.DisposeAsync"/>
@@ -294,6 +318,9 @@ public class DiscordService : IDiscordService, IHostedService
         }
 
         await _discordSocketClient.DisposeAsync();
+
+        _runTask?.Dispose();
+        _albumReleaseReminderMonitorTask?.Dispose();
 
         _activitySource.Dispose();
         _cts?.Dispose();
