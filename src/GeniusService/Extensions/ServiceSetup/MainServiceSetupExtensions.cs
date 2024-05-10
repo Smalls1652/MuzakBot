@@ -15,7 +15,7 @@ internal static partial class ServiceSetupExtensions
     /// <param name="services">The <see cref="IServiceCollection"/> to add the service to.</param>
     /// <returns>The <see cref="IServiceCollection"/> so that additional calls can be chained.</returns>
     public static IServiceCollection AddMainService(this IServiceCollection services) => AddMainService(services, _ => { });
-    
+
     /// <summary>
     /// Adds the main service to the service collection.
     /// </summary>
@@ -26,7 +26,7 @@ internal static partial class ServiceSetupExtensions
     {
         services.Configure(configure);
 
-        services.AddHostedService<MainService>();;
+        services.AddHostedService<MainService>(); ;
 
         return services;
     }

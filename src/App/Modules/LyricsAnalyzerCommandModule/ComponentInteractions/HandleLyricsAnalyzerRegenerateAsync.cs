@@ -249,7 +249,7 @@ public partial class LyricsAnalyzerCommandModule
             await componentInteraction.FollowupAsync(
                 text: lyricsAnalyzerResponse.GenerateText(),
                 embed: lyricsAnalyzerResponse.GenerateEmbed().Build(),
-                components : lyricsAnalyzerResponse.GenerateComponent().Build(),
+                components: lyricsAnalyzerResponse.GenerateComponent().Build(),
                 ephemeral: isEphemeral
             );
 

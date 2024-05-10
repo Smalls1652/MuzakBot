@@ -1,4 +1,5 @@
 using System.Diagnostics;
+
 using MuzakBot.Lib.Models.Diagnostics;
 
 namespace MuzakBot.Lib.Services.Extensions.Telemetry;

@@ -17,7 +17,7 @@ internal static partial class DiscordServiceLogging
         Message = "Connecting to Discord..."
     )]
     public static partial void LogDiscordStartConnecting(this ILogger logger);
-    
+
     /// <summary>
     /// Logs that the Discord service is being initialized.
     /// </summary>

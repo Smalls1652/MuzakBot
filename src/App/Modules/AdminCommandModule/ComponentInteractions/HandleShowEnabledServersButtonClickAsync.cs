@@ -1,10 +1,12 @@
 using System.Text;
+
 using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+
 using MuzakBot.Lib.Models.Database.LyricsAnalyzer;
 
 namespace MuzakBot.App.Modules;
@@ -61,7 +63,7 @@ public partial class AdminCommandModule
             {
                 enabledGuilds.Add(guild);
             }
-            
+
             if (lyricsAnalyzerConfig.CommandDisabledGuildIds?.Contains(guild.Id) ?? false)
             {
                 disabledGuilds.Add(guild);

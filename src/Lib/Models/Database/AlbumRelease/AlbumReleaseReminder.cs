@@ -13,7 +13,7 @@ public class AlbumReleaseReminder : DatabaseItem
     /// </summary>
     [JsonConstructor]
     public AlbumReleaseReminder()
-    {}
+    { }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AlbumReleaseReminder"/> class.

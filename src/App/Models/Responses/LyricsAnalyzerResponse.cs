@@ -112,7 +112,7 @@ public class LyricsAnalyzerResponse : IResponse
 
             lyricsResponseBuilder.AppendLine($"> {analysisLines[i]}");
         }
-        
+
         return lyricsResponseBuilder.ToString();
     }
 }

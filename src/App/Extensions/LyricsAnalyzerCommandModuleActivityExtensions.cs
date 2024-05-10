@@ -1,4 +1,5 @@
 using System.Diagnostics;
+
 using Discord;
 
 namespace MuzakBot.App.Extensions;

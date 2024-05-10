@@ -1,9 +1,12 @@
 using System.Diagnostics;
 using System.Text;
 using System.Text.RegularExpressions;
+
 using Discord;
 using Discord.Interactions;
+
 using Microsoft.Extensions.Logging;
+
 using MuzakBot.App.Extensions;
 using MuzakBot.App.Models.Responses;
 using MuzakBot.App.Services;

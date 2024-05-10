@@ -94,7 +94,7 @@ public partial class AlbumReleaseCommandModule
         AlbumReleaseReminderAddedResponse reminderAddedResponse = new(
             album: album
         );
-        
+
         await componentInteraction.FollowupAsync(
             embed: reminderAddedResponse.GenerateEmbed().Build(),
             ephemeral: true

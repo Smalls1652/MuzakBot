@@ -14,7 +14,7 @@ public class SongLyricsRequestJob : DatabaseItem
     /// </summary>
     [JsonConstructor()]
     public SongLyricsRequestJob()
-    {}
+    { }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SongLyricsRequestJob"/> class.

@@ -1,7 +1,9 @@
 using Discord;
 using Discord.Interactions;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+
 using MuzakBot.Lib.Models.Itunes;
 using MuzakBot.Lib.Models.MusicBrainz;
 using MuzakBot.Lib.Services;

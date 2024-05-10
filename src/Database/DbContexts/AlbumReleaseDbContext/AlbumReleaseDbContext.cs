@@ -15,7 +15,7 @@ public class AlbumReleaseDbContext : DbContext
     /// </summary>
     /// <param name="options"></param>
     public AlbumReleaseDbContext(DbContextOptions<AlbumReleaseDbContext> options) : base(options)
-    {}
+    { }
 
     /// <summary>
     /// <see cref="AlbumReleaseReminder"/> items in the database.

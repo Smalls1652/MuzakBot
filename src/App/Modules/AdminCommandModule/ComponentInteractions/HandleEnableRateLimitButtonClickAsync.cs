@@ -3,6 +3,7 @@ using Discord.Interactions;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+
 using MuzakBot.Lib.Models.Database.LyricsAnalyzer;
 
 namespace MuzakBot.App.Modules;

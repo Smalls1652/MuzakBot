@@ -1,10 +1,12 @@
 using Discord;
 using Discord.Interactions;
-using MuzakBot.App.Extensions;
-using MuzakBot.Lib.Models.Odesli;
-using MuzakBot.App.Services;
+
 using Microsoft.Extensions.Logging;
+
+using MuzakBot.App.Extensions;
 using MuzakBot.App.Models.Responses;
+using MuzakBot.App.Services;
+using MuzakBot.Lib.Models.Odesli;
 
 namespace MuzakBot.App.Modules;
 
@@ -23,7 +25,7 @@ public partial class ShareMusicCommandModule
     private async Task HandleMusicShareRefreshAsync(string url)
     {
         using var activity = _activitySource.StartHandleMusicShareRefreshAsyncActivity(url, Context);
-        
+
         await Context.Interaction.DeferAsync(
             ephemeral: false
         );

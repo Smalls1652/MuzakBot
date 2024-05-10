@@ -1,8 +1,11 @@
 using System.Diagnostics;
+
 using Discord;
 using Discord.Interactions;
+
 using Microsoft.Extensions.Http;
 using Microsoft.Extensions.Logging;
+
 using MuzakBot.App.Metrics;
 using MuzakBot.Lib.Services;
 

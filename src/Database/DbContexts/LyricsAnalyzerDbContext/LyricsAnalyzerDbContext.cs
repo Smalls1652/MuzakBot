@@ -16,7 +16,7 @@ public class LyricsAnalyzerDbContext : DbContext
     /// </summary>
     /// <param name="options">The options for the database context.</param>
     public LyricsAnalyzerDbContext(DbContextOptions<LyricsAnalyzerDbContext> options) : base(options)
-    {}
+    { }
 
     /// <summary>
     /// <see cref="DatabaseUpdate"/> items in the database.
@@ -70,5 +70,5 @@ public class LyricsAnalyzerDbContext : DbContext
             .CreateLyricsAnalyzerPromptStyleModel()
             .CreateLyricsAnalyzerUserRateLimitModel()
             .CreateAnalyedLyricsModel();
-    }    
+    }
 }

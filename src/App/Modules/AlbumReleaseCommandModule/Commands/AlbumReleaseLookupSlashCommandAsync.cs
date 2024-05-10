@@ -47,7 +47,7 @@ public partial class AlbumReleaseCommandModule
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to get album from Apple Music API.");
-            
+
             await FollowupAsync(
                 embed: GenerateErrorEmbed("An error occurred while getting the album. 😥").Build(),
                 components: GenerateRemoveComponent().Build()

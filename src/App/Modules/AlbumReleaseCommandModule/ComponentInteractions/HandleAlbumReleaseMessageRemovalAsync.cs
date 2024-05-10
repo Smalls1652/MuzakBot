@@ -1,10 +1,13 @@
+using System.Diagnostics;
+
 using Discord;
 using Discord.Interactions;
-using MuzakBot.App.Extensions;
-using MuzakBot.Lib.Models.Odesli;
-using MuzakBot.App.Services;
+
 using Microsoft.Extensions.Logging;
-using System.Diagnostics;
+
+using MuzakBot.App.Extensions;
+using MuzakBot.App.Services;
+using MuzakBot.Lib.Models.Odesli;
 
 namespace MuzakBot.App.Modules;
 

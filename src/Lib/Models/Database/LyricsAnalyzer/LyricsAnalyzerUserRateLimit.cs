@@ -13,22 +13,22 @@ public class LyricsAnalyzerUserRateLimit : DatabaseItem, ILyricsAnalyzerUserRate
     /// </summary>
     [JsonConstructor()]
     public LyricsAnalyzerUserRateLimit()
-    {}
+    { }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="LyricsAnalyzerUserRateLimit"/> class.
     /// </summary>
     /// <param name="userId">The user's ID.</param>
-    public LyricsAnalyzerUserRateLimit(string userId): this(userId, 0, DateTimeOffset.UtcNow)
-    {}
+    public LyricsAnalyzerUserRateLimit(string userId) : this(userId, 0, DateTimeOffset.UtcNow)
+    { }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="LyricsAnalyzerUserRateLimit"/> class.
     /// </summary>
     /// <param name="userId">The user's ID.</param>
     /// <param name="currentRequestCount">The current request count.</param>
-    public LyricsAnalyzerUserRateLimit(string userId, int currentRequestCount): this(userId, currentRequestCount, DateTimeOffset.UtcNow)
-    {}
+    public LyricsAnalyzerUserRateLimit(string userId, int currentRequestCount) : this(userId, currentRequestCount, DateTimeOffset.UtcNow)
+    { }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="LyricsAnalyzerUserRateLimit"/> class.

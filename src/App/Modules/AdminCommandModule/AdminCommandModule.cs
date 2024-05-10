@@ -1,14 +1,17 @@
+using System.Diagnostics;
+
 using Discord;
+using Discord.Commands;
 using Discord.Interactions;
-using MuzakBot.Lib.Services;
+using Discord.WebSocket;
+
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Http;
 using Microsoft.Extensions.Logging;
+
 using MuzakBot.App.Metrics;
-using System.Diagnostics;
-using Discord.Commands;
-using Discord.WebSocket;
-using Microsoft.EntityFrameworkCore;
 using MuzakBot.Database;
+using MuzakBot.Lib.Services;
 
 namespace MuzakBot.App.Modules;
 

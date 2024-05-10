@@ -1,7 +1,10 @@
 using System.Diagnostics;
+
 using Discord;
 using Discord.Interactions;
+
 using Microsoft.Extensions.Logging;
+
 using MuzakBot.App.Extensions;
 using MuzakBot.App.Models.Responses;
 using MuzakBot.App.Services;

@@ -71,8 +71,8 @@ public sealed class AlbumReleaseReminderResponse : IResponse, IDisposable
     /// <inheritdoc/>
     public EmbedBuilder GenerateEmbed()
     {
-        StringBuilder descriptionBuilder = new StringBuilder(); 
-        
+        StringBuilder descriptionBuilder = new StringBuilder();
+
         descriptionBuilder
             .AppendLine($"by {Album.Attributes!.ArtistName}")
             .AppendLine()
