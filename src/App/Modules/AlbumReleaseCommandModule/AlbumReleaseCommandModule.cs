@@ -10,6 +10,9 @@ using MuzakBot.Lib.Services;
 
 namespace MuzakBot.App.Modules;
 
+/// <summary>
+/// Command module for 'albumrelease' commands.
+/// </summary>
 [CommandContextType(InteractionContextType.BotDm, InteractionContextType.PrivateChannel, InteractionContextType.Guild)]
 [IntegrationType(ApplicationIntegrationType.UserInstall, ApplicationIntegrationType.GuildInstall)]
 [Group("albumrelease", "Look up the release date of an album.")]
@@ -23,6 +26,13 @@ public partial class AlbumReleaseCommandModule : InteractionModuleBase<SocketInt
     private readonly IOdesliService _odesliService;
     private readonly IDbContextFactory<AlbumReleaseDbContext> _albumReleaseDbContextFactory;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AlbumReleaseCommandModule"/> class.
+    /// </summary>
+    /// <param name="logger">The logger.</param>
+    /// <param name="appleMusicApiService">The Apple Music API service.</param>
+    /// <param name="odesliService">The Odesli service.</param>
+    /// <param name="albumReleaseDbContextFactory">The <see cref="IDbContextFactory{TContext}"/> for the <see cref="AlbumReleaseDbContext"/>.</param>
     public AlbumReleaseCommandModule(ILogger<AlbumReleaseCommandModule> logger, IAppleMusicApiService appleMusicApiService, IOdesliService odesliService, IDbContextFactory<AlbumReleaseDbContext> albumReleaseDbContextFactory)
     {
         _logger = logger;
@@ -31,7 +41,7 @@ public partial class AlbumReleaseCommandModule : InteractionModuleBase<SocketInt
         _albumReleaseDbContextFactory = albumReleaseDbContextFactory;
     }
 
-
+    /// <inheritdoc/>
     public void Dispose()
     {
         ObjectDisposedException.ThrowIf(_isDisposed, this);

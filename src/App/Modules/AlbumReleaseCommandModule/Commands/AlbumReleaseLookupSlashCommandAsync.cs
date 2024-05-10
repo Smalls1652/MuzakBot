@@ -14,6 +14,12 @@ namespace MuzakBot.App.Modules;
 
 public partial class AlbumReleaseCommandModule
 {
+    /// <summary>
+    /// Handles the 'lookup' slash command.
+    /// </summary>
+    /// <param name="artistId">The ID of an artist.</param>
+    /// <param name="albumId">The ID of an album.</param>
+    /// <returns></returns>
     [CommandContextType(InteractionContextType.BotDm, InteractionContextType.PrivateChannel, InteractionContextType.Guild)]
     [IntegrationType(ApplicationIntegrationType.UserInstall, ApplicationIntegrationType.GuildInstall)]
     [SlashCommand(

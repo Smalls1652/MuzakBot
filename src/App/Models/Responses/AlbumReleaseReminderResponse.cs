@@ -8,6 +8,9 @@ using MuzakBot.Lib.Models.Odesli;
 
 namespace MuzakBot.App.Models.Responses;
 
+/// <summary>
+/// Represents a response for the album release reminder.
+/// </summary>
 public sealed class AlbumReleaseReminderResponse : IResponse, IDisposable
 {
     private bool _isDisposed;
@@ -16,6 +19,8 @@ public sealed class AlbumReleaseReminderResponse : IResponse, IDisposable
     /// Initialize a new instance of the <see cref="AlbumReleaseReminderResponse"/> class.
     /// </summary>
     /// <param name="album">The album to show the release date for.</param>
+    /// <param name="musicEntityItem">The music entity item from Odesli.</param>
+    /// <param name="usersToNotify">The users to notify.</param>
     public AlbumReleaseReminderResponse(Album album, MusicEntityItem musicEntityItem, List<string> usersToNotify)
     {
         Album = album;
@@ -30,8 +35,14 @@ public sealed class AlbumReleaseReminderResponse : IResponse, IDisposable
     /// </summary>
     public Album Album { get; }
 
+    /// <summary>
+    /// The music entity item from Odesli.
+    /// </summary>
     public MusicEntityItem MusicEntityItem { get; }
 
+    /// <summary>
+    /// The users to notify.
+    /// </summary>
     public List<string> UsersToNotify { get; }
 
     /// <summary>
@@ -57,6 +68,7 @@ public sealed class AlbumReleaseReminderResponse : IResponse, IDisposable
         return componentBuilder;
     }
 
+    /// <inheritdoc/>
     public EmbedBuilder GenerateEmbed()
     {
         StringBuilder descriptionBuilder = new StringBuilder(); 
@@ -77,11 +89,13 @@ public sealed class AlbumReleaseReminderResponse : IResponse, IDisposable
         return embedBuilder;
     }
 
+    /// <inheritdoc/>
     public string GenerateText()
     {
         throw new NotImplementedException();
     }
 
+    /// <inheritdoc/>
     public void Dispose()
     {
         ObjectDisposedException.ThrowIf(_isDisposed, this);

@@ -17,6 +17,9 @@ using MuzakBot.Lib.Services;
 
 namespace MuzakBot.App.Services;
 
+/// <summary>
+/// Service for monitoring album release reminders and sending them to the appropriate guilds/channels.
+/// </summary>
 public sealed class AlbumReleaseReminderMonitorService : IAlbumReleaseReminderMonitorService
 {
     private readonly ILogger _logger;
@@ -26,6 +29,14 @@ public sealed class AlbumReleaseReminderMonitorService : IAlbumReleaseReminderMo
     private readonly IDbContextFactory<AlbumReleaseDbContext> _albumReleaseDbContextFactory;
     private readonly TimeZoneInfo _easternTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AlbumReleaseReminderMonitorService"/> class.
+    /// </summary>
+    /// <param name="logger">The logger.</param>
+    /// <param name="discordClient">The Discord client.</param>
+    /// <param name="appleMusicApiService">The Apple Music API service.</param>
+    /// <param name="odesliService">The Odesli service.</param>
+    /// <param name="albumReleaseDbContextFactory">The <see cref="IDbContextFactory{TContext}"/> for the <see cref="AlbumReleaseDbContext"/>.</param>
     public AlbumReleaseReminderMonitorService(ILogger<AlbumReleaseReminderMonitorService> logger, DiscordSocketClient discordClient, IAppleMusicApiService appleMusicApiService, IOdesliService odesliService, IDbContextFactory<AlbumReleaseDbContext> albumReleaseDbContextFactory)
     {
         _logger = logger;
@@ -35,11 +46,17 @@ public sealed class AlbumReleaseReminderMonitorService : IAlbumReleaseReminderMo
         _albumReleaseDbContextFactory = albumReleaseDbContextFactory;
     }
 
+    /// <inheritdoc/>
     public Task StartMonitorAsync(CancellationToken cancellationToken)
     {
         return Task.Run(async () => await ProcessAlbumReleaseRemindersAsync(cancellationToken), cancellationToken);
     }
 
+    /// <summary>
+    /// Processes the album release reminders.
+    /// </summary>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A <see cref="ValueTask"/> representing the asynchronous operation.</returns>
     private async ValueTask ProcessAlbumReleaseRemindersAsync(CancellationToken cancellationToken)
     {
         _logger.LogInformation("Starting album release reminder queue service.");

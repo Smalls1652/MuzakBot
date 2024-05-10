@@ -4,8 +4,16 @@ using MuzakBot.Lib.Models.Database.AlbumRelease;
 
 namespace MuzakBot.Database.Extensions;
 
+/// <summary>
+/// Extension methods for creating the models for <see cref="AlbumReleaseDbContext"/>.
+/// </summary>
 public static class AlbumReleaseDbContextModelBuilderExtensions
 {
+    /// <summary>
+    /// Creates the model for the <see cref="AlbumReleaseReminder"/> entity.
+    /// </summary>
+    /// <param name="modelBuilder">The model builder.</param>
+    /// <returns>The model builder.</returns>
     public static ModelBuilder CreateAlbumReleaseReminderModel(this ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<AlbumReleaseReminder>(entity =>

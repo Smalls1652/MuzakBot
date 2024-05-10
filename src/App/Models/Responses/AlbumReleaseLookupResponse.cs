@@ -31,6 +31,9 @@ public sealed class AlbumReleaseLookupResponse : IResponse, IDisposable
     /// </summary>
     public Album Album { get; }
 
+    /// <summary>
+    /// The music entity item from Odesli.
+    /// </summary>
     public MusicEntityItem MusicEntityItem { get; }
 
     /// <summary>
@@ -115,6 +118,7 @@ by {Album.Attributes!.ArtistName}
         );
     }
 
+    /// <inheritdoc/>
     public void Dispose()
     {
         ObjectDisposedException.ThrowIf(_isDisposed, this);

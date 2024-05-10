@@ -14,6 +14,11 @@ namespace MuzakBot.App.Modules;
 
 public partial class AlbumReleaseCommandModule
 {
+    /// <summary>
+    /// Handles the 'Remind me' button click.
+    /// </summary>
+    /// <param name="albumId">The ID of an album.</param>
+    /// <returns></returns>
     [ComponentInteraction(
         customId: "albumrelease-remindme-*",
         ignoreGroupNames: true
