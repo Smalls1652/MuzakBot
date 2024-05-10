@@ -25,11 +25,11 @@ public class AlbumReleaseReminder : DatabaseItem
 
     [Column("guildId")]
     [JsonPropertyName("guildId")]
-    public string GuildId { get; set; }
+    public string GuildId { get; set; } = null!;
 
     [Column("channelId")]
     [JsonPropertyName("channelId")]
-    public string ChannelId { get; set; }
+    public string ChannelId { get; set; } = null!;
 
     [Column("userIdsToRemind")]
     [JsonPropertyName("userIdsToRemind")]
