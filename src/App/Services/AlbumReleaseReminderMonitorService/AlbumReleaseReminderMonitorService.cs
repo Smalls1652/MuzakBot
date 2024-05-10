@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text;
 
 using Discord;
@@ -20,14 +21,16 @@ namespace MuzakBot.App.Services;
 /// <summary>
 /// Service for monitoring album release reminders and sending them to the appropriate guilds/channels.
 /// </summary>
-public sealed class AlbumReleaseReminderMonitorService : IAlbumReleaseReminderMonitorService
+public sealed class AlbumReleaseReminderMonitorService : IAlbumReleaseReminderMonitorService, IDisposable
 {
+    private bool _isDisposed;
+
     private readonly ILogger _logger;
     private readonly DiscordSocketClient _discordClient;
     private readonly IAppleMusicApiService _appleMusicApiService;
     private readonly IOdesliService _odesliService;
     private readonly IDbContextFactory<AlbumReleaseDbContext> _albumReleaseDbContextFactory;
-    private readonly TimeZoneInfo _easternTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+    private readonly ActivitySource _activitySource = new("MuzakBot.App.Services.AlbumReleaseReminderMonitorService");
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AlbumReleaseReminderMonitorService"/> class.
@@ -86,59 +89,7 @@ public sealed class AlbumReleaseReminderMonitorService : IAlbumReleaseReminderMo
                     {
                         if (releaseReminder.ReleaseDate <= currentTime)
                         {
-                            List<string> usersToNotify = [];
-
-                            foreach (string userItem in releaseReminder.UserIdsToRemind)
-                            {
-                                usersToNotify.Add($"<@{userItem}>");
-                            }
-
-                            Album album = await _appleMusicApiService.GetAlbumFromCatalogAsync(releaseReminder.AlbumId);
-
-                            MusicEntityItem? musicEntityItem = await _odesliService.GetShareLinksAsync(album.Attributes!.Url);
-
-                            if (musicEntityItem is null)
-                            {
-                                _logger.LogWarning("Failed to get share links for album {AlbumId}. Skipping for now.", releaseReminder.AlbumId);
-
-                                continue;
-                            }
-
-                            AlbumReleaseReminderResponse albumReleaseReminderResponse = new(album, musicEntityItem, usersToNotify);
-
-                            SocketTextChannel channel = guildItem.GetTextChannel(ulong.Parse(releaseReminder.ChannelId));
-
-                            if (channel is null)
-                            {
-                                releaseReminder.ReminderSent = true;
-                                continue;
-                            }
-
-                            _logger.LogInformation("Sending album release reminder for album {AlbumId} to guild {GuildId}.", releaseReminder.AlbumId, guildItem.Id);
-
-                            FileAttachment fileAttachment = new(albumReleaseReminderResponse.AlbumArtworkStream, albumReleaseReminderResponse.AlbumArtFileName);
-
-                            try
-                            {
-                                await channel.SendFileAsync(
-                                    embed: albumReleaseReminderResponse.GenerateEmbed().Build(),
-                                    components: albumReleaseReminderResponse.GenerateComponent().Build(),
-                                    attachment: fileAttachment,
-                                    allowedMentions: AllowedMentions.All
-                                );
-                            }
-                            catch (Exception ex)
-                            {
-                                _logger.LogError(ex, "Failed to send album release reminder for album {AlbumId} to guild {GuildId}.", releaseReminder.AlbumId, guildItem.Id);
-
-                                albumReleaseReminderResponse.Dispose();
-
-                                continue;
-                            }
-
-                            releaseReminder.ReminderSent = true;
-
-                            albumReleaseReminderResponse.Dispose();
+                            await SendAlbumReleaseReminderAsync(releaseReminder, guildItem);
                         }
                     }
 
@@ -154,5 +105,98 @@ public sealed class AlbumReleaseReminderMonitorService : IAlbumReleaseReminderMo
         }
 
         _logger.LogInformation("Stopping album release reminder queue service.");
+    }
+
+    /// <summary>
+    /// Sends an album release reminder to the specified guild.
+    /// </summary>
+    /// <param name="releaseReminder">The album release reminder.</param>
+    /// <param name="guildItem">The guild.</param>
+    /// <returns></returns>
+    /// <exception cref="NullReferenceException">Thrown when share links from Odesli or the channel are null.</exception>
+    /// <exception cref="Exception">Thrown when the album release reminder fails to send.</exception>
+    private async Task SendAlbumReleaseReminderAsync(AlbumReleaseReminder releaseReminder, SocketGuild guildItem)
+    {
+        using var activity = _activitySource.StartActivity(
+            name: "SendAlbumReleaseReminderAsync",
+            kind: ActivityKind.Server,
+            tags: new ActivityTagsCollection
+            {
+                { "album_Id", releaseReminder.AlbumId },
+                { "guild_Id", releaseReminder.GuildId },
+                { "channel_Id", releaseReminder.ChannelId }
+            }
+        );
+
+        List<string> usersToNotify = [];
+
+        foreach (string userItem in releaseReminder.UserIdsToRemind)
+        {
+            usersToNotify.Add($"<@{userItem}>");
+        }
+
+        Album album = await _appleMusicApiService.GetAlbumFromCatalogAsync(releaseReminder.AlbumId);
+
+        MusicEntityItem? musicEntityItem = await _odesliService.GetShareLinksAsync(album.Attributes!.Url);
+
+        if (musicEntityItem is null)
+        {
+            _logger.LogWarning("Failed to get share links for album {AlbumId}. Skipping for now.", releaseReminder.AlbumId);
+
+            activity?.SetStatus(ActivityStatusCode.Error);
+
+            throw new NullReferenceException("Failed to get share links for album.");
+        }
+
+        using AlbumReleaseReminderResponse albumReleaseReminderResponse = new(album, musicEntityItem, usersToNotify);
+
+        SocketTextChannel channel = guildItem.GetTextChannel(ulong.Parse(releaseReminder.ChannelId));
+
+        if (channel is null)
+        {
+            activity?.SetStatus(ActivityStatusCode.Error);
+
+            releaseReminder.ReminderSent = true;
+            
+            throw new NullReferenceException("Failed to get channel.");
+        }
+
+        _logger.LogInformation("Sending album release reminder for album {AlbumId} to guild {GuildId}.", releaseReminder.AlbumId, guildItem.Id);
+
+        FileAttachment fileAttachment = new(albumReleaseReminderResponse.AlbumArtworkStream, albumReleaseReminderResponse.AlbumArtFileName);
+
+        try
+        {
+            await channel.SendFileAsync(
+                embed: albumReleaseReminderResponse.GenerateEmbed().Build(),
+                components: albumReleaseReminderResponse.GenerateComponent().Build(),
+                attachment: fileAttachment,
+                allowedMentions: AllowedMentions.All
+            );
+        }
+        catch (Exception ex)
+        {
+            activity?.SetStatus(ActivityStatusCode.Error);
+
+            _logger.LogError(ex, "Failed to send album release reminder for album {AlbumId} to guild {GuildId}.", releaseReminder.AlbumId, guildItem.Id);
+
+            albumReleaseReminderResponse.Dispose();
+
+            throw new Exception("Failed to send album release reminder.", ex);
+        }
+
+        releaseReminder.ReminderSent = true;
+    }
+
+    /// <inheritdoc/>
+    public void Dispose()
+    {
+        ObjectDisposedException.ThrowIf(_isDisposed, this);
+
+        _activitySource.Dispose();
+
+        _isDisposed = true;
+
+        GC.SuppressFinalize(this);
     }
 }
