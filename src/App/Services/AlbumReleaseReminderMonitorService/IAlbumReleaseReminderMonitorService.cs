@@ -1,6 +1,6 @@
 namespace MuzakBot.App.Services;
 
-public interface IAlbumReleaseReminderQueueService
+public interface IAlbumReleaseReminderMonitorService
 {
     Task StartMonitorAsync(CancellationToken cancellationToken);
 }

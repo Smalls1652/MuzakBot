@@ -72,7 +72,7 @@ builder.Services
     .AddMusicBrainzService();
 
 builder.Services
-    .AddSingleton<IAlbumReleaseReminderQueueService, AlbumReleaseReminderQueueService>();
+    .AddSingleton<IAlbumReleaseReminderMonitorService, AlbumReleaseReminderMonitorService>();
 
 builder.Services
     .AddAppleMusicApiService(options =>

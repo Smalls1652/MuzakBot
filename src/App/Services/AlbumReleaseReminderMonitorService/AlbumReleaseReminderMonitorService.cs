@@ -17,7 +17,7 @@ using MuzakBot.Lib.Services;
 
 namespace MuzakBot.App.Services;
 
-public sealed class AlbumReleaseReminderQueueService : IAlbumReleaseReminderQueueService
+public sealed class AlbumReleaseReminderMonitorService : IAlbumReleaseReminderMonitorService
 {
     private readonly ILogger _logger;
     private readonly DiscordSocketClient _discordClient;
@@ -26,7 +26,7 @@ public sealed class AlbumReleaseReminderQueueService : IAlbumReleaseReminderQueu
     private readonly IDbContextFactory<AlbumReleaseDbContext> _albumReleaseDbContextFactory;
     private readonly TimeZoneInfo _easternTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
 
-    public AlbumReleaseReminderQueueService(ILogger<AlbumReleaseReminderQueueService> logger, DiscordSocketClient discordClient, IAppleMusicApiService appleMusicApiService, IOdesliService odesliService, IDbContextFactory<AlbumReleaseDbContext> albumReleaseDbContextFactory)
+    public AlbumReleaseReminderMonitorService(ILogger<AlbumReleaseReminderMonitorService> logger, DiscordSocketClient discordClient, IAppleMusicApiService appleMusicApiService, IOdesliService odesliService, IDbContextFactory<AlbumReleaseDbContext> albumReleaseDbContextFactory)
     {
         _logger = logger;
         _discordClient = discordClient;
@@ -46,6 +46,8 @@ public sealed class AlbumReleaseReminderQueueService : IAlbumReleaseReminderQueu
 
         while (!cancellationToken.IsCancellationRequested)
         {
+            _logger.LogInformation("Processing album release reminders.");
+
             foreach (SocketGuild guildItem in _discordClient.Guilds)
             {
                 AlbumReleaseDbContext dbContext = _albumReleaseDbContextFactory.CreateDbContext();
@@ -67,13 +69,11 @@ public sealed class AlbumReleaseReminderQueueService : IAlbumReleaseReminderQueu
                     {
                         if (releaseReminder.ReleaseDate <= currentTime)
                         {
-                            List<SocketUser> usersToRemind = [];
+                            List<string> usersToNotify = [];
 
-                            foreach (var userId in releaseReminder.UserIdsToRemind)
+                            foreach (string userItem in releaseReminder.UserIdsToRemind)
                             {
-                                SocketUser user = guildItem.GetUser(ulong.Parse(userId));
-
-                                usersToRemind.Add(user);
+                                usersToNotify.Add($"<@{userItem}>");
                             }
 
                             Album album = await _appleMusicApiService.GetAlbumFromCatalogAsync(releaseReminder.AlbumId);
@@ -87,7 +87,7 @@ public sealed class AlbumReleaseReminderQueueService : IAlbumReleaseReminderQueu
                                 continue;
                             }
 
-                            AlbumReleaseReminderResponse albumReleaseReminderResponse = new(album, musicEntityItem, usersToRemind);
+                            AlbumReleaseReminderResponse albumReleaseReminderResponse = new(album, musicEntityItem, usersToNotify);
 
                             SocketTextChannel channel = guildItem.GetTextChannel(ulong.Parse(releaseReminder.ChannelId));
 
