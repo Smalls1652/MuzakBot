@@ -69,7 +69,7 @@ public sealed class AlbumReleaseLookupResponse : IBotResponse, IDisposable
                     emote: new Emoji("🔔")
                 );
         }
-        
+
         componentBuilder
             .WithButton(
                 label: "Links",
