@@ -89,7 +89,54 @@ public sealed class AlbumReleaseReminderMonitorService : IAlbumReleaseReminderMo
                     {
                         if (releaseReminder.ReleaseDate <= currentTime)
                         {
-                            await SendAlbumReleaseReminderAsync(releaseReminder, guildItem);
+                            try
+                            {
+                                await SendAlbumReleaseReminderAsync(releaseReminder, guildItem);
+                            }
+                            catch (AlbumReleaseReminderException ex) when (ex.ExceptionType == AlbumReleaseReminderExceptionType.OdesliServiceReturnedNull)
+                            {
+                                _logger.LogError(
+                                    exception: ex,
+                                    message: "Could not retrieve share links for the album '{AlbumId}' when sending album release reminder to guild '{GuildId}'.",
+                                    releaseReminder.AlbumId,
+                                    guildItem.Id
+                                );
+
+                                continue;
+                            }
+                            catch (AlbumReleaseReminderException ex) when (ex.ExceptionType == AlbumReleaseReminderExceptionType.ChannelDoesNotExist)
+                            {
+                                _logger.LogError(
+                                    exception: ex,
+                                    message: "The channel '{ChannelId}' specified in the album release reminder does not exist when sending album release reminder to guild '{GuildId}'.",
+                                    releaseReminder.ChannelId,
+                                    guildItem.Id
+                                );
+
+                                continue;
+                            }
+                            catch (AlbumReleaseReminderException ex) when (ex.ExceptionType == AlbumReleaseReminderExceptionType.FailedToSendMessage)
+                            {
+                                _logger.LogError(
+                                    exception: ex,
+                                    message: "Failed to send album release reminder for album '{AlbumId}' to guild '{GuildId}'.",
+                                    releaseReminder.AlbumId,
+                                    guildItem.Id
+                                );
+
+                                continue;
+                            }
+                            catch (Exception ex)
+                            {
+                                _logger.LogError(
+                                    exception: ex,
+                                    message: "An unknown exception occurred when sending album release reminder for album '{AlbumId}' to guild '{GuildId}'.",
+                                    releaseReminder.AlbumId,
+                                    guildItem.Id
+                                );
+
+                                continue;
+                            }
                         }
                     }
 
@@ -113,8 +160,7 @@ public sealed class AlbumReleaseReminderMonitorService : IAlbumReleaseReminderMo
     /// <param name="releaseReminder">The album release reminder.</param>
     /// <param name="guildItem">The guild.</param>
     /// <returns></returns>
-    /// <exception cref="NullReferenceException">Thrown when share links from Odesli or the channel are null.</exception>
-    /// <exception cref="Exception">Thrown when the album release reminder fails to send.</exception>
+    /// <exception cref="AlbumReleaseReminderException">Thrown when an exception occurs while sending the album release reminder.</exception>
     private async Task SendAlbumReleaseReminderAsync(AlbumReleaseReminder releaseReminder, SocketGuild guildItem)
     {
         using var activity = _activitySource.StartActivity(
@@ -141,11 +187,9 @@ public sealed class AlbumReleaseReminderMonitorService : IAlbumReleaseReminderMo
 
         if (musicEntityItem is null)
         {
-            _logger.LogWarning("Failed to get share links for album {AlbumId}. Skipping for now.", releaseReminder.AlbumId);
-
             activity?.SetStatus(ActivityStatusCode.Error);
 
-            throw new NullReferenceException("Failed to get share links for album.");
+            throw new AlbumReleaseReminderException("The Odesli service returned null for the album.", AlbumReleaseReminderExceptionType.OdesliServiceReturnedNull);
         }
 
         using AlbumReleaseReminderResponse albumReleaseReminderResponse = new(album, musicEntityItem, usersToNotify);
@@ -157,16 +201,16 @@ public sealed class AlbumReleaseReminderMonitorService : IAlbumReleaseReminderMo
             activity?.SetStatus(ActivityStatusCode.Error);
 
             releaseReminder.ReminderSent = true;
-            
-            throw new NullReferenceException("Failed to get channel.");
+
+            throw new AlbumReleaseReminderException("The channel specified in the album release reminder does not exist.", AlbumReleaseReminderExceptionType.ChannelDoesNotExist);
         }
 
         _logger.LogInformation("Sending album release reminder for album {AlbumId} to guild {GuildId}.", releaseReminder.AlbumId, guildItem.Id);
 
-        FileAttachment fileAttachment = new(albumReleaseReminderResponse.AlbumArtworkStream, albumReleaseReminderResponse.AlbumArtFileName);
-
         try
         {
+            using FileAttachment fileAttachment = new(albumReleaseReminderResponse.AlbumArtworkStream, albumReleaseReminderResponse.AlbumArtFileName);
+
             await channel.SendFileAsync(
                 embed: albumReleaseReminderResponse.GenerateEmbed().Build(),
                 components: albumReleaseReminderResponse.GenerateComponent().Build(),
@@ -178,11 +222,9 @@ public sealed class AlbumReleaseReminderMonitorService : IAlbumReleaseReminderMo
         {
             activity?.SetStatus(ActivityStatusCode.Error);
 
-            _logger.LogError(ex, "Failed to send album release reminder for album {AlbumId} to guild {GuildId}.", releaseReminder.AlbumId, guildItem.Id);
-
             albumReleaseReminderResponse.Dispose();
 
-            throw new Exception("Failed to send album release reminder.", ex);
+            throw new AlbumReleaseReminderException("The album release reminder failed to send.", AlbumReleaseReminderExceptionType.FailedToSendMessage, ex);
         }
 
         releaseReminder.ReminderSent = true;
