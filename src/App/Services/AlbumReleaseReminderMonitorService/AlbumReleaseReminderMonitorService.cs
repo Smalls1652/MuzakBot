@@ -181,8 +181,10 @@ public sealed class AlbumReleaseReminderMonitorService : IAlbumReleaseReminderMo
             usersToNotify.Add($"<@{userItem}>");
         }
 
+        // Get the album from the Apple Music catalog.
         Album album = await _appleMusicApiService.GetAlbumFromCatalogAsync(releaseReminder.AlbumId);
 
+        // Get the share links for the album.
         MusicEntityItem? musicEntityItem = await _odesliService.GetShareLinksAsync(album.Attributes!.Url);
 
         if (musicEntityItem is null)
@@ -192,8 +194,10 @@ public sealed class AlbumReleaseReminderMonitorService : IAlbumReleaseReminderMo
             throw new AlbumReleaseReminderException("The Odesli service returned null for the album.", AlbumReleaseReminderExceptionType.OdesliServiceReturnedNull);
         }
 
+        // Create the album release reminder response.
         using AlbumReleaseReminderResponse albumReleaseReminderResponse = new(album, musicEntityItem, usersToNotify);
 
+        // Get the channel to send the album release reminder to.
         SocketTextChannel channel = guildItem.GetTextChannel(ulong.Parse(releaseReminder.ChannelId));
 
         if (channel is null)
@@ -209,6 +213,7 @@ public sealed class AlbumReleaseReminderMonitorService : IAlbumReleaseReminderMo
 
         try
         {
+            // Send the album release reminder.
             using FileAttachment fileAttachment = new(albumReleaseReminderResponse.AlbumArtworkStream, albumReleaseReminderResponse.AlbumArtFileName);
 
             await channel.SendFileAsync(
