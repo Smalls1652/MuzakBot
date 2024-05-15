@@ -9,7 +9,8 @@ on:
       push:
         description: "Push to container registry"
         required: false
-        default: "true"
+        default: true
+        type: boolean
 
 permissions:
   packages: write
