@@ -1,10 +1,48 @@
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0 AS prebuild-env
+
+ARG NUGET_USER
+ARG NUGET_TOKEN
+
+WORKDIR /app
+
+COPY ./global.json ./
+COPY ./MuzakBot.sln ./
+COPY ./Directory.Build.props ./
+COPY ./Directory.Packages.props ./
+COPY ./nuget.config ./
+
+COPY ./src/App/App.csproj ./src/App/
+COPY ./src/App/packages.lock.json ./src/App/
+
+COPY ./src/Lib/Lib.csproj ./src/Lib/
+COPY ./src/Lib/packages.lock.json ./src/Lib/
+
+COPY ./src/Lib.Services/Lib.Services.csproj ./src/Lib.Services/
+COPY ./src/Lib.Services/packages.lock.json ./src/Lib.Services/
+
+COPY ./src/GeniusService/GeniusService.csproj ./src/GeniusService/
+COPY ./src/GeniusService/packages.lock.json ./src/GeniusService/
+
+COPY ./src/Hosting/Hosting.csproj ./src/Hosting/
+COPY ./src/Hosting/packages.lock.json ./src/Hosting/
+
+COPY ./src/Database/Database.csproj ./src/Database/
+COPY ./src/Database/packages.lock.json ./src/Database/
+
+COPY ./src/DatabaseDesign/DatabaseDesign.csproj ./src/DatabaseDesign/
+COPY ./src/DatabaseDesign/packages.lock.json ./src/DatabaseDesign/
+
+COPY ./src/WebApp/WebApp.csproj ./src/WebApp/
+COPY ./src/WebApp/packages.lock.json ./src/WebApp/
+
+RUN dotnet nuget update source smalls1652-github --username "${NUGET_USER}" --password "${NUGET_TOKEN}" --store-password-in-clear-text
+
+RUN dotnet restore --locked-mode
+
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
 
 ARG TARGETOS
 ARG TARGETARCH
-
-ARG NUGET_USER
-ARG NUGET_TOKEN
 
 ENV CONTAINER_IMAGE_BUILD=true
 
@@ -27,10 +65,12 @@ COPY ./MuzakBot.sln ./
 COPY ./Directory.Build.props ./
 COPY ./Directory.Packages.props ./
 COPY ./nuget.config ./
-COPY ./src ./src
+COPY ./src/ ./src/
 
-RUN dotnet nuget update source smalls1652-github --username "${NUGET_USER}" --password "${NUGET_TOKEN}" --store-password-in-clear-text
-RUN dotnet publish ./src/WebApp --configuration "Release" --os "${TARGETOS}" --arch "${TARGETARCH}"
+COPY --from=prebuild-env /root/.nuget/packages /root/.nuget/packages
+COPY --from=prebuild-env /app/artifacts /app/artifacts
+
+RUN dotnet publish ./src/WebApp --configuration "Release" --os "${TARGETOS}" --arch "${TARGETARCH}" --no-restore
 
 RUN rm -rf /app/artifacts/publish/WebApp/release/*.pdb; \
     rm -rf /app/artifacts/publish/WebApp/release/*.dbg
