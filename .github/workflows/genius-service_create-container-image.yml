@@ -38,7 +38,7 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: false
           tags: muzakbot-prebuild:latest
-          outputs: type=docker,dest=/tmp/muzakbot-prebuild.tar
+          outputs: type=oci,dest=/tmp/muzakbot-prebuild.tar
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
