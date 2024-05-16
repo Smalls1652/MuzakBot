@@ -14,6 +14,8 @@ updates:
     assignees:
       - "Smalls1652"
     target-branch: "main"
+    registries:
+      - gh-personal-packages
 
   - package-ecosystem: "github-actions"
     directory: "/"
