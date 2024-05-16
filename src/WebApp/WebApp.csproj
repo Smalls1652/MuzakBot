@@ -25,6 +25,7 @@
     <ItemGroup>
         <PackageReference Include="BlazorMD.SourceGenerator" />
         <PackageReference Include="Discord.Net" />
+        <PackageReference Include="GitVersion.MsBuild" PrivateAssets="all" />
         <PackageReference Include="MarkDig" />
     </ItemGroup>
     <ItemGroup>

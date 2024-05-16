@@ -1,18 +1,29 @@
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow
-name: MuzakBot / Create container image
+name: MuzakBot / Create container images
 on:
   push:
     tags:
       - "v*.*.*"
   workflow_dispatch:
+    inputs:
+      push:
+        description: "Push to container registry"
+        required: false
+        default: true
+        type: boolean
+      deployToAzure:
+        description: "Deploy to Azure"
+        required: false
+        default: true
+        type: boolean
 
 permissions:
   packages: write
   contents: read
 
 jobs:
-  create-container-image:
-    name: Create container image
+  create-muzakbot-image:
+    name: Create MuzakBot image
     runs-on: ubuntu-latest
     outputs:
       image: ${{ steps.output_image.outputs.image }}
@@ -27,12 +38,6 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           global-json-file: global.json
-
-      - name: Install .NET tools
-        run: dotnet tool restore
-
-      - name: Update project files with gitversion
-        run: dotnet tool run dotnet-gitversion /updateprojectfiles
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -63,12 +68,12 @@ jobs:
           context: ./
           file: ./Dockerfile.MuzakBot
           platforms: linux/amd64,linux/arm64
-          push: true
+          push: ${{ github.event_name == 'push' && true || github.event.inputs.push }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            "GITHUB_USER=${{ github.actor }}"
-            "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}"
+            "NUGET_USER=${{ github.repository_owner }}"
+            "NUGET_TOKEN=${{ secrets.GITHUB_TOKEN }}"
 
       - name: Set output image
         id: output_image
@@ -78,11 +83,14 @@ jobs:
           $imageDigest = "${{ steps.image_build.outputs.digest }}"
           "image=ghcr.io/$($repoOwner)/muzakbot@$($imageDigest)" >> $env:GITHUB_OUTPUT
 
-  deploy-to-azure:
-    name: Deploy to Azure
+  deploy-muzakbotto-azure:
+    name: Deploy MuzakBot to Azure
     runs-on: ubuntu-latest
-    needs: create-container-image
+    needs: create-muzakbot-image
     environment: Production
+
+    if: ${{ github.event_name == 'push' || github.event.inputs.deployToAzure == true }}
+
     permissions: 
       id-token: write
 
@@ -99,4 +107,96 @@ jobs:
         with:
           containerAppName: ${{ secrets.AZURE_CONTAINER_APP_NAME }}
           resourceGroup: ${{ secrets.AZURE_CONTAINER_RESOURCE_GROUP_NAME }}
-          imageToDeploy: ${{ needs.create-container-image.outputs.image }}
+          imageToDeploy: ${{ needs.create-muzakbot-image.outputs.image }}
+    
+  create-webapp-image:
+    name: Create WebApp image
+    runs-on: ubuntu-latest
+    needs: create-muzakbot-image
+
+    steps:
+      - name: "Checkout GitHub Action"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log into container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.actor }}/MuzakBot-WebApp
+          tags: |
+            type=ref,event=tag
+            type=ref,event=branch
+            type=sha
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./
+          file: ./Dockerfile.WebApp
+          platforms: linux/amd64,linux/arm64
+          push: ${{ github.event_name == 'push' && true || github.event.inputs.push }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            "NUGET_USER=${{ github.repository_owner }}"
+            "NUGET_TOKEN=${{ secrets.GITHUB_TOKEN }}"
+
+  create-geniusservice-image:
+    name: Create GeniusService image
+    runs-on: ubuntu-latest
+    needs: create-muzakbot-image
+
+    steps:    
+      - name: "Checkout GitHub Action"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log into container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.actor }}/MuzakBot-GeniusService
+          tags: |
+            type=ref,event=tag
+            type=ref,event=branch
+            type=sha
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./
+          file: ./Dockerfile.GeniusService
+          platforms: linux/amd64,linux/arm64
+          push: ${{ github.event_name == 'push' && true || github.event.inputs.push }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            "NUGET_USER=${{ github.repository_owner }}"
+            "NUGET_TOKEN=${{ secrets.GITHUB_TOKEN }}"
