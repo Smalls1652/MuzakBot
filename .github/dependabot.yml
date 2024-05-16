@@ -1,4 +1,10 @@
 version: 2
+registries:
+  gh-personal-packages:
+    type: nuget-feed
+    url: https://nuget.pkg.github.com/Smalls1652/index.json
+    username: Smalls1652
+    password: ${{ secrets.PACKAGES_TOKEN }}
 updates:
   - package-ecosystem: "nuget"
     directory: "/" 
