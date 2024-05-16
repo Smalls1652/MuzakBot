@@ -69,7 +69,7 @@ RUN dotnet publish ./src/WebApp --configuration "Release" --os "${TARGETOS}" --a
 RUN rm -rf /app/artifacts/publish/WebApp/release/*.pdb; \
     rm -rf /app/artifacts/publish/WebApp/release/*.dbg
 
-FROM --platform=$TARGETPLATFORM mcr.microsoft.com/dotnet/aspnet:8.0-jammy-chiseled
+FROM --platform=$TARGETPLATFORM mcr.microsoft.com/dotnet/aspnet:8.0-jammy-chiseled AS app
 
 ARG TARGETOS
 ARG TARGETARCH
