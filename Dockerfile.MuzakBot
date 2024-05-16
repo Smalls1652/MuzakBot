@@ -11,6 +11,8 @@ COPY ./Directory.Build.props ./
 COPY ./Directory.Packages.props ./
 COPY ./nuget.config ./
 
+RUN dotnet nuget update source smalls1652-github --username "${NUGET_USER}" --password "${NUGET_TOKEN}" --store-password-in-clear-text
+
 COPY ./src/App/App.csproj ./src/App/
 COPY ./src/App/packages.lock.json ./src/App/
 
@@ -35,8 +37,7 @@ COPY ./src/DatabaseDesign/packages.lock.json ./src/DatabaseDesign/
 COPY ./src/WebApp/WebApp.csproj ./src/WebApp/
 COPY ./src/WebApp/packages.lock.json ./src/WebApp/
 
-RUN dotnet nuget update source smalls1652-github --username "${NUGET_USER}" --password "${NUGET_TOKEN}" --store-password-in-clear-text && \
-    dotnet restore --locked-mode
+RUN dotnet restore --locked-mode
 
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
 
