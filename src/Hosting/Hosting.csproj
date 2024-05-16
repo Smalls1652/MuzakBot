@@ -22,6 +22,7 @@
   </PropertyGroup>
   <!-- Dependencies -->
   <ItemGroup>
+    <PackageReference Include="GitVersion.MsBuild" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Extensions.Hosting" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Extensions.Logging" PrivateAssets="all" />

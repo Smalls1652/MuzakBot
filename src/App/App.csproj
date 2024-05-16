@@ -25,7 +25,7 @@
         <PackageReference Include="Azure.Monitor.OpenTelemetry.Exporter" />
         <PackageReference Include="Azure.Storage.Queues" />
         <PackageReference Include="Discord.Net" />
-        <PackageReference Include="GitVersion.MsBuild" PrivateAssets="all" Condition="'$(GITVERSION_LOCAL_BUILD)'=='true'" />
+        <PackageReference Include="GitVersion.MsBuild" PrivateAssets="all" />
         <PackageReference Include="Microsoft.Azure.Cosmos" />
         <PackageReference Include="Microsoft.Extensions.Caching.Memory" />
         <PackageReference Include="Microsoft.Extensions.Logging" />
