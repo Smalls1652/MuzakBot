@@ -5,6 +5,12 @@ on:
     tags:
       - "v*.*.*"
   workflow_dispatch:
+    inputs:
+      push:
+        description: "Push to container registry"
+        required: false
+        default: true
+        type: boolean
 
 permissions:
   packages: write
@@ -60,7 +66,7 @@ jobs:
           context: ./
           file: ./Dockerfile.WebApp
           platforms: linux/amd64,linux/arm64
-          push: true
+          push: ${{ github.event_name == 'push' && true || github.event.inputs.push }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
