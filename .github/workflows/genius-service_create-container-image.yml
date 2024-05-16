@@ -60,22 +60,6 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
 
-      - name: Build and export pre-build image
-        uses: docker/build-push-action@v5
-        with:
-          context: ./
-          file: ./Dockerfile.Prebuild
-          platforms: linux/amd64,linux/arm64
-          push: false
-          load: true
-          tags: muzakbot-prebuild:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          build-args: |
-            "NUGET_USER=${{ github.repository_owner }}"
-            "NUGET_TOKEN=${{ secrets.GITHUB_TOKEN }}"
-            "GIT_COMMIT=${{ github.sha }}"
-
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
