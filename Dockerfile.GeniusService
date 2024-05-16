@@ -43,19 +43,11 @@ FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
 ARG TARGETOS
 ARG TARGETARCH
 
-ARG BUILD_VERSION
-
-ENV BUILD_VERSION=${BUILD_VERSION}
 ENV CONTAINER_IMAGE_BUILD=true
 
 WORKDIR /app
 
-COPY ./global.json ./
-COPY ./MuzakBot.sln ./
-COPY ./Directory.Build.props ./
-COPY ./Directory.Packages.props ./
-COPY ./nuget.config ./
-COPY ./src ./src
+ADD --keep-git-dir=true ./ ./
 
 COPY --from=prebuild-env /root/.nuget/packages /root/.nuget/packages
 COPY --from=prebuild-env /app/artifacts /app/artifacts
