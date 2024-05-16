@@ -90,7 +90,7 @@ jobs:
     needs: create-container-image
     environment: Production
 
-    if: ${{ github.event_name == 'push' && true || github.event.inputs.push }}
+    if: github.event_name == 'push' || github.event.inputs.push
 
     permissions: 
       id-token: write
