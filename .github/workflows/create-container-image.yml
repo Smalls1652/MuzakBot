@@ -27,7 +27,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       image: ${{ steps.output_image.outputs.image }}
-      fullSemVer: ${{ steps.gitversion.outputs.fullSemVer }}
 
     steps:
       - name: "Checkout GitHub Action"
@@ -39,15 +38,6 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           global-json-file: global.json
-
-      - name: Install .NET tools
-        run: dotnet tool restore
-
-      - name: Get FullSemVer with GitVersion
-        id: gitversion
-        shell: pwsh
-        run: |
-          "fullSemVer=$(dotnet tool run dotnet-gitversion /output json /showvariable FullSemVer)" >> $env:GITHUB_OUTPUT
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -86,7 +76,6 @@ jobs:
           build-args: |
             "NUGET_USER=${{ github.repository_owner }}"
             "NUGET_TOKEN=${{ secrets.GITHUB_TOKEN }}"
-            "BUILD_VERSION=${{ steps.gitversion.outputs.fullSemVer }}"
 
       - name: Set output image
         id: output_image
@@ -168,7 +157,6 @@ jobs:
           build-args: |
             "NUGET_USER=${{ github.repository_owner }}"
             "NUGET_TOKEN=${{ secrets.GITHUB_TOKEN }}"
-            "BUILD_VERSION=${{ needs.create-muzakbot-image.outputs.fullSemVer }}"
 
   create-geniusservice-image:
     name: Create GeniusService image
@@ -216,4 +204,3 @@ jobs:
           build-args: |
             "NUGET_USER=${{ github.repository_owner }}"
             "NUGET_TOKEN=${{ secrets.GITHUB_TOKEN }}"
-            "BUILD_VERSION=${{ needs.create-muzakbot-image.outputs.fullSemVer }}"
