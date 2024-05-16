@@ -1,5 +1,6 @@
 using Discord;
 using Discord.Interactions;
+using Discord.Rest;
 using Discord.WebSocket;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -40,7 +41,11 @@ public static class DiscordServiceExtensions
             implementationInstance: new(discordSocketConfig)
         );
 
-        services.AddSingleton<InteractionService>(serviceProvider => new(serviceProvider.GetRequiredService<DiscordSocketClient>()));
+        // Temporary fix for a bug in Discord.NET v3.15.0
+        // ---
+        // services.AddSingleton<InteractionService>(serviceProvider => new(serviceProvider.GetRequiredService<DiscordSocketClient>()));
+        services
+            .AddSingleton<IRestClientProvider>(serviceProvider => serviceProvider.GetRequiredService<DiscordSocketClient>());
 
         services.AddHostedService<DiscordService>();
 
