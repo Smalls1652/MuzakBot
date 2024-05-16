@@ -11,6 +11,11 @@ on:
         required: false
         default: true
         type: boolean
+      deployToAzure:
+        description: "Deploy to Azure"
+        required: false
+        default: true
+        type: boolean
 
 permissions:
   packages: write
@@ -92,7 +97,7 @@ jobs:
     needs: create-muzakbot-image
     environment: Production
 
-    if: ${{ github.event_name == 'push' || github.event.inputs.push == true }}
+    if: ${{ github.event_name == 'push' || github.event.inputs.deployToAzure == true }}
 
     permissions: 
       id-token: write
