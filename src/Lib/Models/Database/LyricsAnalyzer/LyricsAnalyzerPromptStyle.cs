@@ -64,6 +64,13 @@ public class LyricsAnalyzerPromptStyle : DatabaseItem, ILyricsAnalyzerPromptStyl
     public string ShortName { get; set; } = null!;
 
     /// <summary>
+    /// The GPT model to use.
+    /// </summary>
+    [Column("gptModel")]
+    [JsonPropertyName("gptModel")]
+    public string GptModel { get; set; } = "gpt-4o";
+
+    /// <summary>
     /// The analysis type of the prompt style.
     /// </summary>
     [Column("analysisType")]

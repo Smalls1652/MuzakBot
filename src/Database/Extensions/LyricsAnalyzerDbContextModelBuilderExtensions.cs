@@ -293,6 +293,11 @@ internal static class LyricsAnalyzerDbContextModelBuilderExtensions
                 .ToJsonProperty("shortName");
 
             entity
+                .Property(e => e.GptModel)
+                .HasColumnName("gptModel")
+                .ToJsonProperty("gptModel");
+
+            entity
                 .Property(e => e.AnalysisType)
                 .HasColumnName("analysisType")
                 .ToJsonProperty("analysisType");

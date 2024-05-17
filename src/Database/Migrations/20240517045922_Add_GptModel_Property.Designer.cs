@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MuzakBot.Database;
 
@@ -10,9 +11,11 @@ using MuzakBot.Database;
 namespace MuzakBot.Database.Migrations
 {
     [DbContext(typeof(LyricsAnalyzerDbContext))]
-    partial class LyricsAnalyzerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240517045922_Add_GptModel_Property")]
+    partial class Add_GptModel_Property
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.5");
