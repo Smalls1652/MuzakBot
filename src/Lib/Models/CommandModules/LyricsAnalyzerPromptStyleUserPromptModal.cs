@@ -11,6 +11,7 @@ public class LyricsAnalyzerPromptStyleUserPromptModal : IModal
     public LyricsAnalyzerPromptStyleUserPromptModal(LyricsAnalyzerPromptStyle promptStyle)
     {
         ShortName = promptStyle.ShortName;
+        GptModel = promptStyle.GptModel;
         UserPrompt = promptStyle.UserPrompt;
     }
 
@@ -26,6 +27,17 @@ public class LyricsAnalyzerPromptStyleUserPromptModal : IModal
         style: TextInputStyle.Short
     )]
     public string ShortName { get; set; } = null!;
+
+    [JsonPropertyName("gptModel")]
+    [InputLabel("GPT model")]
+    [ModalTextInput(
+        customId: "prompt-style-gpt-model",
+        placeholder: "Enter the GPT model of the prompt style",
+        minLength: 1,
+        maxLength: 100,
+        style: TextInputStyle.Short
+    )]
+    public string GptModel { get; set; } = "gpt-4o";
 
     [JsonPropertyName("userPrompt")]
     [InputLabel("User prompt")]

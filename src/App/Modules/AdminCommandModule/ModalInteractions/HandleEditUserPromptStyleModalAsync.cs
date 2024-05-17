@@ -44,6 +44,7 @@ public partial class AdminCommandModule
         }
 
         promptStyle.UserPrompt = userPromptModal.UserPrompt;
+        promptStyle.GptModel = userPromptModal.GptModel;
 
         promptStyle.UpdateLastUpdateTime();
 
