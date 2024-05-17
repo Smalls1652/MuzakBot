@@ -41,9 +41,9 @@ public static class DiscordServiceExtensions
             implementationInstance: new(discordSocketConfig)
         );
 
-        // Temporary fix for a bug in Discord.NET v3.15.0
-        // ---
-        // services.AddSingleton<InteractionService>(serviceProvider => new(serviceProvider.GetRequiredService<DiscordSocketClient>()));
+        services.AddSingleton<InteractionService>(serviceProvider => new(serviceProvider.GetRequiredService<DiscordSocketClient>()));
+
+        // Temporary fix for a bug in Discord.NET v3.15.0.
         services
             .AddSingleton<IRestClientProvider>(serviceProvider => serviceProvider.GetRequiredService<DiscordSocketClient>());
 
