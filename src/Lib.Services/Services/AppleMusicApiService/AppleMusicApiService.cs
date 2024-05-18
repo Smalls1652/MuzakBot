@@ -289,7 +289,7 @@ public partial class AppleMusicApiService : IAppleMusicApiService
 
         if (_bearerToken is null || string.IsNullOrWhiteSpace(_bearerToken) || IsTokenExpired())
         {
-            GenerateBearerToken();
+            GenerateBearerToken(true);
         }
 
         _logger.LogInformation("Sending request to: {url}", request.CreateUrlPath());
@@ -313,9 +313,15 @@ public partial class AppleMusicApiService : IAppleMusicApiService
     /// <summary>
     /// Generate a bearer token for the Apple Music API.
     /// </summary>
-    private void GenerateBearerToken()
+    private void GenerateBearerToken() => GenerateBearerToken(false);
+
+    /// <summary>
+    /// Generate a bearer token for the Apple Music API.
+    /// </summary>
+    /// <param name="force">Force the generation of a new token.</param>
+    private void GenerateBearerToken(bool force)
     {
-        if (!IsTokenExpired())
+        if (!force && !IsTokenExpired())
         {
             return;
         }
