@@ -81,6 +81,10 @@ builder.Services
         options.AppleAppId = builder.Configuration.GetValue<string>("APPLE_APP_ID") ?? throw new("APPLE_APP_ID is not set.");
         options.AppleAppKeyId = builder.Configuration.GetValue<string>("APPLE_APP_KEY_ID") ?? throw new("APPLE_APP_KEY_ID is not set");
         options.AppleAppKey = builder.Configuration.GetValue<string>("APPLE_APP_KEY") ?? throw new("APPLE_APP_KEY is not set.");
+
+        options.TokenExpiration = builder.Configuration.GetValue<string>("APPLE_TOKEN_EXPIRATION_MINUTES") is not null
+            ? TimeSpan.FromMinutes(builder.Configuration.GetValue<int>("APPLE_TOKEN_EXPIRATION_MINUTES"))
+            : TimeSpan.FromMinutes(30);
     });
 
 DatabaseConfig databaseConfig = builder.Configuration.GetDatabaseConfig();
