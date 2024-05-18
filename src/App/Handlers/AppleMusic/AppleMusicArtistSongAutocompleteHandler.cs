@@ -88,7 +88,6 @@ public class AppleMusicArtistSongAutocompleteHandler : AutocompleteHandler
 
         foreach (var songItem in filteredSongs)
         {
-            _logger.LogInformation("Song: {SongName} - {SongId}", songItem.Attributes!.Name, songItem.Id);
             results.Add(
                 item: new(
                     name: songItem.Attributes!.Name,

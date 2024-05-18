@@ -147,8 +147,6 @@ public partial class AppleMusicApiService : IAppleMusicApiService
                 throw new NullReferenceException("No songs found in search response.");
             }
 
-            _logger.LogInformation("{response}", responseContent);
-
             return searchResponse.Results.Songs.Data;
         }
         catch (Exception ex)
