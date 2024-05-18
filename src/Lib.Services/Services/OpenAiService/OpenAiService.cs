@@ -114,10 +114,19 @@ public partial class OpenAiService : IOpenAiService
         }
         catch (Exception ex)
         {
-            _logger.LogOpenAiApiServiceFailure(ex);
+            string errorResponseContent = await responseMessage.Content.ReadAsStringAsync();
+
+            OpenAiApiException openAiApiException = new(
+                message: $"An error occurred while interacting with the OpenAI API:\n{errorResponseContent}",
+                errorResponseContent: errorResponseContent,
+                httpStatusCode: responseMessage.StatusCode,
+                innerException: ex
+            );
+
+            _logger.LogOpenAiApiServiceFailure(openAiApiException);
             activity?.SetStatus(ActivityStatusCode.Error);
 
-            throw;
+            throw openAiApiException;
         }
 
         Stream responseStream = await responseMessage.Content.ReadAsStreamAsync();
