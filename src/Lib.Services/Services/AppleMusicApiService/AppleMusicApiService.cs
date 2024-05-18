@@ -14,14 +14,16 @@ namespace MuzakBot.Lib.Services;
 /// <summary>
 /// Service for interacting with the Apple Music API.
 /// </summary>
-public partial class AppleMusicApiService : IAppleMusicApiService
+public partial class AppleMusicApiService : IAppleMusicApiService, IDisposable
 {
+    private bool _disposed = false;
     private string? _bearerToken;
     private bool _tokenIsBeingRefreshed = false;
 
     private readonly AppleMusicApiServiceOptions _options;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger _logger;
+    private readonly ECDsa _appKey;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AppleMusicApiService"/> class.
@@ -34,6 +36,9 @@ public partial class AppleMusicApiService : IAppleMusicApiService
         _options = options.Value;
         _httpClientFactory = httpClientFactory;
         _logger = logger;
+
+        _appKey = ECDsa.Create(ECCurve.NamedCurves.nistP256);
+        _appKey.ImportPkcs8PrivateKey(_options.ConvertAppKeyToByteArray(), out _);
     }
 
     /// <summary>
@@ -289,7 +294,7 @@ public partial class AppleMusicApiService : IAppleMusicApiService
 
         if (_bearerToken is null || string.IsNullOrWhiteSpace(_bearerToken) || IsTokenExpired())
         {
-            GenerateBearerToken();
+            GenerateBearerToken(true);
         }
 
         _logger.LogInformation("Sending request to: {url}", request.CreateUrlPath());
@@ -313,9 +318,15 @@ public partial class AppleMusicApiService : IAppleMusicApiService
     /// <summary>
     /// Generate a bearer token for the Apple Music API.
     /// </summary>
-    private void GenerateBearerToken()
+    private void GenerateBearerToken() => GenerateBearerToken(false);
+
+    /// <summary>
+    /// Generate a bearer token for the Apple Music API.
+    /// </summary>
+    /// <param name="force">Force the generation of a new token.</param>
+    private void GenerateBearerToken(bool force)
     {
-        if (!IsTokenExpired())
+        if (!force && !IsTokenExpired())
         {
             return;
         }
@@ -325,10 +336,7 @@ public partial class AppleMusicApiService : IAppleMusicApiService
         _logger.LogInformation("Generating bearer token.");
         try
         {
-            using ECDsa appKey = ECDsa.Create(ECCurve.NamedCurves.nistP256);
-            appKey.ImportPkcs8PrivateKey(_options.ConvertAppKeyToByteArray(), out _);
-
-            ECDsaSecurityKey securityKey = new(appKey)
+            ECDsaSecurityKey securityKey = new(_appKey)
             {
                 KeyId = _options.AppleAppKeyId
             };
@@ -388,5 +396,17 @@ public partial class AppleMusicApiService : IAppleMusicApiService
             _logger.LogWarning(ex, "Error reading JWT");
             return true;
         }
+    }
+
+    /// <inheritdoc/>
+    public void Dispose()
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+
+        _appKey.Dispose();
+
+        _disposed = true;
+
+        GC.SuppressFinalize(this);
     }
 }
