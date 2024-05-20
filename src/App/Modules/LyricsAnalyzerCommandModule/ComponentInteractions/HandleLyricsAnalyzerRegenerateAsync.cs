@@ -140,7 +140,7 @@ public partial class LyricsAnalyzerCommandModule
         string lyrics;
         try
         {
-            lyrics = await GetSongLyricsAsync(lyricsAnalyzerItem.ArtistName, lyricsAnalyzerItem.SongName, activity?.Id);
+            lyrics = await GetSongLyricsAsync(lyricsAnalyzerItem.ArtistName, lyricsAnalyzerItem.SongName, String.Empty, activity?.Id);
         }
         catch (LyricsAnalyzerDbException ex)
         {
