@@ -8,13 +8,6 @@ on:
       - "README.md"
   pull_request:
   workflow_dispatch:
-  workflow_run: 
-    branches: 
-      - "dependabot/nuget/**"
-    workflows: 
-      - "Dependabot / Lockfile update"
-    types: 
-      - completed
 
 permissions:
   packages: read
@@ -31,16 +24,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        if: ${{ github.event_name != 'workflow_run' }}
         with:
           fetch-depth: 0
-
-      - name: Checkout repository (Specific branch)
-        uses: actions/checkout@v4
-        if: ${{ github.event_name == 'workflow_run' }}
-        with:
-          fetch-depth: 0
-          ref: ${{ github.event.workflow_run.head_branch }}
 
       - name: Setup dotnet SDK
         uses: actions/setup-dotnet@v4
