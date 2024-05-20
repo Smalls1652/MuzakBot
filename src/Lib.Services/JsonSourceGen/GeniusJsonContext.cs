@@ -16,5 +16,8 @@ namespace MuzakBot.Lib.Services;
 [JsonSerializable(typeof(GeniusSearchResultItem[]))]
 [JsonSerializable(typeof(GeniusSearchResultHitItem))]
 [JsonSerializable(typeof(GeniusApiResponse<GeniusSearchResult>))]
+[JsonSerializable(typeof(GeniusSongItem))]
+[JsonSerializable(typeof(GeniusSongResult))]
+[JsonSerializable(typeof(GeniusApiResponse<GeniusSongResult>))]
 internal partial class GeniusJsonContext : JsonSerializerContext
 { }
