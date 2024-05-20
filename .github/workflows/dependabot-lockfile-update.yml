@@ -1,0 +1,56 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow
+name: Dependabot / Lockfile update
+
+on:
+    pull_request:
+        branches: 
+            - "dependabot/nuget/**"
+        types:
+            - opened
+
+permissions:
+    contents: write
+    pull-requests: write
+    packages: read
+
+jobs:
+    update-lockfiles:
+        name: Update lockfiles
+        runs-on: ubuntu-latest
+        env:
+            DOTNET_NOLOGO: true
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+
+            - name: Setup dotnet SDK
+              uses: actions/setup-dotnet@v4
+              with:
+                  global-json-file: global.json
+
+            - name: Configure 'smalls1652-github' NuGet feed
+              run: |
+                  dotnet nuget update source smalls1652-github --username "${{ github.repository_owner }}" --password "${{ secrets.GITHUB_TOKEN }}" --store-password-in-clear-text
+
+            - name: Run 'dotnet restore --force-evaluate'
+              run: |
+                  dotnet restore --force-evaluate
+
+            - name: Check for new changes
+              id: diffcheck
+              continue-on-error: true
+              run: |
+                  git add --intent-to-add .
+                  git diff --name-only --exit-code
+
+            - name: Push new changes
+              if: steps.diffcheck.outcome == 'failure'
+              run: |
+                  git config user.email "github-actions[bot]@users.noreply.github.com"
+                  git config user.name "github-actions[bot]"
+                  git add .
+                  git commit --message "Update NuGet lock file"
+                  git push
