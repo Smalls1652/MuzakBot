@@ -24,11 +24,21 @@ jobs:
         env:
             DOTNET_NOLOGO: true
 
+        if: ${{ (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'failure') || github.event_name == 'workflow_dispatch' }}
+
         steps:
             - name: Checkout repository
               uses: actions/checkout@v4
+              if: ${{ github.event_name != 'workflow_run' }}
               with:
                   fetch-depth: 0
+
+            - name: Checkout repository (Specific branch)
+              uses: actions/checkout@v4
+              if: ${{ github.event_name == 'workflow_run' }}
+              with:
+                fetch-depth: 0
+                ref: ${{ github.event.workflow_run.head_branch }}
 
             - name: Setup dotnet SDK
               uses: actions/setup-dotnet@v4
