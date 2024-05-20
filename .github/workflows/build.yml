@@ -17,6 +17,7 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: true
       matrix:
         project: ["./src/App/", "./src/GeniusService/", "./src/WebApp/" ]
     env:
