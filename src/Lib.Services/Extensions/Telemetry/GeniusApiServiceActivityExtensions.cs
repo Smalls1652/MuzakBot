@@ -39,6 +39,34 @@ internal static class GeniusApiServiceActivityExtensions
     }
 
     /// <summary>
+    /// Starts an activity for <see cref="GeniusApiService.GetSongAsync(int)"/>.
+    /// </summary>
+    /// <param name="activitySource">The activity source.</param>
+    /// <param name="songId">The ID of the song.</param>
+    /// <returns>The started activity.</returns>
+    public static Activity? StartGeniusGetSongAsyncActivity(this ActivitySource activitySource, int songId) => StartGeniusGetSongAsyncActivity(activitySource, songId, null);
+
+    /// <summary>
+    /// Starts an activity for <see cref="GeniusApiService.GetSongAsync(int)"/>.
+    /// </summary>
+    /// <param name="activitySource">The activity source.</param>
+    /// <param name="songId">The ID of the song.</param>
+    /// <param name="parentActivityId">The ID of the parent activity (optional).</param>
+    /// <returns>The started activity.</returns>
+    public static Activity? StartGeniusGetSongAsyncActivity(this ActivitySource activitySource, int songId, string? parentActivityId)
+    {
+        return activitySource.StartActivity(
+            name: "GeniusGetSongAsync",
+            kind: ActivityKind.Internal,
+            tags: new ActivityTagsCollection
+            {
+                { "songId", songId }
+            },
+            parentId: parentActivityId
+        );
+    }
+
+    /// <summary>
     /// Starts an activity for <see cref="GeniusApiService.GetLyricsAsync(string)"/>.
     /// </summary>
     /// <param name="activitySource">The activity source.</param>
