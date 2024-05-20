@@ -91,7 +91,7 @@ public partial class LyricsAnalyzerCommandModule
 
         foreach (var searchHit in songResultItems)
         {
-            GeniusApiResponse<GeniusSongResult>? songLookup = await _geniusApiService.GetSongAsync(searchHit.Result!.Id);
+            GeniusApiResponse<GeniusSongResult>? songLookup = await _geniusApiService.GetSongAsync(searchHit.Result!.Id, parentActivityId);
 
             if (songLookup is not null && songLookup.Response is not null && songLookup.Response.Song is not null)
             {
