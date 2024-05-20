@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.RegularExpressions;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -107,9 +108,27 @@ public partial class LyricsAnalyzerCommandModule
         {
             _logger.LogWarning("Apple Music ID not found in Genius search results. Attempting to find song by title and artist name.");
 
+            string? coreSongName = null;
+
+            if (TrimmedSongNameRegex().IsMatch(songName))
+            {
+                Match match = TrimmedSongNameRegex().Match(songName);
+                coreSongName = match.Groups["songName"].Value;
+            }
+
             GeniusSearchResultHitItem? firstUsableSongItem = Array.Find(
                 array: songResultItems,
-                match: item => item.Result is not null && item.Result.Title == songName && item.Result.ArtistNames is not null && item.Result.ArtistNames.Contains(artistName)
+                match: item =>
+                    item.Result is not null
+                    && (
+                            item.Result.Title == songName
+                            && item.Result.PrimaryArtist.Name == artistName
+                        || 
+                            coreSongName is not null
+                            && item.Result.Title is not null
+                            && PunctuationRegex().Replace(item.Result.Title, "") == PunctuationRegex().Replace(coreSongName, "")
+                            && item.Result.PrimaryArtist.Name == artistName
+                    )
             );
 
             songUrl = firstUsableSongItem?.Result?.Url;
@@ -302,4 +321,14 @@ public partial class LyricsAnalyzerCommandModule
 
         return lyrics;
     }
+
+    [GeneratedRegex(
+        pattern: @"^(?'songName'.+?(\s\(Remix\)|))($|\s[\(\[].+[\)\]])"
+    )]
+    internal partial Regex TrimmedSongNameRegex();
+
+    [GeneratedRegex(
+        pattern: @"[^a-zA-Z0-9\x00-\x1F\x7F\s\t\n\r]"
+    )]
+    internal partial Regex PunctuationRegex();
 }
