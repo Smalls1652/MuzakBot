@@ -23,8 +23,6 @@ jobs:
         env:
             DOTNET_NOLOGO: true
 
-        if: ${{ github.event_name == 'workflow_dispatch' && startsWith(github.head_ref, 'dependabot/nuget/') || github.event_name == 'pull_request' }}
-
         steps:
             - name: Checkout repository
               uses: actions/checkout@v4
