@@ -52,4 +52,10 @@ public class GeniusSearchResultItem : IGeniusSearchResultItem
     /// </summary>
     [JsonPropertyName("lyrics_state")]
     public string? LyricsState { get; set; }
+
+    /// <summary>
+    /// The primary artist of the item.
+    /// </summary>
+    [JsonPropertyName("primary_artist")]
+    public GeniusArtist PrimaryArtist { get; set; } = null!;
 }

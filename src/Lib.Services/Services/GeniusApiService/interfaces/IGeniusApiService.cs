@@ -10,6 +10,9 @@ public interface IGeniusApiService : IDisposable
     Task<GeniusApiResponse<GeniusSearchResult>?> SearchAsync(string artistName, string songName);
     Task<GeniusApiResponse<GeniusSearchResult>?> SearchAsync(string artistName, string songName, string? parentActvitityId);
 
+    Task<GeniusApiResponse<GeniusSongResult>?> GetSongAsync(int id);
+    Task<GeniusApiResponse<GeniusSongResult>?> GetSongAsync(int id, string? parentActvitityId);
+
     Task<string> GetLyricsAsync(string url);
     Task<string> GetLyricsAsync(string url, string? parentActvitityId);
 

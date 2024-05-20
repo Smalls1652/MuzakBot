@@ -93,6 +93,54 @@ public partial class GeniusApiService : IGeniusApiService
     }
 
     /// <summary>
+    /// Retrieves a song from the Genius API.
+    /// </summary>
+    /// <param name="songId">The ID of the song.</param>
+    /// <returns>The song result from the API.</returns>
+    public async Task<GeniusApiResponse<GeniusSongResult>?> GetSongAsync(int songId) => await GetSongAsync(songId, null);
+
+    /// <summary>
+    /// Retrieves a song from the Genius API.
+    /// </summary>
+    /// <param name="songId">The ID of the song.</param>
+    /// <param name="parentActivityId">The ID of the parent activity.</param>
+    /// <returns>The song result from the API.</returns>
+    public async Task<GeniusApiResponse<GeniusSongResult>?> GetSongAsync(int songId, string? parentActivityId)
+    {
+        using var activity = _activitySource.StartGeniusGetSongAsyncActivity(songId, parentActivityId);
+
+        using var client = _httpClientFactory.CreateClient("GeniusApiClient");
+
+        using HttpRequestMessage requestMessage = new(
+            method: HttpMethod.Get,
+            requestUri: $"songs/{songId}"
+        );
+
+        requestMessage.Headers.Authorization = new("Bearer", _accessToken);
+
+        using HttpResponseMessage responseMessage = await client.SendAsync(requestMessage);
+
+        try
+        {
+            responseMessage.EnsureSuccessStatusCode();
+        }
+        catch (Exception)
+        {
+            activity?.SetStatus(ActivityStatusCode.Error);
+            throw;
+        }
+
+        Stream responseContent = await responseMessage.Content.ReadAsStreamAsync();
+
+        GeniusApiResponse<GeniusSongResult>? songResult = await JsonSerializer.DeserializeAsync(
+            utf8Json: responseContent,
+            jsonTypeInfo: GeniusJsonContext.Default.GeniusApiResponseGeniusSongResult
+        );
+
+        return songResult;
+    }
+
+    /// <summary>
     /// Retrieves the lyrics of a song from a given URL.
     /// </summary>
     /// <remarks>
