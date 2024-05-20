@@ -4,12 +4,13 @@ name: Dependabot / Lockfile update
 on:
     workflow_dispatch:
 
-    pull_request:
+    workflow_run: 
         branches: 
             - "dependabot/nuget/**"
-        types:
-            - opened
-            - reopened
+        workflows: 
+            - "Build"
+        types: 
+            - completed
 
 permissions:
     contents: write
