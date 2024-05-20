@@ -11,6 +11,7 @@ namespace MuzakBot.Lib.Services;
     GenerationMode = JsonSourceGenerationMode.Default,
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
 )]
+[JsonSerializable(typeof(GeniusArtist))]
 [JsonSerializable(typeof(GeniusSearchResult))]
 [JsonSerializable(typeof(GeniusSearchResultItem))]
 [JsonSerializable(typeof(GeniusSearchResultItem[]))]
