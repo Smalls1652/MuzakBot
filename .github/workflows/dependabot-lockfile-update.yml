@@ -62,7 +62,7 @@ jobs:
               if: steps.diffcheck.outcome == 'failure'
               run: |
                   git config user.email "${{ github.event.workflow_run.head_commit.author.email }}"
-                  git config user.name "${{ github.event.workflow_run.head_commit.author.username }}"
+                  git config user.name "${{ github.event.workflow_run.head_commit.author.name }}"
                   git add .
                   git commit --amend --no-edit
                   git push origin --force
