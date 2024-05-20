@@ -2,8 +2,6 @@
 name: Dependabot / Lockfile update
 
 on:
-    workflow_dispatch:
-
     workflow_run: 
         branches: 
             - "dependabot/nuget/**"
@@ -24,7 +22,7 @@ jobs:
         env:
             DOTNET_NOLOGO: true
 
-        if: ${{ (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'failure') || github.event_name == 'workflow_dispatch' }}
+        if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'failure' }}
 
         steps:
             - name: Checkout repository
@@ -63,8 +61,8 @@ jobs:
             - name: Push new changes
               if: steps.diffcheck.outcome == 'failure'
               run: |
-                  git config user.email "github-actions[bot]@users.noreply.github.com"
-                  git config user.name "github-actions[bot]"
+                  #git config user.email "github-actions[bot]@users.noreply.github.com"
+                  #git config user.name "github-actions[bot]"
                   git add .
                   git commit --message "Update NuGet lock file"
-                  git push
+                  git push origin --force
