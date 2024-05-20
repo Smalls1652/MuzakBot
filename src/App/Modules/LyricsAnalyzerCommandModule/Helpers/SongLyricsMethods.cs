@@ -22,7 +22,7 @@ public partial class LyricsAnalyzerCommandModule
     /// <exception cref="LyricsAnalyzerDbException">Thrown when an error occurs while attempting to get song lyrics from the database.</exception>
     /// <exception cref="GeniusApiException">Thrown when an error occurs while attempting to get song lyrics from the Genius API.</exception>
     /// <exception cref="SongRequestJobException">Thrown when an error occurs while attempting to get song lyrics using the standalone service or the fallback method.</exception>
-    private async Task<string> GetSongLyricsAsync(string artistName, string songName, string? parentActivityId)
+    private async Task<string> GetSongLyricsAsync(string artistName, string songName, string appleMusicId, string? parentActivityId)
     {
         string? lyrics = null;
         bool isSongLyricsItemInDb = false;
@@ -74,9 +74,48 @@ public partial class LyricsAnalyzerCommandModule
             );
         }
 
-        GeniusSearchResultHitItem? songResultItem = geniusSearchResult.Response.Hits.FirstOrDefault(item => item.Type == "song" && item.Result is not null && item.Result.LyricsState == "complete");
+        GeniusSearchResultHitItem[] songResultItems = Array.FindAll(
+            array: geniusSearchResult.Response.Hits,
+            match: item => item.Type == "song" && item.Result is not null && item.Result.LyricsState == "complete"
+        );
 
-        if (songResultItem is null)
+        if (songResultItems.Length == 0)
+        {
+            throw new GeniusApiException(
+                exceptionType: GeniusApiExceptionType.NoSongsFound,
+                message: "No complete songs found for the requested artist and song."
+            );
+        }
+
+        string? songUrl = null;
+
+        foreach (var searchHit in songResultItems)
+        {
+            GeniusApiResponse<GeniusSongResult>? songLookup = await _geniusApiService.GetSongAsync(searchHit.Result!.Id);
+
+            if (songLookup is not null && songLookup.Response is not null && songLookup.Response.Song is not null)
+            {
+                if (songLookup.Response.Song.AppleMusicId == appleMusicId)
+                {
+                    songUrl = songLookup.Response.Song.Url;
+                    break;
+                }
+            }
+        }
+
+        if (songUrl is null)
+        {
+            _logger.LogWarning("Apple Music ID not found in Genius search results. Attempting to find song by title and artist name.");
+
+            GeniusSearchResultHitItem? firstUsableSongItem = Array.Find(
+                array: songResultItems,
+                match: item => item.Result is not null && item.Result.Title == songName && item.Result.ArtistNames is not null && item.Result.ArtistNames.Contains(artistName)
+            );
+
+            songUrl = firstUsableSongItem?.Result?.Url;
+        }
+
+        if (songUrl is null)
         {
             throw new GeniusApiException(
                 exceptionType: GeniusApiExceptionType.NoSongsFound,
@@ -91,7 +130,7 @@ public partial class LyricsAnalyzerCommandModule
             JobId = Guid.NewGuid().ToString(),
             ArtistName = artistName,
             SongTitle = songName,
-            GeniusUrl = songResultItem.Result!.Url!
+            GeniusUrl = songUrl
         };
 
         try
@@ -104,7 +143,7 @@ public partial class LyricsAnalyzerCommandModule
             // Attempt to get song lyrics using the fallback method, when the standalone service fails.
             _logger.LogWarning(ex, "An error occurred while attempting to get song lyrics using the standalone service. Attempting to get lyrics using the fallback method.");
 
-            lyrics = await RunSongLyricsRequestFallbackJobAsync(songResultItem, artistName, songName, parentActivityId);
+            lyrics = await RunSongLyricsRequestFallbackJobAsync(songUrl, artistName, songName, parentActivityId);
         }
         catch (Exception)
         {
@@ -224,19 +263,19 @@ public partial class LyricsAnalyzerCommandModule
     /// <summary>
     /// Runs a song lyrics request job using the fallback method.
     /// </summary>
-    /// <param name="songResultItem">The Genius search result item for the song.</param>
+    /// <param name="url">The URL to the Genius lyrics page.</param>
     /// <param name="artistName">The name of the artist.</param>
     /// <param name="songName">The name of the song.</param>
     /// <param name="parentActivityId">The ID of the parent activity.</param>
     /// <returns>The lyrics of the specified song.</returns>
     /// <exception cref="SongRequestJobException">Thrown when an error occurs while attempting to get song lyrics using the fallback method.</exception>
-    private async Task<string?> RunSongLyricsRequestFallbackJobAsync(GeniusSearchResultHitItem songResultItem, string artistName, string songName, string? parentActivityId)
+    private async Task<string?> RunSongLyricsRequestFallbackJobAsync(string url, string artistName, string songName, string? parentActivityId)
     {
         string? lyrics = null;
 
         try
         {
-            lyrics = await _geniusApiService.GetLyricsAsync(songResultItem.Result!.Url!, parentActivityId);
+            lyrics = await _geniusApiService.GetLyricsAsync(url, parentActivityId);
         }
         catch (Exception ex)
         {
