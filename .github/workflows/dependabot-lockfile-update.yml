@@ -30,6 +30,7 @@ jobs:
               if: ${{ github.event_name != 'workflow_run' }}
               with:
                   fetch-depth: 0
+                  token: ${{ secrets.GIT_TOKEN }}
 
             - name: Checkout repository (Specific branch)
               uses: actions/checkout@v4
@@ -61,8 +62,8 @@ jobs:
             - name: Push new changes
               if: steps.diffcheck.outcome == 'failure'
               run: |
-                  git config user.email "${{ github.event.workflow_run.head_commit.author.email }}"
-                  git config user.name "${{ github.event.workflow_run.head_commit.author.name }}"
+                  git config user.email "github-actions[bot]"
+                  git config user.name "41898282+github-actions[bot]@users.noreply.github.com"
                   git add .
-                  git commit --amend --no-edit
+                  git commit --message "Update lockfiles"
                   git push origin --force
