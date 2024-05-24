@@ -32,14 +32,12 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           global-json-file: global.json
-          cache: true
-          cache-dependency-path: "src/**/packages.lock.json"
 
       - name: Configure 'smalls1652-github' NuGet feed
         run: dotnet nuget update source smalls1652-github --username "${{ github.repository_owner }}" --password "${{ secrets.GITHUB_TOKEN }}" --store-password-in-clear-text
 
       - name: Run 'dotnet restore'
-        run: dotnet restore --locked-mode
+        run: dotnet restore
 
       - name: Run 'dotnet build'
         run: dotnet build ${{ matrix.project }} --configuration "Release"
