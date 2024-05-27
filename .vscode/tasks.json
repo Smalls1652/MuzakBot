@@ -28,7 +28,7 @@
         }
       },
       "runOptions": {
-        "instanceLimit": 2
+        "instanceLimit": 5
       },
       "presentation": {
         "echo": false,
