@@ -14,7 +14,7 @@ namespace MuzakBot.App.Modules;
 /// </summary>
 [CommandContextType(InteractionContextType.BotDm, InteractionContextType.PrivateChannel, InteractionContextType.Guild)]
 [IntegrationType(ApplicationIntegrationType.UserInstall, ApplicationIntegrationType.GuildInstall)]
-public partial class CoreCommandModule : InteractionModuleBase<SocketInteractionContext>, IDisposable
+public partial class CoreCommandModule : InteractionModuleBase<ShardedInteractionContext>, IDisposable
 {
     private bool _disposed;
     private readonly ActivitySource _activitySource = new("MuzakBot.App.Modules.CoreCommandModule");
@@ -27,7 +27,6 @@ public partial class CoreCommandModule : InteractionModuleBase<SocketInteraction
     /// <param name="configuration">The application configuration.</param>
     /// <param name="logger">The logger.</param>
     public CoreCommandModule(
-        DiscordSocketClient discordSocketClient,
         IConfiguration configuration,
         ILogger<CoreCommandModule> logger
     )

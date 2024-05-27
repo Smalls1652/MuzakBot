@@ -26,7 +26,7 @@ public sealed class AlbumReleaseReminderMonitorService : IAlbumReleaseReminderMo
     private bool _isDisposed;
 
     private readonly ILogger _logger;
-    private readonly DiscordSocketClient _discordClient;
+    private readonly DiscordShardedClient _discordClient;
     private readonly IAppleMusicApiService _appleMusicApiService;
     private readonly IOdesliService _odesliService;
     private readonly IDbContextFactory<AlbumReleaseDbContext> _albumReleaseDbContextFactory;
@@ -40,7 +40,7 @@ public sealed class AlbumReleaseReminderMonitorService : IAlbumReleaseReminderMo
     /// <param name="appleMusicApiService">The Apple Music API service.</param>
     /// <param name="odesliService">The Odesli service.</param>
     /// <param name="albumReleaseDbContextFactory">The <see cref="IDbContextFactory{TContext}"/> for the <see cref="AlbumReleaseDbContext"/>.</param>
-    public AlbumReleaseReminderMonitorService(ILogger<AlbumReleaseReminderMonitorService> logger, DiscordSocketClient discordClient, IAppleMusicApiService appleMusicApiService, IOdesliService odesliService, IDbContextFactory<AlbumReleaseDbContext> albumReleaseDbContextFactory)
+    public AlbumReleaseReminderMonitorService(ILogger<AlbumReleaseReminderMonitorService> logger, DiscordShardedClient discordClient, IAppleMusicApiService appleMusicApiService, IOdesliService odesliService, IDbContextFactory<AlbumReleaseDbContext> albumReleaseDbContextFactory)
     {
         _logger = logger;
         _discordClient = discordClient;

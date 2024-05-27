@@ -18,26 +18,26 @@ namespace MuzakBot.App.Modules;
 /// <summary>
 /// Command module for managing the bot.
 /// </summary>
-public partial class AdminCommandModule : InteractionModuleBase<SocketInteractionContext>, IDisposable
+public partial class AdminCommandModule : InteractionModuleBase<ShardedInteractionContext>, IDisposable
 {
     private bool _isDisposed;
     private readonly ActivitySource _activitySource = new("MuzakBot.App.Modules.AdminCommandModule");
     private readonly IDbContextFactory<LyricsAnalyzerDbContext> _lyricsAnalyzerDbContextFactory;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<AdminCommandModule> _logger;
-    private readonly DiscordSocketClient _discordSocketClient;
+    private readonly DiscordShardedClient _discordClient;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="LyricsAnalyzerCommandModule"/> class.
     /// </summary>
     /// <param name="httpClientFactory">The <see cref="IHttpClientFactory"/>.</param>
     /// <param name="logger">The logger.</param>
-    public AdminCommandModule(IDbContextFactory<LyricsAnalyzerDbContext> lyricsAnalyzerDbContextFactory, IHttpClientFactory httpClientFactory, ILogger<AdminCommandModule> logger, DiscordSocketClient discordSocketClient)
+    public AdminCommandModule(IDbContextFactory<LyricsAnalyzerDbContext> lyricsAnalyzerDbContextFactory, IHttpClientFactory httpClientFactory, ILogger<AdminCommandModule> logger, DiscordShardedClient discordClient)
     {
         _lyricsAnalyzerDbContextFactory = lyricsAnalyzerDbContextFactory;
         _httpClientFactory = httpClientFactory;
         _logger = logger;
-        _discordSocketClient = discordSocketClient;
+        _discordClient = discordClient;
     }
 
     /// <inheritdoc cref="IDisposable.Dispose"/>

@@ -17,7 +17,7 @@ namespace MuzakBot.App.Modules;
 [CommandContextType(InteractionContextType.BotDm, InteractionContextType.PrivateChannel, InteractionContextType.Guild)]
 [IntegrationType(ApplicationIntegrationType.UserInstall, ApplicationIntegrationType.GuildInstall)]
 [Group("sharemusic", "Create share links for a song or album on various streaming platforms.")]
-public partial class ShareMusicCommandModule : InteractionModuleBase<SocketInteractionContext>, IDisposable
+public partial class ShareMusicCommandModule : InteractionModuleBase<ShardedInteractionContext>, IDisposable
 {
     private bool _isDisposed;
     private readonly ActivitySource _activitySource = new("MuzakBot.App.Modules.ShareMusicCommandModule");

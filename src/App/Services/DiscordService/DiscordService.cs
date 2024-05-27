@@ -29,7 +29,7 @@ public class DiscordService : IDiscordService, IHostedService
     private Task? _albumReleaseReminderMonitorTask;
 
     private readonly ActivitySource _activitySource = new("MuzakBot.App.Services.DiscordService");
-    private readonly DiscordSocketClient _discordSocketClient;
+    private readonly DiscordShardedClient _discordClient;
     private readonly InteractionService _interactionService;
     private readonly ILogger<DiscordService> _logger;
     private readonly IAlbumReleaseReminderMonitorService _albumReleaseReminderQueueService;
@@ -40,9 +40,9 @@ public class DiscordService : IDiscordService, IHostedService
     private readonly ulong _adminGuildId;
     private readonly IServiceProvider _serviceProvider;
 
-    public DiscordService(DiscordSocketClient discordSocketClient, InteractionService interactionService, ILogger<DiscordService> logger, IAlbumReleaseReminderMonitorService albumReleaseReminderQueueService, IOptions<DiscordServiceOptions> options, IServiceProvider serviceProvider)
+    public DiscordService(DiscordShardedClient discordClient, InteractionService interactionService, ILogger<DiscordService> logger, IAlbumReleaseReminderMonitorService albumReleaseReminderQueueService, IOptions<DiscordServiceOptions> options, IServiceProvider serviceProvider)
     {
-        _discordSocketClient = discordSocketClient;
+        _discordClient = discordClient;
         _interactionService = interactionService;
         _logger = logger;
         _albumReleaseReminderQueueService = albumReleaseReminderQueueService;
@@ -87,11 +87,11 @@ public class DiscordService : IDiscordService, IHostedService
         await _interactionService.AddModuleAsync<AlbumReleaseCommandModule>(_serviceProvider);
 
         // Add logging to the DiscordSocketClient and InteractionService
-        _discordSocketClient.Log += HandleLog;
+        _discordClient.Log += HandleLog;
         _interactionService.Log += HandleLog;
 
         // Add interaction handler
-        _discordSocketClient.InteractionCreated += HandleInteraction;
+        _discordClient.InteractionCreated += HandleInteraction;
 
         // Add slash command handler
         //_discordSocketClient.InteractionCreated += HandleSlashCommand;
@@ -100,14 +100,14 @@ public class DiscordService : IDiscordService, IHostedService
         //_discordSocketClient.InteractionCreated += HandleAutocomplete;
 
         // Add ready handler
-        _discordSocketClient.Ready += OnClientReadyAsync;
+        _discordClient.ShardReady += OnClientReadyAsync;
 
-        await _discordSocketClient.LoginAsync(
+        await _discordClient.LoginAsync(
             tokenType: TokenType.Bot,
             token: _clientToken
         );
 
-        await _discordSocketClient.StartAsync();
+        await _discordClient.StartAsync();
     }
 
     /// <summary>
@@ -123,7 +123,7 @@ public class DiscordService : IDiscordService, IHostedService
     ///     </item>
     /// </list>
     /// </summary>
-    private async Task OnClientReadyAsync()
+    private async Task OnClientReadyAsync(DiscordSocketClient discordSocketClient)
     {
 #if DEBUG
         _logger.LogRegisterCommandsDebugMode(_testGuildId);
@@ -162,7 +162,7 @@ public class DiscordService : IDiscordService, IHostedService
 
     private async Task HandleInteraction(SocketInteraction interaction)
     {
-        var context = new SocketInteractionContext(_discordSocketClient, interaction);
+        ShardedInteractionContext context = new(_discordClient, interaction);
 
         var result = await _interactionService!.ExecuteCommandAsync(context, _serviceProvider);
 
@@ -179,7 +179,7 @@ public class DiscordService : IDiscordService, IHostedService
     /// <param name="interaction">Interaction received from Discord's WebSocket API.</param>
     private async Task HandleSlashCommand(SocketInteraction interaction)
     {
-        SocketInteractionContext interactionContext = new(_discordSocketClient, interaction);
+        ShardedInteractionContext interactionContext = new(_discordClient, interaction);
 
         var result = await _interactionService!.ExecuteCommandAsync(interactionContext, _serviceProvider);
 
@@ -197,7 +197,7 @@ public class DiscordService : IDiscordService, IHostedService
     /// <returns></returns>
     private async Task HandleAutocomplete(SocketInteraction interaction)
     {
-        SocketInteractionContext interactionContext = new(_discordSocketClient, interaction);
+        ShardedInteractionContext interactionContext = new(_discordClient, interaction);
 
         var result = await _interactionService!.ExecuteCommandAsync(interactionContext, _serviceProvider);
 
@@ -269,7 +269,7 @@ public class DiscordService : IDiscordService, IHostedService
     {
         _logger.LogDiscordBotDisconnect();
 
-        await _discordSocketClient.LogoutAsync();
+        await _discordClient.LogoutAsync();
 
         _logger.LogDiscordBotDisconnected();
 
@@ -308,16 +308,16 @@ public class DiscordService : IDiscordService, IHostedService
     {
         ObjectDisposedException.ThrowIf(_isDisposed, nameof(DiscordService));
 
-        _discordSocketClient.Log -= HandleLog;
-        _discordSocketClient.InteractionCreated -= HandleSlashCommand;
-        _discordSocketClient.Ready -= OnClientReadyAsync;
+        _discordClient.Log -= HandleLog;
+        _discordClient.InteractionCreated -= HandleSlashCommand;
+        _discordClient.ShardReady -= OnClientReadyAsync;
 
         if (_interactionService is not null)
         {
             _interactionService.Dispose();
         }
 
-        await _discordSocketClient.DisposeAsync();
+        await _discordClient.DisposeAsync();
 
         _runTask?.Dispose();
         _albumReleaseReminderMonitorTask?.Dispose();

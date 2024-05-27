@@ -19,7 +19,7 @@ namespace MuzakBot.App.Modules;
 [CommandContextType(InteractionContextType.BotDm, InteractionContextType.PrivateChannel, InteractionContextType.Guild)]
 [IntegrationType(ApplicationIntegrationType.UserInstall, ApplicationIntegrationType.GuildInstall)]
 [Group("lyricsanalyzer", "Use AI to analyze the lyrics of a song.")]
-public partial class LyricsAnalyzerCommandModule : InteractionModuleBase<SocketInteractionContext>, IDisposable
+public partial class LyricsAnalyzerCommandModule : InteractionModuleBase<ShardedInteractionContext>, IDisposable
 {
     private bool _isDisposed;
     private readonly ActivitySource _activitySource = new("MuzakBot.App.Modules.LyricsAnalyzerCommandModule");

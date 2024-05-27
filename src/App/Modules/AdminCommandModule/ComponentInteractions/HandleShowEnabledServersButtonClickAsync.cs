@@ -52,7 +52,7 @@ public partial class AdminCommandModule
 
         _logger.LogInformation("Lyrics analyzer config retrieved.");
 
-        SocketGuild[] guilds = _discordSocketClient.Guilds.ToArray();
+        SocketGuild[] guilds = _discordClient.Guilds.ToArray();
 
         List<SocketGuild> enabledGuilds = [];
         List<SocketGuild> disabledGuilds = [];
