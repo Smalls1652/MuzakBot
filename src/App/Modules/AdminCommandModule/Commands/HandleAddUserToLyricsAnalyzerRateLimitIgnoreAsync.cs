@@ -1,5 +1,6 @@
 using Discord;
 using Discord.Interactions;
+using Discord.WebSocket;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -33,7 +34,7 @@ public partial class AdminCommandModule
         IUser user;
         try
         {
-            user = await _discordSocketClient.GetUserAsync(ulong.Parse(userId));
+            user = Context.Client.GetUser(ulong.Parse(userId));
         }
         catch (Exception ex)
         {

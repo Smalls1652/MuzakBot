@@ -58,7 +58,7 @@ public partial class AdminCommandModule
         SocketGuild guild;
         try
         {
-            guild = _discordSocketClient.GetGuild(guildIdUlong);
+            guild = _discordClient.GetGuild(guildIdUlong);
 
             if (guild is null)
             {

@@ -37,15 +37,15 @@ public static class DiscordServiceExtensions
 
         services.Configure(configure);
 
-        services.AddSingleton<DiscordSocketClient>(
+        services.AddSingleton<DiscordShardedClient>(
             implementationInstance: new(discordSocketConfig)
         );
 
-        services.AddSingleton<InteractionService>(serviceProvider => new(serviceProvider.GetRequiredService<DiscordSocketClient>()));
+        services.AddSingleton<InteractionService>(serviceProvider => new(serviceProvider.GetRequiredService<DiscordShardedClient>()));
 
         // Temporary fix for a bug in Discord.NET v3.15.0.
         services
-            .AddSingleton<IRestClientProvider>(serviceProvider => serviceProvider.GetRequiredService<DiscordSocketClient>());
+            .AddSingleton<IRestClientProvider>(serviceProvider => serviceProvider.GetRequiredService<DiscordShardedClient>());
 
         services.AddHostedService<DiscordService>();
 
