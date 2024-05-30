@@ -18,7 +18,7 @@
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="8.0.6" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Abstractions" Version="8.0.6" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Analyzers" Version="8.0.6" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Cosmos" Version="8.0.5" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Cosmos" Version="8.0.6" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.5">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
