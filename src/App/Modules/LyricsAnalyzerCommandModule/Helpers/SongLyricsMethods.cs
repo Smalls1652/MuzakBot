@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -214,6 +215,7 @@ public partial class LyricsAnalyzerCommandModule
             // and process the job.
             await Task.Delay(5000);
             bool isSongLyricsJobFinished = false;
+            Stopwatch acknowledgedStopwatch = Stopwatch.StartNew();
             while (!isSongLyricsJobFinished)
             {
                 using (var songLyricsDbContext = _lyricsAnalyzerDbContextFactory.CreateDbContext())
@@ -223,6 +225,13 @@ public partial class LyricsAnalyzerCommandModule
                     // If the standalone service has not acknowledged the request, throw an exception.
                     if (!songLyricsRequestJobStatus.StandaloneServiceAcknowledged)
                     {
+                        if (acknowledgedStopwatch.Elapsed.TotalMinutes < 2)
+                        {
+                            continue;
+                        }
+
+                        acknowledgedStopwatch.Stop();
+
                         _logger.LogWarning("Standalone service has not acknowledged the request. Continuing with the fallback method instead.");
 
                         await _queueClientService.QueueClient.DeleteMessageAsync(
@@ -235,11 +244,17 @@ public partial class LyricsAnalyzerCommandModule
                             message: "Standalone service has not acknowledged the request. Fallback method is needed."
                         );
                     }
+                    else
+                    {
+                        acknowledgedStopwatch.Stop();
+                    }
 
                     // If the standalone service indicates that the fallback method is needed, throw an exception.
                     if (songLyricsRequestJobStatus.FallbackMethodNeeded)
                     {
                         _logger.LogWarning("Fallback method is needed. Continuing with the fallback method instead.");
+
+                        acknowledgedStopwatch.Stop();
 
                         throw new SongRequestJobException(
                             exceptionType: SongRequestJobExceptionType.FallbackMethodNeeded,
