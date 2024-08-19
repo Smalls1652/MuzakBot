@@ -27,6 +27,7 @@
   <ItemGroup>
     <PackageReference Include="Discord.Net" PrivateAssets="all" />
     <PackageReference Include="GitVersion.MsBuild" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
   </ItemGroup>
 
 </Project>

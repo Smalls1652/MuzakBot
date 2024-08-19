@@ -27,6 +27,7 @@
         <PackageReference Include="Discord.Net" />
         <PackageReference Include="GitVersion.MsBuild" PrivateAssets="all" />
         <PackageReference Include="MarkDig" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\Database\Database.csproj" />
@@ -69,7 +70,7 @@
         Runs 'npm install' to install web dependencies.
     -->
     <Target Name="RunNpmInstall" BeforeTargets="CopyWebDependencyFiles" Condition="!Exists('node_modules') Or '$(FORCE_NPM_INSTALL)'=='true'">
-        <Message Importance="high" Text="WebApp -> Running 'npm install'..." />
+        <Message Importance="high" Text="WebApp -&gt; Running 'npm install'..." />
         <Exec Command="npm install" />
     </Target>
     <!-- 
@@ -99,7 +100,7 @@
         </ItemGroup>
         <MakeDir Directories="$(BootstrapCss_OutputPath)" />
         <Copy SourceFiles="@(BootstrapCssFiles)" DestinationFolder="$(BootstrapCss_OutputPath)" />
-        <Message Importance="high" Text="Bootstrap CSS -> $(BootstrapCss_OutputPath)" />
+        <Message Importance="high" Text="Bootstrap CSS -&gt; $(BootstrapCss_OutputPath)" />
     </Target>
     <!-- 
     Name:
@@ -117,7 +118,7 @@
         </ItemGroup>
         <MakeDir Directories="$(BootstrapJs_OutputPath)" />
         <Copy SourceFiles="@(BootstrapJsFiles)" DestinationFolder="$(BootstrapJs_OutputPath)" />
-        <Message Importance="high" Text="Bootstrap JavaScript -> $(BootstrapJs_OutputPath)" />
+        <Message Importance="high" Text="Bootstrap JavaScript -&gt; $(BootstrapJs_OutputPath)" />
     </Target>
     <!-- 
     Name:
@@ -135,7 +136,7 @@
         </ItemGroup>
         <MakeDir Directories="$(PopperJs_OutputPath)" />
         <Copy SourceFiles="@(PopperJsFiles)" DestinationFolder="$(PopperJs_OutputPath)" />
-        <Message Importance="high" Text="PopperJS -> $(PopperJs_OutputPath)" />
+        <Message Importance="high" Text="PopperJS -&gt; $(PopperJs_OutputPath)" />
     </Target>
     <!-- 
     Name:
@@ -155,10 +156,10 @@
         </ItemGroup>
         <MakeDir Directories="$(BootstrapIcons_OutputPath)" />
         <Copy SourceFiles="@(BootstrapIconFiles)" DestinationFolder="$(BootstrapIcons_OutputPath)" />
-        <Message Importance="high" Text="Bootstrap Icons -> $(BootstrapIcons_OutputPath)" />
+        <Message Importance="high" Text="Bootstrap Icons -&gt; $(BootstrapIcons_OutputPath)" />
         <MakeDir Directories="$(BootstrapIconsFonts_OutputPath)" />
         <Copy SourceFiles="@(BootstrapIconFontFiles)" DestinationFolder="$(BootstrapIconsFonts_OutputPath)" />
-        <Message Importance="high" Text="Bootstrap Icons Fonts -> $(BootstrapIconsFonts_OutputPath)" />
+        <Message Importance="high" Text="Bootstrap Icons Fonts -&gt; $(BootstrapIconsFonts_OutputPath)" />
     </Target>
     <!-- 
     Name:
