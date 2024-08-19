@@ -19,6 +19,7 @@
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	</PropertyGroup>
 	<ItemGroup>
+		<PackageReference Include="Azure.Core" />
 		<PackageReference Include="Azure.Identity" PrivateAssets="all" />
 		<PackageReference Include="Azure.Storage.Queues" PrivateAssets="all" />
         <PackageReference Include="GitVersion.MsBuild" PrivateAssets="all" />
