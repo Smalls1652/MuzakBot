@@ -23,7 +23,8 @@
 	</PropertyGroup>
 	<!-- Dependencies -->
 	<ItemGroup>
-		<PackageReference Include="Discord.Net" PrivateAssets="all"/>
+		<PackageReference Include="Azure.Core" />
+		<PackageReference Include="Discord.Net" PrivateAssets="all" />
         <PackageReference Include="GitVersion.MsBuild" PrivateAssets="all" />
 		<PackageReference Include="Microsoft.Azure.Cosmos" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" />
