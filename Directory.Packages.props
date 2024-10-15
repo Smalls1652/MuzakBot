@@ -9,7 +9,7 @@
     <PackageVersion Include="Azure.Storage.Queues" Version="12.20.0" />
     <PackageVersion Include="BlazorMD.SourceGenerator" Version="0.1.1" />
     <PackageVersion Include="Discord.Net" Version="3.16.0" />
-    <PackageVersion Include="GitVersion.MsBuild" Version="6.0.2">
+    <PackageVersion Include="GitVersion.MsBuild" Version="6.0.3">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageVersion>
