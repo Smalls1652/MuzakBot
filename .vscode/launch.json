@@ -24,6 +24,9 @@
             "console": "internalConsole",
             "env": {
                 "DOTNET_ENVIRONMENT": "Development"
+            },
+            "logging": {
+                "moduleLoad": false
             }
         },
         {
