@@ -261,7 +261,24 @@
           "endsPattern": "^Waiting for file changes\\.\\.\\.$"
         }
       }
-    }
+    },
+    {
+      "label": "Build: MuzakBot.GeniusService",
+      "detail": "Build the GeniusService project.",
+      "hide": true,
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "build",
+        "${workspaceFolder}/src/GeniusService/",
+        "--configuration",
+        "Debug"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": "$msCompile"
+    },
   ],
   "inputs": [
     {

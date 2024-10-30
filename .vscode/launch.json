@@ -25,6 +25,21 @@
             "env": {
                 "DOTNET_ENVIRONMENT": "Development"
             }
+        },
+        {
+            "name": "Debug: MuzakBot.GeniusService",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "Build: MuzakBot.GeniusService",
+            "program": "${workspaceFolder}/artifacts/bin/GeniusService/debug/MuzakBot.GeniusService.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/src/GeniusService",
+            "stopAtEntry": false,
+            "justMyCode": true,
+            "console": "internalConsole",
+            "env": {
+                "DOTNET_ENVIRONMENT": "Development"
+            }
         }
     ]
 }
