@@ -14,7 +14,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageVersion>
     <PackageVersion Include="MarkDig" Version="0.38.0" />
-    <PackageVersion Include="Microsoft.Azure.Cosmos" Version="3.45.0" />
+    <PackageVersion Include="Microsoft.Azure.Cosmos" Version="3.45.1" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="8.0.10" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Abstractions" Version="8.0.10" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Analyzers" Version="8.0.10" />
