@@ -5,6 +5,8 @@ ARG NUGET_TOKEN
 
 WORKDIR /app
 
+ENV CONTAINER_IMAGE_BUILD=true
+
 COPY ./global.json ./
 COPY ./MuzakBot.sln ./
 COPY ./Directory.Build.props ./
