@@ -21,32 +21,41 @@ push-hook = true
 #
 # When disabled, many Git Town commands execute faster
 # and Git Town will create the missing tracking branch
-# on the first run of "git sync".
+# on the first run of "git town sync".
 push-new-branches = false
 
-# Should "git ship" delete the tracking branch?
+# The "create-prototype-branches" setting determines whether Git Town
+# always creates prototype branches.
+# Prototype branches sync only locally and don't create a tracking branch
+# until they are proposed.
+#
+# More info at https://www.git-town.com/preferences/create-prototype-branches.
+create-prototype-branches = false
+
+# Which method should Git Town use to ship feature branches?
+#
+# Options:
+#
+# - api: merge the proposal on your code hosting platform via the code hosting API
+# - fast-forward: in your local repo, fast-forward the parent branch to point to the commits on the feature branch
+# - squash-merge: in your local repo, squash-merge the feature branch into its parent branch
+#
+# All options update proposals of child branches and remove the shipped branch locally and remotely.
+ship-strategy = "api"
+
+# Should "git town ship" delete the tracking branch?
 # You want to disable this if your code hosting platform
 # (GitHub, GitLab, etc) deletes head branches when
 # merging pull requests through its UI.
 ship-delete-tracking-branch = true
 
-# Should "git ship" sync branches before shipping them?
-#
-# Guidance: enable when shipping branches locally on your machine
-# and disable when shipping feature branches via the code hosting
-# API or web UI.
-#
-# When enabled, branches are always fully up to date when shipped
-# and you get a chance to resolve merge conflicts
-# between the feature branch to ship and the main development branch
-# on the feature branch. This helps keep the main branch green.
-# But this also triggers another CI run and delays shipping.
-sync-before-ship = true
+# Should "git town sync" sync tags with origin?
+sync-tags = true
 
-# Should "git sync" also fetch updates from the upstream remote?
+# Should "git town sync" also fetch updates from the upstream remote?
 #
 # If an "upstream" remote exists, and this setting is enabled,
-# "git sync" will also update the local main branch
+# "git town sync" will also update the local main branch
 # with commits from the main branch at the upstream remote.
 #
 # This is useful if the repository you work on is a fork,
@@ -68,7 +77,7 @@ main = "main"
 # See also the "perennial-regex" setting.
 perennials = []
 
-# All branches whose names match this regular expression
+# All branches whose name matches this regular expression
 # are also considered perennial branches.
 #
 # If you are not sure, leave this empty.
@@ -94,7 +103,7 @@ platform = "github"
 # the main branch and shipped back into the main branch.
 # Typically you develop features and bug fixes on them,
 # hence their name.
-feature-branches = "rebase"
+feature-branches = "merge"
 
 # How should Git Town synchronize perennial branches?
 # Perennial branches have no parent branch.
