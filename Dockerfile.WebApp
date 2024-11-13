@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0 AS prebuild-env
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:9.0 AS prebuild-env
 
 ARG NUGET_USER
 ARG NUGET_TOKEN
@@ -24,7 +24,7 @@ COPY ./src/WebApp/WebApp.csproj ./src/WebApp/
 
 RUN dotnet restore
 
-FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:9.0 AS build-env
 
 ARG TARGETOS
 ARG TARGETARCH
@@ -55,7 +55,7 @@ RUN dotnet publish ./src/WebApp --configuration "Release" --os "${TARGETOS}" --a
 RUN rm -rf /app/artifacts/publish/WebApp/release/*.pdb; \
     rm -rf /app/artifacts/publish/WebApp/release/*.dbg
 
-FROM --platform=$TARGETPLATFORM mcr.microsoft.com/dotnet/aspnet:8.0-jammy-chiseled AS app
+FROM --platform=$TARGETPLATFORM mcr.microsoft.com/dotnet/aspnet:9.0-noble-chiseled AS app
 
 ARG TARGETOS
 ARG TARGETARCH
