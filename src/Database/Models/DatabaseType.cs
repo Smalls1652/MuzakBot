@@ -13,5 +13,10 @@ public enum DatabaseType
     /// <summary>
     /// Azure Cosmos DB
     /// </summary>
-    CosmosDb = 1
+    CosmosDb = 1,
+
+    /// <summary>
+    /// PostgreSQL database
+    /// </summary>
+    PostgreSql = 2
 }
