@@ -365,7 +365,7 @@
         "--msbuildprojectextensionspath",
         "${workspaceFolder}/artifacts/obj/DatabaseDesign/",
         "--namespace",
-        "MuzakBot.Database.Migrations",
+        "MuzakBot.Database.MuzakBotDbContextMigrations",
         "--context",
         "MuzakBotDbContext"
       ],
