@@ -32,6 +32,10 @@ public static class AlbumReleaseDbContextExtensions
                 services.AddAlbumReleaseDbContextFactoryForCosmosDb(databaseConfig.CosmosDbConfig!);
                 break;
 
+            case DatabaseType.PostgreSql:
+                services.AddAlbumReleaseDbContextFactoryForPostgres(databaseConfig.PostgresDbConfig!);
+                break;
+
             case DatabaseType.Sqlite:
                 services.AddAlbumReleaseDbContextFactoryForSqlite(databaseConfig.SqliteDbConfig!);
                 break;
@@ -57,6 +61,22 @@ public static class AlbumReleaseDbContextExtensions
                 connectionString: cosmosDbConfig.ConnectionString,
                 databaseName: "album_releases"
             );
+        });
+
+        return services;
+    }
+
+    /// <summary>
+    /// Adds a <see cref="AlbumReleaseDbContext"/> factory and configures it for PostgreSQL to the service collection.
+    /// </summary>
+    /// <param name="services">The service collection.</param>
+    /// <param name="postgresConfig">The PostgreSQL configuration.</param>
+    /// <returns>The same service collection so that multiple calls can be chained.</returns>
+    private static IServiceCollection AddAlbumReleaseDbContextFactoryForPostgres(this IServiceCollection services, PostgresConfigOptions postgresConfig)
+    {
+        services.AddDbContextFactory<AlbumReleaseDbContext>(options =>
+        {
+            options.UseNpgsql($"{postgresConfig.ConnectionString}Database=album_releases;");
         });
 
         return services;

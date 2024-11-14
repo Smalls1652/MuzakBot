@@ -22,7 +22,7 @@ public partial class AdminCommandModule : InteractionModuleBase<SocketInteractio
 {
     private bool _isDisposed;
     private readonly ActivitySource _activitySource = new("MuzakBot.App.Modules.AdminCommandModule");
-    private readonly IDbContextFactory<LyricsAnalyzerDbContext> _lyricsAnalyzerDbContextFactory;
+    private readonly IDbContextFactory<MuzakBotDbContext> _muzakbotDbContextFactory;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<AdminCommandModule> _logger;
     private readonly DiscordSocketClient _discordSocketClient;
@@ -32,9 +32,9 @@ public partial class AdminCommandModule : InteractionModuleBase<SocketInteractio
     /// </summary>
     /// <param name="httpClientFactory">The <see cref="IHttpClientFactory"/>.</param>
     /// <param name="logger">The logger.</param>
-    public AdminCommandModule(IDbContextFactory<LyricsAnalyzerDbContext> lyricsAnalyzerDbContextFactory, IHttpClientFactory httpClientFactory, ILogger<AdminCommandModule> logger, DiscordSocketClient discordSocketClient)
+    public AdminCommandModule(IDbContextFactory<MuzakBotDbContext> muzakbotDbContextFactory, IHttpClientFactory httpClientFactory, ILogger<AdminCommandModule> logger, DiscordSocketClient discordSocketClient)
     {
-        _lyricsAnalyzerDbContextFactory = lyricsAnalyzerDbContextFactory;
+        _muzakbotDbContextFactory = muzakbotDbContextFactory;
         _httpClientFactory = httpClientFactory;
         _logger = logger;
         _discordSocketClient = discordSocketClient;

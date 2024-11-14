@@ -37,7 +37,7 @@ public partial class AdminCommandModule
             ephemeral: false
         );
 
-        using var dbContext = _lyricsAnalyzerDbContextFactory.CreateDbContext();
+        using var dbContext = _muzakbotDbContextFactory.CreateDbContext();
 
         ulong guildIdUlong;
         try
@@ -79,9 +79,7 @@ public partial class AdminCommandModule
         LyricsAnalyzerConfig? lyricsAnalyzerConfig;
         try
         {
-            lyricsAnalyzerConfig = await dbContext.LyricsAnalyzerConfigs
-                .WithPartitionKey("lyricsanalyzer-config")
-                .FirstOrDefaultAsync();
+            lyricsAnalyzerConfig = await dbContext.LyricsAnalyzerConfigs                .FirstOrDefaultAsync();
 
             if (lyricsAnalyzerConfig is null)
             {

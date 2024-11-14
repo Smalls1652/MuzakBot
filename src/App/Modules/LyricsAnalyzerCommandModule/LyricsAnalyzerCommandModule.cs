@@ -27,7 +27,7 @@ public partial class LyricsAnalyzerCommandModule : InteractionModuleBase<SocketI
     private readonly IAppleMusicApiService _appleMusicApiService;
     private readonly IGeniusApiService _geniusApiService;
     private readonly IOpenAiService _openAiService;
-    private readonly IDbContextFactory<LyricsAnalyzerDbContext> _lyricsAnalyzerDbContextFactory;
+    private readonly IDbContextFactory<MuzakBotDbContext> _muzakbotDbContextFactory;
     private readonly IQueueClientService _queueClientService;
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly ILogger<LyricsAnalyzerCommandModule> _logger;
@@ -40,13 +40,13 @@ public partial class LyricsAnalyzerCommandModule : InteractionModuleBase<SocketI
     /// <param name="openAiService">The <see cref="IOpenAiService"/>.</param>
     /// <param name="httpClientFactory">The <see cref="IHttpClientFactory"/>.</param>
     /// <param name="logger">The logger.</param>
-    public LyricsAnalyzerCommandModule(IOdesliService odesliService, IAppleMusicApiService appleMusicApiService, IGeniusApiService geniusApiService, IOpenAiService openAiService, IDbContextFactory<LyricsAnalyzerDbContext> lyricsAnalyzerContextFactory, IQueueClientService queueClientService, IHttpClientFactory httpClientFactory, ILogger<LyricsAnalyzerCommandModule> logger)
+    public LyricsAnalyzerCommandModule(IOdesliService odesliService, IAppleMusicApiService appleMusicApiService, IGeniusApiService geniusApiService, IOpenAiService openAiService, IDbContextFactory<MuzakBotDbContext> lyricsAnalyzerContextFactory, IQueueClientService queueClientService, IHttpClientFactory httpClientFactory, ILogger<LyricsAnalyzerCommandModule> logger)
     {
         _odesliService = odesliService;
         _appleMusicApiService = appleMusicApiService;
         _geniusApiService = geniusApiService;
         _openAiService = openAiService;
-        _lyricsAnalyzerDbContextFactory = lyricsAnalyzerContextFactory;
+        _muzakbotDbContextFactory = lyricsAnalyzerContextFactory;
         _queueClientService = queueClientService;
         _httpClientFactory = httpClientFactory;
         _logger = logger;

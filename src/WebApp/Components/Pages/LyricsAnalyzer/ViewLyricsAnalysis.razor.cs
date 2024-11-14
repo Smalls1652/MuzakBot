@@ -13,7 +13,7 @@ namespace MuzakBot.WebApp.Components.Pages;
 public partial class ViewLyricsAnalysis : ComponentBase
 {
     [Inject]
-    protected IDbContextFactory<LyricsAnalyzerDbContext> LyricsAnalyzerDbContextFactory { get; set; } = null!;
+    protected IDbContextFactory<MuzakBotDbContext> MuzakBotDbContextFactory { get; set; } = null!;
 
     [Parameter]
     public string? AnalysisId { get; set; }
@@ -33,7 +33,7 @@ public partial class ViewLyricsAnalysis : ComponentBase
             return;
         }
 
-        using var dbContext = LyricsAnalyzerDbContextFactory.CreateDbContext();
+        using var dbContext = MuzakBotDbContextFactory.CreateDbContext();
 
         _analyzedLyrics = await dbContext.AnalyzedLyricsItems
             .FirstOrDefaultAsync(item => item.Id == AnalysisId);

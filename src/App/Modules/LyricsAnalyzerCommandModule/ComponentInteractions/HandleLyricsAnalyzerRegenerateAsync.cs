@@ -47,7 +47,7 @@ public partial class LyricsAnalyzerCommandModule
 
         await componentInteraction.DeferLoadingAsync(isEphemeral);
 
-        using var dbContext = _lyricsAnalyzerDbContextFactory.CreateDbContext();
+        using var dbContext = _muzakbotDbContextFactory.CreateDbContext();
 
         _logger.LogInformation("Regenerating lyrics analyzer response for {responseId}", responseId);
 
@@ -56,9 +56,7 @@ public partial class LyricsAnalyzerCommandModule
         LyricsAnalyzerConfig lyricsAnalyzerConfig;
         try
         {
-            lyricsAnalyzerConfig = await dbContext.LyricsAnalyzerConfigs
-                .WithPartitionKey("lyricsanalyzer-config")
-                .FirstAsync();
+            lyricsAnalyzerConfig = await dbContext.LyricsAnalyzerConfigs                .FirstAsync();
         }
         catch (Exception ex)
         {
@@ -254,9 +252,7 @@ public partial class LyricsAnalyzerCommandModule
             );
 
             bool userIsOnRateLimitIgnoreList = lyricsAnalyzerConfig.RateLimitIgnoredUserIds is not null && lyricsAnalyzerConfig.RateLimitIgnoredUserIds.Contains(Context.User.Id.ToString());
-            LyricsAnalyzerUserRateLimit? lyricsAnalyzerUserRateLimit = await dbContext.LyricsAnalyzerUserRateLimits
-                .WithPartitionKey("user-item")
-                .FirstOrDefaultAsync(item => item.UserId == Context.User.Id.ToString());
+            LyricsAnalyzerUserRateLimit? lyricsAnalyzerUserRateLimit = await dbContext.LyricsAnalyzerUserRateLimits                .FirstOrDefaultAsync(item => item.UserId == Context.User.Id.ToString());
 
             if (lyricsAnalyzerUserRateLimit is null)
             {

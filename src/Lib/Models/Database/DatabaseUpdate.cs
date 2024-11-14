@@ -25,7 +25,7 @@ public sealed class DatabaseUpdate : DatabaseItem
     /// <summary>
     /// Whether the database has been fully migrated to EF Core.
     /// </summary>
-    [Column("migratedToEfCore")]
+    [Column("migratedToEfCore", TypeName = "boolean")]
     [JsonPropertyName("migratedToEfCore")]
     public bool MigratedToEfCore { get; set; }
 }

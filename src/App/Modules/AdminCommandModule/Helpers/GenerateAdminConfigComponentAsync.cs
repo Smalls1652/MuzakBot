@@ -18,7 +18,7 @@ public partial class AdminCommandModule
     /// <returns></returns>
     public async Task<ComponentBuilder> GenerateAdminConfigComponentAsync(ulong currentGuildId, string? componentId)
     {
-        using var dbContext = _lyricsAnalyzerDbContextFactory.CreateDbContext();
+        using var dbContext = _muzakbotDbContextFactory.CreateDbContext();
 
         string uniqueId = componentId ?? Guid.NewGuid().ToString().Split('-').First();
 
@@ -26,9 +26,7 @@ public partial class AdminCommandModule
         LyricsAnalyzerConfig? lyricsAnalyzerConfig;
         try
         {
-            lyricsAnalyzerConfig = await dbContext.LyricsAnalyzerConfigs
-                .WithPartitionKey("lyricsanalyzer-config")
-                .FirstOrDefaultAsync();
+            lyricsAnalyzerConfig = await dbContext.LyricsAnalyzerConfigs                .FirstOrDefaultAsync();
 
             if (lyricsAnalyzerConfig is null)
             {

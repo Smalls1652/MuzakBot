@@ -12,12 +12,12 @@ namespace MuzakBot.App.Handlers;
 public class LyricsAnalyzerPromptStyleAutoCompleteHandler : AutocompleteHandler
 {
     private readonly ILogger<LyricsAnalyzerPromptStyleAutoCompleteHandler> _logger;
-    private readonly IDbContextFactory<LyricsAnalyzerDbContext> _lyricsAnalyzerDbContextFactory;
+    private readonly IDbContextFactory<MuzakBotDbContext> _muzakbotDbContextFactory;
 
-    public LyricsAnalyzerPromptStyleAutoCompleteHandler(ILogger<LyricsAnalyzerPromptStyleAutoCompleteHandler> logger, IDbContextFactory<LyricsAnalyzerDbContext> lyricsAnalyzerDbContextFactory)
+    public LyricsAnalyzerPromptStyleAutoCompleteHandler(ILogger<LyricsAnalyzerPromptStyleAutoCompleteHandler> logger, IDbContextFactory<MuzakBotDbContext> muzakbotDbContextFactory)
     {
         _logger = logger;
-        _lyricsAnalyzerDbContextFactory = lyricsAnalyzerDbContextFactory;
+        _muzakbotDbContextFactory = muzakbotDbContextFactory;
     }
 
     public override async Task<AutocompletionResult> GenerateSuggestionsAsync(IInteractionContext context, IAutocompleteInteraction autocompleteInteraction, IParameterInfo parameter, IServiceProvider services)
@@ -28,23 +28,19 @@ public class LyricsAnalyzerPromptStyleAutoCompleteHandler : AutocompleteHandler
 
         string? promptStyleInputValue = promptStyleInput?.Value.ToString();
 
-        using var dbContext = _lyricsAnalyzerDbContextFactory.CreateDbContext();
+        using var dbContext = _muzakbotDbContextFactory.CreateDbContext();
 
         LyricsAnalyzerPromptStyle[] promptStyles;
 
         if (string.IsNullOrEmpty(promptStyleInputValue))
         {
             promptStyles = await dbContext.LyricsAnalyzerPromptStyles
-                .AsNoTracking()
-                .WithPartitionKey("prompt-style")
-                .ToArrayAsync();
+                .AsNoTracking()                .ToArrayAsync();
         }
         else
         {
             promptStyles = dbContext.LyricsAnalyzerPromptStyles
-                .AsNoTracking()
-                .WithPartitionKey("prompt-style")
-                .AsEnumerable()
+                .AsNoTracking()                .AsEnumerable()
                 .Where(item => item.Name.Contains(promptStyleInputValue, StringComparison.OrdinalIgnoreCase))
                 .ToArray();
         }

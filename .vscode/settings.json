@@ -7,5 +7,8 @@
   "task.quickOpen.history": 0,
   "task.autoDetect": "off",
   "powershell.startAutomatically": false,
-  "azurite.location": "./.azurite"
+  "azurite.location": "./.azurite",
+  "azurite.blobPort": 9000,
+  "azurite.queuePort": 9001,
+  "azurite.tablePort": 9002
 }

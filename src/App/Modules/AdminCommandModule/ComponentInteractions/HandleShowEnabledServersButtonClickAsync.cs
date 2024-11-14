@@ -31,11 +31,9 @@ public partial class AdminCommandModule
         LyricsAnalyzerConfig lyricsAnalyzerConfig;
         try
         {
-            using (var dbContext = _lyricsAnalyzerDbContextFactory.CreateDbContext())
+            using (var dbContext = _muzakbotDbContextFactory.CreateDbContext())
             {
-                lyricsAnalyzerConfig = await dbContext.LyricsAnalyzerConfigs
-                    .WithPartitionKey("lyricsanalyzer-config")
-                    .FirstAsync();
+                lyricsAnalyzerConfig = await dbContext.LyricsAnalyzerConfigs                    .FirstAsync();
             }
         }
         catch (Exception ex)

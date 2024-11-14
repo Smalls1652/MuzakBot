@@ -20,16 +20,15 @@ public class RequireUserRateLimitAttribute : PreconditionAttribute
     /// <inheritdoc />
     public override async Task<PreconditionResult> CheckRequirementsAsync(IInteractionContext context, ICommandInfo commandInfo, IServiceProvider services)
     {
-        var lyricsAnalyzerDbContextFactory = services.GetRequiredService<IDbContextFactory<LyricsAnalyzerDbContext>>();
+        var muzakbotDbContextFactory = services.GetRequiredService<IDbContextFactory<MuzakBotDbContext>>();
         var logger = services.GetRequiredService<ILogger<RequireUserRateLimitAttribute>>();
 
-        using var dbContext = lyricsAnalyzerDbContextFactory.CreateDbContext();
+        using var dbContext = muzakbotDbContextFactory.CreateDbContext();
 
         LyricsAnalyzerConfig lyricsAnalyzerConfig;
         try
         {
             lyricsAnalyzerConfig = await dbContext.LyricsAnalyzerConfigs
-                .WithPartitionKey("lyricsanalyzer-config")
                 .FirstAsync();
         }
         catch (Exception ex)
@@ -53,7 +52,6 @@ public class RequireUserRateLimitAttribute : PreconditionAttribute
         {
             logger.LogInformation("Getting current rate limit for user '{UserId}' from database.", context.User.Id);
             lyricsAnalyzerUserRateLimit = await dbContext.LyricsAnalyzerUserRateLimits
-                .WithPartitionKey("user-item")
                 .FirstOrDefaultAsync(item => item.UserId == context.User.Id.ToString());
 
             if (lyricsAnalyzerUserRateLimit is null)

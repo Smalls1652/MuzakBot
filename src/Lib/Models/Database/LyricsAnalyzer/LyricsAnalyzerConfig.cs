@@ -31,7 +31,7 @@ public class LyricsAnalyzerConfig : DatabaseItem, ILyricsAnalyzerConfig
     /// <summary>
     /// Whether or not the lyrics analyzer is enabled.
     /// </summary>
-    [Column("rateLimitEnabled")]
+    [Column("rateLimitEnabled", TypeName = "boolean")]
     [JsonPropertyName("rateLimitEnabled")]
     public bool RateLimitEnabled { get; set; }
 
@@ -52,7 +52,7 @@ public class LyricsAnalyzerConfig : DatabaseItem, ILyricsAnalyzerConfig
     /// <summary>
     /// Whether or not the lyrics analyzer is enabled only to specific guilds/servers.
     /// </summary>
-    [Column("commandIsEnabledToSpecificGuilds")]
+    [Column("commandIsEnabledToSpecificGuilds", TypeName = "boolean")]
     [JsonPropertyName("commandIsEnabledToSpecificGuilds")]
     public bool CommandIsEnabledToSpecificGuilds { get; set; }
 

@@ -32,6 +32,10 @@ public static class LyricsAnalyzerDbContextExtensions
                 services.AddLyricsAnalyzerDbContextFactoryForCosmosDb(databaseConfig.CosmosDbConfig!);
                 break;
 
+            case DatabaseType.PostgreSql:
+                services.AddLyricsAnalyzerDbContextFactoryForPostgres(databaseConfig.PostgresDbConfig!);
+                break;
+
             case DatabaseType.Sqlite:
                 services.AddLyricsAnalyzerDbContextFactoryForSqlite(databaseConfig.SqliteDbConfig!);
                 break;
@@ -57,6 +61,22 @@ public static class LyricsAnalyzerDbContextExtensions
                 connectionString: cosmosDbConfig.ConnectionString,
                 databaseName: "lyrics_analyzer"
             );
+        });
+
+        return services;
+    }
+
+    /// <summary>
+    /// Adds a <see cref="LyricsAnalyzerDbContext"/> factory and configures it for PostgreSQL to the service collection.
+    /// </summary>
+    /// <param name="services">The service collection.</param>
+    /// <param name="postgresDbConfig">The PostgreSQL configuration.</param>
+    /// <returns>The same service collection so that multiple calls can be chained.</returns>
+    private static IServiceCollection AddLyricsAnalyzerDbContextFactoryForPostgres(this IServiceCollection services, PostgresConfigOptions postgresDbConfig)
+    {
+        services.AddDbContextFactory<LyricsAnalyzerDbContext>(options =>
+        {
+            options.UseNpgsql($"{postgresDbConfig.ConnectionString}Database=lyrics_analyzer;");
         });
 
         return services;

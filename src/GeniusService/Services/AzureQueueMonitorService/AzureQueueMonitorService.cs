@@ -23,7 +23,7 @@ public sealed class AzureQueueMonitorService : IAzureQueueMonitorService
 {
     private readonly IGeniusApiService _geniusApiService;
     private readonly IQueueClientService _queueClientService;
-    private readonly IDbContextFactory<LyricsAnalyzerDbContext> _lyricsAnalyzerDbContextFactory;
+    private readonly IDbContextFactory<MuzakBotDbContext> _muzakbotDbContextFactory;
     private readonly IBackgroundTaskQueue _taskQueue;
     private readonly ILogger _logger;
     private readonly CancellationToken _cancellationToken;
@@ -36,11 +36,11 @@ public sealed class AzureQueueMonitorService : IAzureQueueMonitorService
     /// <param name="taskQueue">The <see cref="IBackgroundTaskQueue"/>.</param>
     /// <param name="logger">The <see cref="ILogger"/>.</param>
     /// <param name="appLifetime">The <see cref="IHostApplicationLifetime"/>.</param>
-    public AzureQueueMonitorService(IGeniusApiService geniusApiService, IQueueClientService queueClientService, IDbContextFactory<LyricsAnalyzerDbContext> lyricsAnalyzerDbContextFactory, IBackgroundTaskQueue taskQueue, ILogger<AzureQueueMonitorService> logger, IHostApplicationLifetime appLifetime)
+    public AzureQueueMonitorService(IGeniusApiService geniusApiService, IQueueClientService queueClientService, IDbContextFactory<MuzakBotDbContext> muzakbotDbContextFactory, IBackgroundTaskQueue taskQueue, ILogger<AzureQueueMonitorService> logger, IHostApplicationLifetime appLifetime)
     {
         _geniusApiService = geniusApiService;
         _queueClientService = queueClientService;
-        _lyricsAnalyzerDbContextFactory = lyricsAnalyzerDbContextFactory;
+        _muzakbotDbContextFactory = muzakbotDbContextFactory;
         _taskQueue = taskQueue;
         _logger = logger;
 
@@ -113,7 +113,7 @@ public sealed class AzureQueueMonitorService : IAzureQueueMonitorService
             return;
         }
 
-        await using LyricsAnalyzerDbContext dbContext = _lyricsAnalyzerDbContextFactory.CreateDbContext();
+        await using MuzakBotDbContext dbContext = _muzakbotDbContextFactory.CreateDbContext();
 
         SongLyricsRequestJob requestJobInDb = await dbContext.SongLyricsRequestJobs.FirstAsync(item => item.Id == requestMessage.JobId);
 

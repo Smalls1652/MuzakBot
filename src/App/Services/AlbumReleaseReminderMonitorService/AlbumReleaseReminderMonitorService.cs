@@ -29,7 +29,7 @@ public sealed class AlbumReleaseReminderMonitorService : IAlbumReleaseReminderMo
     private readonly DiscordSocketClient _discordClient;
     private readonly IAppleMusicApiService _appleMusicApiService;
     private readonly IOdesliService _odesliService;
-    private readonly IDbContextFactory<AlbumReleaseDbContext> _albumReleaseDbContextFactory;
+    private readonly IDbContextFactory<MuzakBotDbContext> _muzakbotDbContextFactory;
     private readonly ActivitySource _activitySource = new("MuzakBot.App.Services.AlbumReleaseReminderMonitorService");
 
     /// <summary>
@@ -39,14 +39,14 @@ public sealed class AlbumReleaseReminderMonitorService : IAlbumReleaseReminderMo
     /// <param name="discordClient">The Discord client.</param>
     /// <param name="appleMusicApiService">The Apple Music API service.</param>
     /// <param name="odesliService">The Odesli service.</param>
-    /// <param name="albumReleaseDbContextFactory">The <see cref="IDbContextFactory{TContext}"/> for the <see cref="AlbumReleaseDbContext"/>.</param>
-    public AlbumReleaseReminderMonitorService(ILogger<AlbumReleaseReminderMonitorService> logger, DiscordSocketClient discordClient, IAppleMusicApiService appleMusicApiService, IOdesliService odesliService, IDbContextFactory<AlbumReleaseDbContext> albumReleaseDbContextFactory)
+    /// <param name="muzakbotDbContextFactory">The <see cref="IDbContextFactory{TContext}"/> for the <see cref="MuzakBotDbContext"/>.</param>
+    public AlbumReleaseReminderMonitorService(ILogger<AlbumReleaseReminderMonitorService> logger, DiscordSocketClient discordClient, IAppleMusicApiService appleMusicApiService, IOdesliService odesliService, IDbContextFactory<MuzakBotDbContext> muzakbotDbContextFactory)
     {
         _logger = logger;
         _discordClient = discordClient;
         _appleMusicApiService = appleMusicApiService;
         _odesliService = odesliService;
-        _albumReleaseDbContextFactory = albumReleaseDbContextFactory;
+        _muzakbotDbContextFactory = muzakbotDbContextFactory;
     }
 
     /// <inheritdoc/>
@@ -70,7 +70,7 @@ public sealed class AlbumReleaseReminderMonitorService : IAlbumReleaseReminderMo
 
             foreach (SocketGuild guildItem in _discordClient.Guilds)
             {
-                AlbumReleaseDbContext dbContext = _albumReleaseDbContextFactory.CreateDbContext();
+                MuzakBotDbContext dbContext = _muzakbotDbContextFactory.CreateDbContext();
 
                 try
                 {
