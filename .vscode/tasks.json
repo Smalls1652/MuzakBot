@@ -355,7 +355,7 @@
         "add",
         "${input:efcoreMigrationName}",
         "--output-dir",
-        "./DbContexts/MuzakBotDbContext/Migrations/",
+        "./Migrations/MuzakBotDb",
         "--project",
         "./Database.csproj",
         "--startup-project",
@@ -364,13 +364,11 @@
         "Development",
         "--msbuildprojectextensionspath",
         "${workspaceFolder}/artifacts/obj/DatabaseDesign/",
-        "--namespace",
-        "MuzakBot.Database.MuzakBotDbContextMigrations",
         "--context",
         "MuzakBotDbContext"
       ],
       "options": {
-        "cwd": "${workspaceFolder}/src/Database",
+        "cwd": "${workspaceFolder}/src/Database/",
         "env": {
           "DOTNET_ENVIRONMENT": "Development",
           "EFCORE_DEV_MIGRATION_OPERATION": "true"
