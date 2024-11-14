@@ -339,7 +339,53 @@
         "close": true
       },
       "isBackground": false
-    }
+    },
+    {
+      "label": "MuzakBotDbContext: Add Migration",
+      "detail": "Add a migration for the MuzakBotDbContext.",
+      "icon": {
+        "id": "database",
+        "color": "terminal.ansiMagenta"
+      },
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "ef",
+        "migrations",
+        "add",
+        "${input:efcoreMigrationName}",
+        "--output-dir",
+        "./DbContexts/MuzakBotDbContext/Migrations/",
+        "--project",
+        "./Database.csproj",
+        "--startup-project",
+        "${workspaceFolder}/src/DatabaseDesign/DatabaseDesign.csproj",
+        "--configuration",
+        "Development",
+        "--msbuildprojectextensionspath",
+        "${workspaceFolder}/artifacts/obj/DatabaseDesign/",
+        "--namespace",
+        "MuzakBot.Database.Migrations",
+        "--context",
+        "MuzakBotDbContext"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/src/Database",
+        "env": {
+          "DOTNET_ENVIRONMENT": "Development",
+          "EFCORE_DEV_MIGRATION_OPERATION": "true"
+        }
+      },
+      "problemMatcher": "$msCompile",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": true
+      }
+    },
   ],
   "inputs": [
     {
@@ -499,6 +545,12 @@
           "value": "src/GeniusService/"
         }
       ]
-    }
+    },
+    {
+      "id": "efcoreMigrationName",
+      "description": "Enter the name of the migration.",
+      "type": "promptString",
+      "default": ""
+    },
   ]
 }
