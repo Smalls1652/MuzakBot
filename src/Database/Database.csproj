@@ -41,6 +41,7 @@
 		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" PrivateAssets="all" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" PrivateAssets="all" />
 		<PackageReference Include="Microsoft.Extensions.Hosting" PrivateAssets="all" />
+		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Lib\Lib.csproj" />
