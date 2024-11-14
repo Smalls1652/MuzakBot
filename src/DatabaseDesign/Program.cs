@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 
+using MuzakBot.Database;
 using MuzakBot.Database.Extensions;
 using MuzakBot.Database.Models;
 
@@ -24,8 +25,7 @@ builder.Configuration
 DatabaseConfig databaseConfig = builder.Configuration.GetDatabaseConfig();
 
 builder.Services
-    .AddLyricsAnalyzerDbContextFactory(databaseConfig)
-    .AddAlbumReleaseDbContextFactory(databaseConfig);
+    .AddMuzakBotDbContextFactory(databaseConfig);
 
 var host = builder.Build();
 
