@@ -18,7 +18,7 @@ public partial class AdminCommandModule
     /// <returns></returns>
     public async Task<ComponentBuilder> GenerateAdminConfigComponentAsync(ulong currentGuildId, string? componentId)
     {
-        using var dbContext = _lyricsAnalyzerDbContextFactory.CreateDbContext();
+        using var dbContext = _muzakbotDbContextFactory.CreateDbContext();
 
         string uniqueId = componentId ?? Guid.NewGuid().ToString().Split('-').First();
 

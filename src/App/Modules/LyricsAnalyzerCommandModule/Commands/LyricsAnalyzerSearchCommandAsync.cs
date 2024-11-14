@@ -64,7 +64,7 @@ public partial class LyricsAnalyzerCommandModule
             ephemeral: isPrivateResponse
         );
 
-        using var dbContext = _lyricsAnalyzerDbContextFactory.CreateDbContext();
+        using var dbContext = _muzakbotDbContextFactory.CreateDbContext();
 
         // Get the lyrics analyzer config from the database.
         _logger.LogInformation("Getting lyrics analyzer config from database.");

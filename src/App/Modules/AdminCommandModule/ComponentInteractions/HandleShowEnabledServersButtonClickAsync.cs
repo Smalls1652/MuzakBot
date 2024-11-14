@@ -31,7 +31,7 @@ public partial class AdminCommandModule
         LyricsAnalyzerConfig lyricsAnalyzerConfig;
         try
         {
-            using (var dbContext = _lyricsAnalyzerDbContextFactory.CreateDbContext())
+            using (var dbContext = _muzakbotDbContextFactory.CreateDbContext())
             {
                 lyricsAnalyzerConfig = await dbContext.LyricsAnalyzerConfigs
                     .WithPartitionKey("lyricsanalyzer-config")

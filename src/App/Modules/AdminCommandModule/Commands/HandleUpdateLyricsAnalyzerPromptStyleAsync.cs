@@ -24,7 +24,7 @@ public partial class AdminCommandModule
         string configType = "core"
     )
     {
-        using var dbContext = _lyricsAnalyzerDbContextFactory.CreateDbContext();
+        using var dbContext = _muzakbotDbContextFactory.CreateDbContext();
 
         LyricsAnalyzerPromptStyle? promptStyle = await dbContext.LyricsAnalyzerPromptStyles
             .WithPartitionKey("prompt-style")

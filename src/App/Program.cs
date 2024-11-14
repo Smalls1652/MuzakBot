@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 
 using MuzakBot.App.Extensions;
 using MuzakBot.App.Services;
+using MuzakBot.Database;
 using MuzakBot.Database.Extensions;
 using MuzakBot.Database.Models;
 using MuzakBot.Hosting.Extensions;
@@ -97,8 +98,7 @@ builder.Services
     });
 
 builder.Services
-    .AddLyricsAnalyzerDbContextFactory(databaseConfig)
-    .AddAlbumReleaseDbContextFactory(databaseConfig);
+    .AddMuzakBotDbContextFactory(databaseConfig);
 
 builder.Services
     .AddOpenAiService(options =>
@@ -124,9 +124,6 @@ builder.Services.AddDiscordService(options =>
 using var host = builder.Build();
 
 await host
-    .ApplyLyricsAnalyzerDbContextMigrations();
-
-await host
-    .ApplyAlbumReleaseDbContextMigrations();
+    .ApplyMuzakBotDbContextMigrations();
 
 await host.RunAsync();

@@ -1,3 +1,4 @@
+using MuzakBot.Database;
 using MuzakBot.Database.Extensions;
 using MuzakBot.Database.Models;
 using MuzakBot.WebApp.Components;
@@ -27,7 +28,7 @@ builder.Services
 DatabaseConfig databaseConfig = builder.Configuration.GetDatabaseConfig();
 
 builder.Services
-    .AddLyricsAnalyzerDbContextFactory(databaseConfig);
+    .AddMuzakBotDbContextFactory(databaseConfig);
 
 var app = builder.Build();
 

@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
+using MuzakBot.Database;
 using MuzakBot.Database.Extensions;
 using MuzakBot.Database.Models;
 using MuzakBot.GeniusService.Extensions;
@@ -42,7 +43,7 @@ builder.Configuration
 DatabaseConfig databaseConfig = builder.Configuration.GetDatabaseConfig();
 
 builder.Services
-    .AddLyricsAnalyzerDbContextFactory(databaseConfig);
+    .AddMuzakBotDbContextFactory(databaseConfig);
 
 builder.Services
     .AddSingleton<IBackgroundTaskQueue>(_ =>
@@ -70,8 +71,6 @@ builder.Services
     .AddMainService();
 
 var app = builder.Build();
-
-await app.ApplyLyricsAnalyzerDbContextMigrations();
 
 try
 {

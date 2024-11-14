@@ -19,7 +19,7 @@ public partial class AdminCommandModule
             ephemeral: true
         );
 
-        using var dbContext = _lyricsAnalyzerDbContextFactory.CreateDbContext();
+        using var dbContext = _muzakbotDbContextFactory.CreateDbContext();
 
         EmbedBuilder embed;
 

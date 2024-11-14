@@ -47,7 +47,7 @@ public partial class LyricsAnalyzerCommandModule
 
         await componentInteraction.DeferLoadingAsync(isEphemeral);
 
-        using var dbContext = _lyricsAnalyzerDbContextFactory.CreateDbContext();
+        using var dbContext = _muzakbotDbContextFactory.CreateDbContext();
 
         _logger.LogInformation("Regenerating lyrics analyzer response for {responseId}", responseId);
 

@@ -18,10 +18,10 @@ public class RequireLyricsAnalyzerEnabledForServerAttribute : PreconditionAttrib
     /// <inheritdoc />
     public override async Task<PreconditionResult> CheckRequirementsAsync(IInteractionContext context, ICommandInfo commandInfo, IServiceProvider services)
     {
-        var lyricsAnalyzerDbContextFactory = services.GetRequiredService<IDbContextFactory<LyricsAnalyzerDbContext>>();
+        var muzakbotDbContextFactory = services.GetRequiredService<IDbContextFactory<MuzakBotDbContext>>();
         var logger = services.GetRequiredService<ILogger<RequireLyricsAnalyzerEnabledForServerAttribute>>();
 
-        using var dbContext = lyricsAnalyzerDbContextFactory.CreateDbContext();
+        using var dbContext = muzakbotDbContextFactory.CreateDbContext();
 
         LyricsAnalyzerConfig lyricsAnalyzerConfig;
         try

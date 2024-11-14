@@ -21,7 +21,7 @@ public partial class AdminCommandModule
 
         EmbedBuilder embed;
 
-        using var dbContext = _lyricsAnalyzerDbContextFactory.CreateDbContext();
+        using var dbContext = _muzakbotDbContextFactory.CreateDbContext();
 
         LyricsAnalyzerPromptStyle? promptStyle = await dbContext.LyricsAnalyzerPromptStyles
             .WithPartitionKey("prompt-style")

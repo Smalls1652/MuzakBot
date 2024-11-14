@@ -28,7 +28,7 @@ public partial class AdminCommandModule
 
         EmbedBuilder embedBuilder = new();
 
-        using var dbContext = _lyricsAnalyzerDbContextFactory.CreateDbContext();
+        using var dbContext = _muzakbotDbContextFactory.CreateDbContext();
 
         IUser user;
         try

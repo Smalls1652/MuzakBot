@@ -37,7 +37,7 @@ public partial class AdminCommandModule
             ephemeral: false
         );
 
-        using var dbContext = _lyricsAnalyzerDbContextFactory.CreateDbContext();
+        using var dbContext = _muzakbotDbContextFactory.CreateDbContext();
 
         ulong guildIdUlong;
         try
