@@ -26,9 +26,7 @@ public partial class AdminCommandModule
     {
         using var dbContext = _muzakbotDbContextFactory.CreateDbContext();
 
-        LyricsAnalyzerPromptStyle? promptStyle = await dbContext.LyricsAnalyzerPromptStyles
-            .WithPartitionKey("prompt-style")
-            .FirstOrDefaultAsync(x => x.ShortName == style);
+        LyricsAnalyzerPromptStyle? promptStyle = await dbContext.LyricsAnalyzerPromptStyles            .FirstOrDefaultAsync(x => x.ShortName == style);
 
         if (promptStyle is null)
         {

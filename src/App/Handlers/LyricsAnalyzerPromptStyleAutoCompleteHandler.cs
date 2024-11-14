@@ -35,16 +35,12 @@ public class LyricsAnalyzerPromptStyleAutoCompleteHandler : AutocompleteHandler
         if (string.IsNullOrEmpty(promptStyleInputValue))
         {
             promptStyles = await dbContext.LyricsAnalyzerPromptStyles
-                .AsNoTracking()
-                .WithPartitionKey("prompt-style")
-                .ToArrayAsync();
+                .AsNoTracking()                .ToArrayAsync();
         }
         else
         {
             promptStyles = dbContext.LyricsAnalyzerPromptStyles
-                .AsNoTracking()
-                .WithPartitionKey("prompt-style")
-                .AsEnumerable()
+                .AsNoTracking()                .AsEnumerable()
                 .Where(item => item.Name.Contains(promptStyleInputValue, StringComparison.OrdinalIgnoreCase))
                 .ToArray();
         }

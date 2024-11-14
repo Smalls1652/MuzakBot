@@ -88,8 +88,6 @@ builder.Services
             : TimeSpan.FromMinutes(30);
     });
 
-DatabaseConfig databaseConfig = builder.Configuration.GetDatabaseConfig();
-
 builder.Services
     .AddQueueClientService(options =>
     {
@@ -97,8 +95,27 @@ builder.Services
         options.QueueName = builder.Configuration.GetValue<string>("QUEUE_NAME") ?? throw new("QUEUE_NAME is not set.");
     });
 
+DatabaseConfig databaseConfig = builder.Configuration.GetDatabaseConfig();
+
 builder.Services
     .AddMuzakBotDbContextFactory(databaseConfig);
+
+bool shouldMigrateCosmosDbToPostgres = builder.Configuration.GetValue<bool>("MIGRATE_COSMOSDB_TO_POSTGRES");
+if (shouldMigrateCosmosDbToPostgres)
+{
+    DatabaseConfig cosmosDbConfig = new()
+    {
+        DatabaseType = DatabaseType.CosmosDb,
+        CosmosDbConfig = new()
+        {
+            ConnectionString = builder.Configuration.GetValue<string>("COSMOSDB_CONNECTION_STRING") ?? throw new("COSMOSDB_CONNECTION_STRING is not set."),
+        }
+    };
+
+    builder.Services
+        .AddAlbumReleaseDbContextFactory(cosmosDbConfig)
+        .AddLyricsAnalyzerDbContextFactory(cosmosDbConfig);
+}
 
 builder.Services
     .AddOpenAiService(options =>
@@ -123,7 +140,12 @@ builder.Services.AddDiscordService(options =>
 
 using var host = builder.Build();
 
-await host
-    .ApplyMuzakBotDbContextMigrations();
+await host.ApplyMuzakBotDbContextMigrations();
+
+if (shouldMigrateCosmosDbToPostgres)
+{
+    await host.MigrateCosmosDbDataToPostgresAsync();
+    return;
+}
 
 await host.RunAsync();

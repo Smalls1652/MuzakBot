@@ -24,9 +24,7 @@ public partial class AdminCommandModule
 
         EmbedBuilder embed;
 
-        bool promptStyleExists = dbContext.LyricsAnalyzerPromptStyles
-            .WithPartitionKey("prompt-style")
-            .ToList()
+        bool promptStyleExists = dbContext.LyricsAnalyzerPromptStyles            .ToList()
             .Any(item => item.ShortName == promptStyle.ShortName);
 
         if (promptStyleExists)

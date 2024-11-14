@@ -27,7 +27,6 @@ public class RequireLyricsAnalyzerEnabledForServerAttribute : PreconditionAttrib
         try
         {
             lyricsAnalyzerConfig = await dbContext.LyricsAnalyzerConfigs
-                .WithPartitionKey("lyricsanalyzer-config")
                 .FirstAsync();
         }
         catch (Exception ex)

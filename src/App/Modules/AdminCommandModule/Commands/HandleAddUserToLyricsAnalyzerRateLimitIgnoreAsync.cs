@@ -53,9 +53,7 @@ public partial class AdminCommandModule
             return;
         }
 
-        LyricsAnalyzerConfig? lyricsAnalyzerConfig = await dbContext.LyricsAnalyzerConfigs
-            .WithPartitionKey("lyricsanalyzer-config")
-            .FirstOrDefaultAsync();
+        LyricsAnalyzerConfig? lyricsAnalyzerConfig = await dbContext.LyricsAnalyzerConfigs            .FirstOrDefaultAsync();
 
         if (lyricsAnalyzerConfig is null)
         {

@@ -20,9 +20,7 @@ public partial class LyricsAnalyzerCommandModule
         LyricsAnalyzerPromptStyle? promptStyle;
         try
         {
-            promptStyle = await dbContext.LyricsAnalyzerPromptStyles
-                .WithPartitionKey("prompt-style")
-                .FirstAsync(item => item.ShortName == promptMode);
+            promptStyle = await dbContext.LyricsAnalyzerPromptStyles                .FirstAsync(item => item.ShortName == promptMode);
         }
         catch (Exception)
         {

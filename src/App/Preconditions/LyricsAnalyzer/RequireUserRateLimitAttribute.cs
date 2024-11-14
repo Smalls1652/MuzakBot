@@ -29,7 +29,6 @@ public class RequireUserRateLimitAttribute : PreconditionAttribute
         try
         {
             lyricsAnalyzerConfig = await dbContext.LyricsAnalyzerConfigs
-                .WithPartitionKey("lyricsanalyzer-config")
                 .FirstAsync();
         }
         catch (Exception ex)
@@ -53,7 +52,6 @@ public class RequireUserRateLimitAttribute : PreconditionAttribute
         {
             logger.LogInformation("Getting current rate limit for user '{UserId}' from database.", context.User.Id);
             lyricsAnalyzerUserRateLimit = await dbContext.LyricsAnalyzerUserRateLimits
-                .WithPartitionKey("user-item")
                 .FirstOrDefaultAsync(item => item.UserId == context.User.Id.ToString());
 
             if (lyricsAnalyzerUserRateLimit is null)

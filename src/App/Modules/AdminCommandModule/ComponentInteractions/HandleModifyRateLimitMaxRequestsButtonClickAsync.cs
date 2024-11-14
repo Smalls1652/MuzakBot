@@ -33,9 +33,7 @@ public partial class AdminCommandModule
         LyricsAnalyzerConfig lyricsAnalyzerConfig;
         try
         {
-            lyricsAnalyzerConfig = await dbContext.LyricsAnalyzerConfigs
-                .WithPartitionKey("lyricsanalyzer-config")
-                .FirstAsync();
+            lyricsAnalyzerConfig = await dbContext.LyricsAnalyzerConfigs                .FirstAsync();
         }
         catch (Exception ex)
         {
