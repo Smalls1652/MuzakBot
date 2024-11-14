@@ -8,6 +8,9 @@ popper/
 main.css
 .azurite/
 
+.local/postgres/data/
+.local/postgres/.env
+
 __blobstorage__/
 __queuestorage__/
 __azurite_*.json
