@@ -70,7 +70,7 @@ public class AlbumReleaseReminder : DatabaseItem
     /// <summary>
     /// Whether the reminder has been sent.
     /// </summary>
-    [Column("reminderSent")]
+    [Column("reminderSent", TypeName = "boolean")]
     [JsonPropertyName("reminderSent")]
     public bool ReminderSent { get; set; } = false;
 

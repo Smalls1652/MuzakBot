@@ -57,21 +57,21 @@ public class SongLyricsRequestJob : DatabaseItem
     /// <summary>
     /// Whether the standalone service has acknowledged the request.
     /// </summary>
-    [Column("standaloneServiceAcknowledged")]
+    [Column("standaloneServiceAcknowledged", TypeName = "boolean")]
     [JsonPropertyName("standaloneServiceAcknowledged")]
     public bool StandaloneServiceAcknowledged { get; set; }
 
     /// <summary>
     /// Whether the fallback method is needed.
     /// </summary>
-    [Column("fallbackMethodNeeded")]
+    [Column("fallbackMethodNeeded", TypeName = "boolean")]
     [JsonPropertyName("fallbackMethodNeeded")]
     public bool FallbackMethodNeeded { get; set; }
 
     /// <summary>
     /// Whether the job is completed.
     /// </summary>
-    [Column("isCompleted")]
+    [Column("isCompleted", TypeName = "boolean")]
     [JsonPropertyName("isCompleted")]
     public bool IsCompleted { get; set; }
 
