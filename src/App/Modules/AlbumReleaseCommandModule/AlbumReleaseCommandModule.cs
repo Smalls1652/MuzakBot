@@ -26,7 +26,7 @@ public partial class AlbumReleaseCommandModule : InteractionModuleBase<SocketInt
     private readonly ILogger _logger;
     private readonly IAppleMusicApiService _appleMusicApiService;
     private readonly IOdesliService _odesliService;
-    private readonly IDbContextFactory<AlbumReleaseDbContext> _albumReleaseDbContextFactory;
+    private readonly IDbContextFactory<MuzakBotDbContext> _muzakbotDbContextFactory;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AlbumReleaseCommandModule"/> class.
@@ -34,13 +34,13 @@ public partial class AlbumReleaseCommandModule : InteractionModuleBase<SocketInt
     /// <param name="logger">The logger.</param>
     /// <param name="appleMusicApiService">The Apple Music API service.</param>
     /// <param name="odesliService">The Odesli service.</param>
-    /// <param name="albumReleaseDbContextFactory">The <see cref="IDbContextFactory{TContext}"/> for the <see cref="AlbumReleaseDbContext"/>.</param>
-    public AlbumReleaseCommandModule(ILogger<AlbumReleaseCommandModule> logger, IAppleMusicApiService appleMusicApiService, IOdesliService odesliService, IDbContextFactory<AlbumReleaseDbContext> albumReleaseDbContextFactory)
+    /// <param name="muzakbotDbContextFactory">The <see cref="IDbContextFactory{TContext}"/> for the <see cref="MuzakBotDbContext"/>.</param>
+    public AlbumReleaseCommandModule(ILogger<AlbumReleaseCommandModule> logger, IAppleMusicApiService appleMusicApiService, IOdesliService odesliService, IDbContextFactory<MuzakBotDbContext> muzakbotDbContextFactory)
     {
         _logger = logger;
         _appleMusicApiService = appleMusicApiService;
         _odesliService = odesliService;
-        _albumReleaseDbContextFactory = albumReleaseDbContextFactory;
+        _muzakbotDbContextFactory = muzakbotDbContextFactory;
     }
 
     /// <inheritdoc/>

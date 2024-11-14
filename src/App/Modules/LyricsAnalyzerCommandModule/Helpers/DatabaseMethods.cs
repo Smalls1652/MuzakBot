@@ -15,14 +15,12 @@ public partial class LyricsAnalyzerCommandModule
     /// <exception cref="NullReferenceException">The prompt style was null.</exception>
     private async Task<LyricsAnalyzerPromptStyle> GetPromptStyleAsync(string promptMode, string? parentActivityId)
     {
-        using var dbContext = _lyricsAnalyzerDbContextFactory.CreateDbContext();
+        using var dbContext = _muzakbotDbContextFactory.CreateDbContext();
 
         LyricsAnalyzerPromptStyle? promptStyle;
         try
         {
-            promptStyle = await dbContext.LyricsAnalyzerPromptStyles
-                .WithPartitionKey("prompt-style")
-                .FirstAsync(item => item.ShortName == promptMode);
+            promptStyle = await dbContext.LyricsAnalyzerPromptStyles                .FirstAsync(item => item.ShortName == promptMode);
         }
         catch (Exception)
         {

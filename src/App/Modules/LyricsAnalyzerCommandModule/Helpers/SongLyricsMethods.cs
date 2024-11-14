@@ -34,7 +34,7 @@ public partial class LyricsAnalyzerCommandModule
         {
             _logger.LogInformation("Attempting to get song lyrics for '{SongName}' by '{ArtistName}' from the database.", songName, artistName);
 
-            using (var songLyricsDbContext = _lyricsAnalyzerDbContextFactory.CreateDbContext())
+            using (var songLyricsDbContext = _muzakbotDbContextFactory.CreateDbContext())
             {
                 SongLyricsItem dbResponse = await songLyricsDbContext.SongLyricsItems
                     .FirstOrDefaultAsync(item => item.ArtistName == artistName && item.SongName == songName)
@@ -193,7 +193,7 @@ public partial class LyricsAnalyzerCommandModule
 
         // Create a new song lyrics request job and add it to the database.
         SongLyricsRequestJob songLyricsRequestJob;
-        using (var songLyricsDbContext = _lyricsAnalyzerDbContextFactory.CreateDbContext())
+        using (var songLyricsDbContext = _muzakbotDbContextFactory.CreateDbContext())
         {
             songLyricsRequestJob = new(requestMessage);
 
@@ -218,7 +218,7 @@ public partial class LyricsAnalyzerCommandModule
             Stopwatch acknowledgedStopwatch = Stopwatch.StartNew();
             while (!isSongLyricsJobFinished)
             {
-                using (var songLyricsDbContext = _lyricsAnalyzerDbContextFactory.CreateDbContext())
+                using (var songLyricsDbContext = _muzakbotDbContextFactory.CreateDbContext())
                 {
                     SongLyricsRequestJob songLyricsRequestJobStatus = await songLyricsDbContext.SongLyricsRequestJobs.FirstAsync(item => item.Id == songLyricsRequestJob.Id);
 
@@ -284,7 +284,7 @@ public partial class LyricsAnalyzerCommandModule
         finally
         {
             // Remove the song lyrics request job from the database.
-            using (var songLyricsDbContext = _lyricsAnalyzerDbContextFactory.CreateDbContext())
+            using (var songLyricsDbContext = _muzakbotDbContextFactory.CreateDbContext())
             {
                 songLyricsDbContext.SongLyricsRequestJobs.Remove(songLyricsRequestJob);
                 await songLyricsDbContext.SaveChangesAsync();
@@ -320,7 +320,7 @@ public partial class LyricsAnalyzerCommandModule
             );
         }
 
-        using (var songLyricsDbContext = _lyricsAnalyzerDbContextFactory.CreateDbContext())
+        using (var songLyricsDbContext = _muzakbotDbContextFactory.CreateDbContext())
         {
             await songLyricsDbContext.SongLyricsItems.AddAsync(
                 new(

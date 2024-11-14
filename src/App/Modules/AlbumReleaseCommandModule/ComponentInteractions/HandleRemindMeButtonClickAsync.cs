@@ -61,7 +61,7 @@ public partial class AlbumReleaseCommandModule
                 : easternTimeZone.BaseUtcOffset
         );
 
-        using AlbumReleaseDbContext dbContext = _albumReleaseDbContextFactory.CreateDbContext();
+        using MuzakBotDbContext dbContext = _muzakbotDbContextFactory.CreateDbContext();
 
         AlbumReleaseReminder? albumReleaseReminder = dbContext.AlbumReleaseReminders
             .FirstOrDefault(item => item.Id == $"{album.Id}-{Context.Guild.Id}-{componentInteraction.ChannelId!.Value}");

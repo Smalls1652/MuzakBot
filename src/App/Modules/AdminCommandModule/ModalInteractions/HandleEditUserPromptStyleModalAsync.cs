@@ -19,13 +19,11 @@ public partial class AdminCommandModule
             ephemeral: true
         );
 
-        using var dbContext = _lyricsAnalyzerDbContextFactory.CreateDbContext();
+        using var dbContext = _muzakbotDbContextFactory.CreateDbContext();
 
         EmbedBuilder embed;
 
-        LyricsAnalyzerPromptStyle? promptStyle = await dbContext.LyricsAnalyzerPromptStyles
-            .WithPartitionKey("prompt-style")
-            .FirstOrDefaultAsync(x => x.ShortName == userPromptModal.ShortName);
+        LyricsAnalyzerPromptStyle? promptStyle = await dbContext.LyricsAnalyzerPromptStyles            .FirstOrDefaultAsync(x => x.ShortName == userPromptModal.ShortName);
 
         if (promptStyle is null)
         {

@@ -6,7 +6,15 @@
       "version": "6.0.5",
       "commands": [
         "dotnet-gitversion"
-      ]
+      ],
+      "rollForward": false
+    },
+    "dotnet-ef": {
+      "version": "8.0.10",
+      "commands": [
+        "dotnet-ef"
+      ],
+      "rollForward": false
     }
   }
 }

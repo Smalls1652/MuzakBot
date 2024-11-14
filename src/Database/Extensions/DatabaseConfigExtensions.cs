@@ -34,6 +34,15 @@ public static class DatabaseConfigExtensions
                 }
             },
 
+            DatabaseType.PostgreSql => new()
+            {
+                DatabaseType = databaseType,
+                PostgresDbConfig = new()
+                {
+                    ConnectionString = configuration.GetValue<string>("POSTGRES_CONNECTIONSTRING") ?? throw new ConfigValueNotFoundException("POSTGRES_CONNECTIONSTRING")
+                }
+            },
+
             DatabaseType.Sqlite => new()
             {
                 DatabaseType = databaseType,

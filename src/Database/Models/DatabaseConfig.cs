@@ -19,4 +19,9 @@ public sealed class DatabaseConfig
     /// Configuration options for SQLite.
     /// </summary>
     public SqliteDbConfigOptions? SqliteDbConfig { get; set; }
+
+    /// <summary>
+    /// Configuration options for PostgreSQL.
+    /// </summary>
+    public PostgresConfigOptions? PostgresDbConfig { get; set; }
 }
