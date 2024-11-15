@@ -25,15 +25,6 @@ public static class DatabaseConfigExtensions
 
         DatabaseConfig databaseConfig = databaseType switch
         {
-            DatabaseType.CosmosDb => new()
-            {
-                DatabaseType = databaseType,
-                CosmosDbConfig = new()
-                {
-                    ConnectionString = configuration.GetValue<string>("COSMOSDB_CONNECTIONSTRING") ?? throw new ConfigValueNotFoundException("COSMOSDB_CONNECTIONSTRING")
-                }
-            },
-
             DatabaseType.PostgreSql => new()
             {
                 DatabaseType = databaseType,

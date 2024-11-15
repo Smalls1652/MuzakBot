@@ -11,11 +11,6 @@ public sealed class DatabaseConfig
     public DatabaseType DatabaseType { get; set; }
 
     /// <summary>
-    /// Configuration options for Cosmos DB.
-    /// </summary>
-    public CosmosDbConfigOptions? CosmosDbConfig { get; set; }
-
-    /// <summary>
     /// Configuration options for SQLite.
     /// </summary>
     public SqliteDbConfigOptions? SqliteDbConfig { get; set; }

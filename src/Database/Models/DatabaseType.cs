@@ -11,12 +11,7 @@ public enum DatabaseType
     Sqlite = 0,
 
     /// <summary>
-    /// Azure Cosmos DB
-    /// </summary>
-    CosmosDb = 1,
-
-    /// <summary>
     /// PostgreSQL database
     /// </summary>
-    PostgreSql = 2
+    PostgreSql = 1
 }
