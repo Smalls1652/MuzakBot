@@ -11,7 +11,6 @@ using MuzakBot.Database;
 using MuzakBot.Database.Extensions;
 using MuzakBot.Database.Models;
 using MuzakBot.Hosting.Extensions;
-using MuzakBot.Lib.Services;
 using MuzakBot.Lib.Services.Extensions;
 
 DateTimeOffset startTime = DateTimeOffset.UtcNow;
@@ -100,23 +99,6 @@ DatabaseConfig databaseConfig = builder.Configuration.GetDatabaseConfig();
 builder.Services
     .AddMuzakBotDbContextFactory(databaseConfig);
 
-bool shouldMigrateCosmosDbToPostgres = builder.Configuration.GetValue<bool>("MIGRATE_COSMOSDB_TO_POSTGRES");
-if (shouldMigrateCosmosDbToPostgres)
-{
-    DatabaseConfig cosmosDbConfig = new()
-    {
-        DatabaseType = DatabaseType.CosmosDb,
-        CosmosDbConfig = new()
-        {
-            ConnectionString = builder.Configuration.GetValue<string>("COSMOSDB_CONNECTION_STRING") ?? throw new("COSMOSDB_CONNECTION_STRING is not set."),
-        }
-    };
-
-    builder.Services
-        .AddAlbumReleaseDbContextFactory(cosmosDbConfig)
-        .AddLyricsAnalyzerDbContextFactory(cosmosDbConfig);
-}
-
 builder.Services
     .AddOpenAiService(options =>
     {
@@ -141,11 +123,5 @@ builder.Services.AddDiscordService(options =>
 using var host = builder.Build();
 
 await host.ApplyMuzakBotDbContextMigrations();
-
-if (shouldMigrateCosmosDbToPostgres)
-{
-    await host.MigrateCosmosDbDataToPostgresAsync();
-    return;
-}
 
 await host.RunAsync();
