@@ -11,11 +11,6 @@ on:
         required: false
         default: true
         type: boolean
-      deployToAzure:
-        description: "Deploy to Azure"
-        required: false
-        default: true
-        type: boolean
 
 permissions:
   packages: write
@@ -25,8 +20,6 @@ jobs:
   create-muzakbot-image:
     name: Create MuzakBot image
     runs-on: ubuntu-latest
-    outputs:
-      image: ${{ steps.output_image.outputs.image }}
 
     steps:
       - name: "Checkout GitHub Action"
@@ -74,41 +67,7 @@ jobs:
           build-args: |
             "NUGET_USER=${{ github.repository_owner }}"
             "NUGET_TOKEN=${{ secrets.GITHUB_TOKEN }}"
-
-      - name: Set output image
-        id: output_image
-        shell: pwsh
-        run: |
-          $repoOwner = "${{ github.repository_owner }}".ToLower()
-          $imageDigest = "${{ steps.image_build.outputs.digest }}"
-          "image=ghcr.io/$($repoOwner)/muzakbot@$($imageDigest)" >> $env:GITHUB_OUTPUT
-
-  deploy-muzakbotto-azure:
-    name: Deploy MuzakBot to Azure
-    runs-on: ubuntu-latest
-    needs: create-muzakbot-image
-    environment: Production
-
-    if: ${{ github.event_name == 'push' || github.event.inputs.deployToAzure == true }}
-
-    permissions: 
-      id-token: write
-
-    steps:
-      - name: Log into Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-      - name: Deploy to Azure Container Apps
-        uses: azure/container-apps-deploy-action@v2
-        with:
-          containerAppName: ${{ secrets.AZURE_CONTAINER_APP_NAME }}
-          resourceGroup: ${{ secrets.AZURE_CONTAINER_RESOURCE_GROUP_NAME }}
-          imageToDeploy: ${{ needs.create-muzakbot-image.outputs.image }}
-    
+   
   create-webapp-image:
     name: Create WebApp image
     runs-on: ubuntu-latest
