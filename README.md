@@ -1,6 +1,7 @@
-# MuzakBot [![Build status](https://github.com/Smalls1652/MuzakBot/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/Smalls1652/MuzakBot/actions/workflows/build.yml) [![MIT license](https://badgen.net/static/License/MIT/blue)](./LICENSE)
+> [!CAUTION]
+> MuzakBot is no longer usable, as [the API service used for resolving music streaming links is no longer available to use](https://linktr.ee/help/en/articles/15201827-sunsetting-the-songlink-odesli-public-api).
 
-[![Add to your Discord server or as an user app!](https://badgen.net/static/Discord%20Bot/Add%20to%20your%20server%20or%20as%20an%20user%20app!/purple?icon=discord&scale=2)](https://discord.com/oauth2/authorize?client_id=1131341120924831866)
+# MuzakBot [![Build status](https://github.com/Smalls1652/MuzakBot/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/Smalls1652/MuzakBot/actions/workflows/build.yml) [![MIT license](https://badgen.net/static/License/MIT/blue)](./LICENSE)
 
 ![MuzakBot logo](./.github/images/logo_wide_social.png)
 
